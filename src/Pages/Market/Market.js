@@ -21,7 +21,27 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
+const featuredItems = [
+    { title: "Featured 1", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" },
+    { title: "Featured 2", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" },
+    { title: "Featured 3", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" },
+    { title: "Featured 4", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" }
+];
 
+const listedItems = [
+    { title: "Item 1", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" },
+    { title: "Item 2", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" },
+    { title: "Item 3", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" },
+    { title: "Item 4", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" },
+    { title: "Item 5", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" },
+    { title: "Item 6", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" },
+    { title: "Item 7", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" },
+    { title: "Item 8", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" },
+    { title: "Item 9", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" },
+    { title: "Item 10", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" },
+    { title: "Item 11", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" },
+    { title: "Item 12", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" },
+];
 
 
 const Market = () => {
@@ -38,89 +58,30 @@ const Market = () => {
                     <Item>
                         <h2>Section 1</h2>
                         <Grid container spacing={1} rowSpacing={1}>
-
-                            <Grid item xs={3}>
-                                <Card sx={{ maxWidth: 259, minHeight: 298 }}>
-                                    <CardActionArea>
-                                        <CardMedia
-                                            component="img"
-                                            height="140"
-                                            image="/static/images/cards/contemplative-reptile.jpg"
-                                            alt="green iguana"
-                                        />
-                                        <CardContent>
-                                            <Typography gutterBottom variant="h5" component="div">
-                                                Featured 1
-                                            </Typography>
-                                            <Typography variant="body2" color="text.secondary">
-                                                Description
-                                            </Typography>
-                                        </CardContent>
-                                    </CardActionArea>
-                                </Card>
-                            </Grid>
-
-                            <Grid item xs={3}>
-                                <Card sx={{ maxWidth: 259, minHeight: 298 }}>
-                                    <CardActionArea>
-                                        <CardMedia
-                                            component="img"
-                                            height="140"
-                                            image="/static/images/cards/contemplative-reptile.jpg"
-                                            alt="green iguana"
-                                        />
-                                        <CardContent>
-                                            <Typography gutterBottom variant="h5" component="div">
-                                                Featured 2
-                                            </Typography>
-                                            <Typography variant="body2" color="text.secondary">
-                                                Description
-                                            </Typography>
-                                        </CardContent>
-                                    </CardActionArea>
-                                </Card>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <Card sx={{ maxWidth: 259, minHeight: 298 }}>
-                                    <CardActionArea>
-                                        <CardMedia
-                                            component="img"
-                                            height="140"
-                                            image="/static/images/cards/contemplative-reptile.jpg"
-                                            alt="green iguana"
-                                        />
-                                        <CardContent>
-                                            <Typography gutterBottom variant="h5" component="div">
-                                                Featured 3
-                                            </Typography>
-                                            <Typography variant="body2" color="text.secondary">
-                                                Description
-                                            </Typography>
-                                        </CardContent>
-                                    </CardActionArea>
-                                </Card>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <Card sx={{ maxWidth: 259, minHeight: 298 }}>
-                                    <CardActionArea>
-                                        <CardMedia
-                                            component="img"
-                                            height="140"
-                                            image="/static/images/cards/contemplative-reptile.jpg"
-                                            alt="green iguana"
-                                        />
-                                        <CardContent>
-                                            <Typography gutterBottom variant="h5" component="div">
-                                                Featured 4
-                                            </Typography>
-                                            <Typography variant="body2" color="text.secondary">
-                                                Description
-                                            </Typography>
-                                        </CardContent>
-                                    </CardActionArea>
-                                </Card>
-                            </Grid>
+                            {featuredItems.map((item, index) => (
+                                <Grid item xs={3} key={index}>
+                                    <Card sx={{ maxWidth: 259, minHeight: 298 }}>
+                                        <CardActionArea>
+                                            <CardMedia
+                                                component="img"
+                                                height="140"
+                                                image={item.image}
+                                                alt={item.title}
+                                            />
+                                            <CardContent>
+                                                <Typography gutterBottom variant="h5" component="div">
+                                                    {item.title}
+                                                </Typography>
+                                                <Typography variant="body2" color="text.secondary">
+                                                    {item.description}
+                                                </Typography>
+                                            </CardContent>
+                                        </CardActionArea>
+                                    </Card>
+                                </Grid>
+                            ))}
                         </Grid>
+
                         <Grid item xs={12}>
 
                             <h2>Section 2</h2>
@@ -141,42 +102,12 @@ const Market = () => {
                                         </Tabs>
                                     </Item>
                                 </Grid>
-                                <Grid item xs={3}>
-                                    <Item>Listed 1</Item>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <Item>Listed 2</Item>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <Item>Listed 3</Item>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <Item>Listed 4</Item>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <Item>Listed 5</Item>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <Item>Listed 6</Item>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <Item>Listed 7</Item>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <Item>Listed 8</Item>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <Item>Listed 9</Item>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <Item>Listed 10</Item>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <Item>Listed 11</Item>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <Item>Listed 12</Item>
-                                </Grid>
+                                {listedItems.map((item, index) => (
+                                    <Grid item xs={3}>
+                                        <Item>{item.title}</Item>
+                                    </Grid>
+                                ))}
+
                             </Grid>
                         </Grid>
                     </Item>
