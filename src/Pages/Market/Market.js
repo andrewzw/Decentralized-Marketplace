@@ -1,8 +1,17 @@
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import Typography from '@mui/material/Typography';
+import { CardActionArea } from '@mui/material';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -13,7 +22,14 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 
+
+
 const Market = () => {
+    const [value, setValue] = React.useState('one');
+
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+    };
     return (
         <div>
             <h1>Market</h1>
@@ -21,19 +37,88 @@ const Market = () => {
                 <Grid item xs={8}>
                     <Item>
                         <h2>Section 1</h2>
-                        <Grid container spacing={1} rowSpacing={1} >
+                        <Grid container spacing={1} rowSpacing={1}>
 
                             <Grid item xs={3}>
-                                <Item>Featured Item 1</Item>
+                                <Card sx={{ maxWidth: 259, minHeight: 298 }}>
+                                    <CardActionArea>
+                                        <CardMedia
+                                            component="img"
+                                            height="140"
+                                            image="/static/images/cards/contemplative-reptile.jpg"
+                                            alt="green iguana"
+                                        />
+                                        <CardContent>
+                                            <Typography gutterBottom variant="h5" component="div">
+                                                Featured 1
+                                            </Typography>
+                                            <Typography variant="body2" color="text.secondary">
+                                                Description
+                                            </Typography>
+                                        </CardContent>
+                                    </CardActionArea>
+                                </Card>
+                            </Grid>
+
+                            <Grid item xs={3}>
+                                <Card sx={{ maxWidth: 259, minHeight: 298 }}>
+                                    <CardActionArea>
+                                        <CardMedia
+                                            component="img"
+                                            height="140"
+                                            image="/static/images/cards/contemplative-reptile.jpg"
+                                            alt="green iguana"
+                                        />
+                                        <CardContent>
+                                            <Typography gutterBottom variant="h5" component="div">
+                                                Featured 2
+                                            </Typography>
+                                            <Typography variant="body2" color="text.secondary">
+                                                Description
+                                            </Typography>
+                                        </CardContent>
+                                    </CardActionArea>
+                                </Card>
                             </Grid>
                             <Grid item xs={3}>
-                                <Item>Featured Item 2</Item>
+                                <Card sx={{ maxWidth: 259, minHeight: 298 }}>
+                                    <CardActionArea>
+                                        <CardMedia
+                                            component="img"
+                                            height="140"
+                                            image="/static/images/cards/contemplative-reptile.jpg"
+                                            alt="green iguana"
+                                        />
+                                        <CardContent>
+                                            <Typography gutterBottom variant="h5" component="div">
+                                                Featured 3
+                                            </Typography>
+                                            <Typography variant="body2" color="text.secondary">
+                                                Description
+                                            </Typography>
+                                        </CardContent>
+                                    </CardActionArea>
+                                </Card>
                             </Grid>
                             <Grid item xs={3}>
-                                <Item>Featured Item 3</Item>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <Item>Featured Item 4</Item>
+                                <Card sx={{ maxWidth: 259, minHeight: 298 }}>
+                                    <CardActionArea>
+                                        <CardMedia
+                                            component="img"
+                                            height="140"
+                                            image="/static/images/cards/contemplative-reptile.jpg"
+                                            alt="green iguana"
+                                        />
+                                        <CardContent>
+                                            <Typography gutterBottom variant="h5" component="div">
+                                                Featured 4
+                                            </Typography>
+                                            <Typography variant="body2" color="text.secondary">
+                                                Description
+                                            </Typography>
+                                        </CardContent>
+                                    </CardActionArea>
+                                </Card>
                             </Grid>
                         </Grid>
                         <Grid item xs={12}>
@@ -42,7 +127,19 @@ const Market = () => {
 
                             <Grid container spacing={1} rowSpacing={1} >
                                 <Grid item xs={12}>
-                                    <Item>Tabs</Item>
+                                    <Item>
+                                        <Tabs
+                                            value={value}
+                                            onChange={handleChange}
+                                            textColor="secondary"
+                                            indicatorColor="secondary"
+                                            aria-label="secondary tabs example"
+                                        >
+                                            <Tab value="one" label="Cat 1" />
+                                            <Tab value="two" label="Cat 2" />
+                                            <Tab value="three" label="Cat 3" />
+                                        </Tabs>
+                                    </Item>
                                 </Grid>
                                 <Grid item xs={3}>
                                     <Item>Listed 1</Item>
@@ -87,7 +184,7 @@ const Market = () => {
 
                 <Grid item xs={4}>
                     <Item>
-                        <h2>Section 1</h2>
+                        <h2>Section 3</h2>
                         <Grid container spacing={1} rowSpacing={1} >
 
                             <Grid item xs={12}>
@@ -101,6 +198,9 @@ const Market = () => {
                                 <Item>
                                     <p> You are paying: </p>
                                     Buy Section
+                                    <Stack spacing={2} direction="row">
+                                        <Button variant="outlined">Buy</Button>
+                                    </Stack>
                                 </Item>
                             </Grid>
                         </Grid>
