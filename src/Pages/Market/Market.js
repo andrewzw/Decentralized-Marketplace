@@ -4,13 +4,10 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
 import { CardActionArea } from '@mui/material';
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -22,30 +19,35 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const featuredItems = [
-    { title: "Featured 1", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" },
-    { title: "Featured 2", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" },
-    { title: "Featured 3", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" },
-    { title: "Featured 4", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" }
+    { title: "Featured 1", description: "Description", image: "https://placehold.co/259x298" },
+    { title: "Featured 2", description: "Description", image: "https://placehold.co/259x298" },
+    { title: "Featured 3", description: "Description", image: "https://placehold.co/259x298" },
+    { title: "Featured 4", description: "Description", image: "https://placehold.co/259x298" }
 ];
 
 const listedItems = [
-    { title: "Item 1", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" },
-    { title: "Item 2", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" },
-    { title: "Item 3", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" },
-    { title: "Item 4", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" },
-    { title: "Item 5", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" },
-    { title: "Item 6", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" },
-    { title: "Item 7", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" },
-    { title: "Item 8", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" },
-    { title: "Item 9", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" },
-    { title: "Item 10", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" },
-    { title: "Item 11", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" },
-    { title: "Item 12", description: "Description", image: "/static/images/cards/contemplative-reptile.jpg" },
+    { title: "Item 1", description: "Description", image: "https://placehold.co/256x256" },
+    { title: "Item 2", description: "Description", image: "https://placehold.co/256x256" },
+    { title: "Item 3", description: "Description", image: "https://placehold.co/256x256" },
+    { title: "Item 4", description: "Description", image: "https://placehold.co/256x256" },
+    { title: "Item 5", description: "Description", image: "https://placehold.co/256x256" },
+    { title: "Item 6", description: "Description", image: "https://placehold.co/256x256" },
+    { title: "Item 7", description: "Description", image: "https://placehold.co/256x256" },
+    { title: "Item 8", description: "Description", image: "https://placehold.co/256x256" },
+    { title: "Item 9", description: "Description", image: "https://placehold.co/256x256" },
+    { title: "Item 10", description: "Description", image: "https://placehold.co/256x256" },
+    { title: "Item 11", description: "Description", image: "https://placehold.co/256x256" },
+    { title: "Item 12", description: "Description", image: "https://placehold.co/256x256" },
 ];
 
 
 const Market = () => {
     const [value, setValue] = React.useState('one');
+    const [selectedItem, setSelectedItem] = React.useState(null); // State to store selected item
+
+    const handleItemClick = (item) => {
+        setSelectedItem(item); // Update the selected item
+    };
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -53,29 +55,21 @@ const Market = () => {
     return (
         <div>
             <h1>Market</h1>
-            <Grid container spacing={1} rowSpacing={1} >
+            <Grid container spacing={1} >
                 <Grid item xs={8}>
                     <Item>
                         <h2>Section 1</h2>
                         <Grid container spacing={1} rowSpacing={1}>
                             {featuredItems.map((item, index) => (
                                 <Grid item xs={3} key={index}>
-                                    <Card sx={{ maxWidth: 259, minHeight: 298 }}>
+                                    <Card sx={{ maxWidth: 259, minHeight: 298 }} onClick={() => handleItemClick(item)}>
                                         <CardActionArea>
                                             <CardMedia
                                                 component="img"
-                                                height="140"
+                                                height="298"
                                                 image={item.image}
                                                 alt={item.title}
                                             />
-                                            <CardContent>
-                                                <Typography gutterBottom variant="h5" component="div">
-                                                    {item.title}
-                                                </Typography>
-                                                <Typography variant="body2" color="text.secondary">
-                                                    {item.description}
-                                                </Typography>
-                                            </CardContent>
                                         </CardActionArea>
                                     </Card>
                                 </Grid>
@@ -103,8 +97,17 @@ const Market = () => {
                                     </Item>
                                 </Grid>
                                 {listedItems.map((item, index) => (
-                                    <Grid item xs={3}>
-                                        <Item>{item.title}</Item>
+                                    <Grid item xs={3} key={index}>
+                                        <CardActionArea onClick={() => handleItemClick(item)}>
+                                            <CardMedia
+                                                component="img"
+                                                height="256"
+                                                width="256"
+                                                image={item.image}
+                                                alt={item.title}
+                                            />
+
+                                        </CardActionArea>
                                     </Grid>
                                 ))}
 
@@ -120,8 +123,17 @@ const Market = () => {
 
                             <Grid item xs={12}>
                                 <Item>
-                                    <p> You are buying: </p>
-                                    Item Details Section
+                                    {selectedItem ? (
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                            <img src={selectedItem.image} alt={selectedItem.title} width="189px" height="211px" />
+                                            <div style={{ marginLeft: '16px' }}>
+                                                <h3>{selectedItem.title}</h3>
+                                                <p>{selectedItem.description}</p>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <p>Select an item to view details</p>
+                                    )}
                                 </Item>
                             </Grid>
 
@@ -135,9 +147,9 @@ const Market = () => {
                                 </Item>
                             </Grid>
                         </Grid>
-
                     </Item>
                 </Grid>
+
             </Grid >
 
         </div >
