@@ -13,7 +13,11 @@ import Typography from '@mui/material/Typography';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import { useTheme } from '@mui/material/styles';
+import { useMediaQuery } from '@mui/material';
+import { tabsData, featuredItems, listedItems } from './marketData.js';
 
+// Components Styling
 const Img = styled('img')({
     margin: 'auto',
     display: 'block',
@@ -26,40 +30,12 @@ const Item = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(2),
     textAlign: 'center',
     color: theme.palette.text.secondary,
-
 }));
-
-const tabsData = [
-    { value: "All", label: "All" },
-    { value: "Tech", label: "Tech" },
-    { value: "Entertainment", label: "Entertainment" },
-    { value: "Fashion", label: "Fashion" }
-];
-
-const featuredItems = [
-    { name: "Featured 1", description: "Description", image: "https://placehold.co/259x298", cat: "Tech", price: "0.1", seller: "Andrew" },
-    { name: "Featured 2", description: "Description", image: "https://placehold.co/259x298", cat: "Entertainment", price: "0.1", seller: "Andrew" },
-    { name: "Featured 3", description: "Description", image: "https://placehold.co/259x298", cat: "Fashion", price: "0.1", seller: "Andrew" },
-    { name: "Featured 4", description: "Description", image: "https://placehold.co/259x298", cat: "Tech", price: "0.1", seller: "Andrew" }
-];
-
-const listedItems = [
-    { name: "Item 1", description: "Description", image: "https://placehold.co/256x256", cat: "Tech", price: "0.1", seller: "Tom" },
-    { name: "Item 2", description: "Description", image: "https://placehold.co/256x256", cat: "Tech", price: "0.1", seller: "Tom" },
-    { name: "Item 3", description: "Description", image: "https://placehold.co/256x256", cat: "Tech", price: "0.1", seller: "Tom" },
-    { name: "Item 4", description: "Description", image: "https://placehold.co/256x256", cat: "Tech", price: "0.1", seller: "Tom" },
-    { name: "Item 5", description: "Description", image: "https://placehold.co/256x256", cat: "Entertainment", price: "0.1", seller: "Yuan" },
-    { name: "Item 6", description: "Description", image: "https://placehold.co/256x256", cat: "Entertainment", price: "0.1", seller: "Yuan" },
-    { name: "Item 7", description: "Description", image: "https://placehold.co/256x256", cat: "Entertainment", price: "0.1", seller: "Yuan" },
-    { name: "Item 8", description: "Description", image: "https://placehold.co/256x256", cat: "Entertainment", price: "0.1", seller: "Yuan" },
-    { name: "Item 9", description: "Description", image: "https://placehold.co/256x256", cat: "Fashion", price: "0.1", seller: "Andrew" },
-    { name: "Item 10", description: "Description", image: "https://placehold.co/256x256", cat: "Fashion", price: "0.1", seller: "Andrew" },
-    { name: "Item 11", description: "Description", image: "https://placehold.co/256x256", cat: "Fashion", price: "0.1", seller: "Andrew" },
-    { name: "Item 12", description: "Description", image: "https://placehold.co/256x256", cat: "Fashion", price: "0.1", seller: "Andrew" },
-];
 
 
 const Market = () => {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [value, setValue] = React.useState('All');
     const [selectedItems, setSelectedItems] = React.useState([]);
     const [itemQuantities, setItemQuantities] = React.useState({});
@@ -89,9 +65,9 @@ const Market = () => {
             <Grid container spacing={2} rowSpacing={1}
                 sx={{
                     backgroundColor: '#fff',
-                    padding: '0 30px',
+                    padding: isMobile ? '0 10px' : '0 30px',
                 }}>
-                <Grid item xs={8} rowSpacing={14}>
+                <Grid item xs={12} md={8} rowSpacing={14}>
                     <Item
                         sx={{
                             backgroundColor: '#transparent',
@@ -99,12 +75,12 @@ const Market = () => {
                         <h2 >Section 1</h2>
                         <Grid container spacing={5} rowSpacing={1}>
                             {featuredItems.map((item, index) => (
-                                <Grid item xs={3} key={index}>
-                                    <Card sx={{ maxWidth: 259, minHeight: 298 }} onClick={() => handleItemClick(item)}>
+                                <Grid item xs={6} md={3} key={index}>
+                                    <Card sx={{ maxWidth: 259, maxHeight: 298 }} onClick={() => handleItemClick(item)}>
                                         <CardActionArea>
                                             <CardMedia
                                                 component="img"
-                                                height="298"
+                                                width="100%"
                                                 image={item.image}
                                                 alt={item.name}
                                             />
@@ -128,19 +104,26 @@ const Market = () => {
                                     paddingTop: '0px',
                                 }}>
                                 <Grid item xs={12}>
-                                    <Item sx={{ backgroundColor: 'transparent', boxShadow: 0 }}>
+                                    <Item sx={{
+                                        overflowX: 'auto',
+                                        width: '100%',
+                                        backgroundColor: 'transparent',
+                                        boxShadow: 0,
+                                        boxSizing: 'border-box',
+                                    }}>
+
                                         <Tabs
                                             value={value}
                                             onChange={handleChange}
                                             textColor="#fff"
                                             indicatorColor="#ccc"
-
+                                            variant="scrollable"
+                                            scrollButtons="auto"
                                             sx={{
-                                                '& .MuiTabs-scroller': { padding: 0 },
                                                 backgroundColor: '#B5B5B5',
                                                 borderRadius: '7px',
                                                 width: 'fit-content',
-                                                height: '42px',
+                                                maxHeight: '42px',
                                                 padding: '6px',
                                             }}
                                         >
@@ -151,21 +134,24 @@ const Market = () => {
                                                     label={tab.label}
                                                     sx={{
                                                         border: value === tab.value ? '#e0e0e0' : '#fff',
-                                                        width: 'auto',
+                                                        minWidth: '120px',
                                                         maxHeight: '30px',
                                                         padding: '10px',
                                                         borderRadius: '5px',
+
                                                         margin: '0px',
-                                                        color: value === tab.value ? '#000' : '#fff', // Change the text color based on the selected tab
-                                                        backgroundColor: value === tab.value ? '#fff' : '#B5B5B5'  // Change the text bgcolor based on the selected tab
+                                                        color: value === tab.value ? '#000' : '#fff',
+                                                        backgroundColor: value === tab.value ? '#fff' : '#B5B5B5'
                                                     }}
                                                 />
                                             ))}
                                         </Tabs>
 
                                     </Item>
+
+
                                 </Grid>
-                                {listedItems.filter(item => value === "All" || item.cat === value).map((item, index) => (<Grid item xs={3} key={index}
+                                {listedItems.filter(item => value === "All" || item.cat === value).map((item, index) => (<Grid item xs={6} md={3} key={index}
                                 >
                                     <CardActionArea onClick={() => handleItemClick(item)} sx={{
                                         borderRadius: '10px',
@@ -173,9 +159,9 @@ const Market = () => {
                                     }} >
                                         <CardMedia
                                             component="img"
-                                            height="256"
-                                            width="256"
+                                            width="100%"
                                             image={item.image}
+                                            alt={item.name}
                                         />
                                     </CardActionArea>
                                 </Grid>
@@ -186,7 +172,7 @@ const Market = () => {
                     </Item>
                 </Grid>
 
-                <Grid item xs={4}>
+                <Grid item xs={12} md={4}>
                     <Item>
                         <h2>Section 3</h2>
                         <Grid container spacing={1} rowSpacing={1} >
@@ -256,7 +242,7 @@ const Market = () => {
 
                                                 <Grid item>
                                                     <Typography variant="subtitle1" component="div">
-                                                        {selectedItem.price}
+                                                        ETH:  {selectedItem.price}
                                                     </Typography>
                                                 </Grid>
 
