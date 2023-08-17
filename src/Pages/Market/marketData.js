@@ -2,7 +2,7 @@ export const tabsData = [
     { value: "All", label: "All" },
     { value: "Tech", label: "Tech" },
     { value: "Entertainment", label: "Entertainment" },
-    { value: "Fashion", label: "Fashion" }
+    { value: "Fashion", label: "Fashion" },
 ];
 
 export const featuredItems = [

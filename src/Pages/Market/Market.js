@@ -24,6 +24,7 @@ const Img = styled('img')({
     maxWidth: '100%',
     maxHeight: '100%',
 });
+
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
     ...theme.typography.body1,
