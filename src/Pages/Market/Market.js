@@ -15,7 +15,10 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { useTheme } from '@mui/material/styles';
 import { useMediaQuery } from '@mui/material';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 import { tabsData, featuredItems, listedItems } from './marketData.js';
+import './market.css';
 
 // Components Styling
 const Img = styled('img')({
@@ -26,12 +29,14 @@ const Img = styled('img')({
 });
 
 const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    ...theme.typography.body1,
     padding: theme.spacing(2),
     textAlign: 'center',
-    color: theme.palette.text.secondary,
+
 }));
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 
 const Market = () => {
@@ -56,10 +61,29 @@ const Market = () => {
         }));
     };
 
-
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
+    const [open, setOpen] = React.useState(false);
+
+    const handleClick = () => {
+        setOpen(true);
+    };
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpen(false);
+    };
+
+    const total = selectedItems.reduce((acc, currentItem) => {
+        const quantity = itemQuantities[currentItem.name] || 1;
+        return acc + currentItem.price * quantity;
+    }, 0).toFixed(6);
+
     return (
         <div>
             <h1>Market</h1>
@@ -73,6 +97,7 @@ const Market = () => {
                         sx={{
                             backgroundColor: '#transparent',
                         }}>
+                        {/* Section 1 ------------------------------------------------------------------------------------------------------------------------------------------------------------ */}
                         <h2 >Section 1</h2>
                         <Grid container spacing={5} rowSpacing={1}>
                             {featuredItems.map((item, index) => (
@@ -91,27 +116,11 @@ const Market = () => {
                             ))}
                         </Grid>
 
-                        <Grid container rowSpacing={0} xs={12}
-                            sx={{
-                                backgroundColor: '#D9D9D9',
-                                borderRadius: '7px',
-                                width: 'fit-content',
-                                marginTop: '2%',
-                            }}>
-
-                            <Grid container spacing={1} rowSpacing={1}
-                                sx={{
-                                    padding: '10px',
-                                    paddingTop: '0px',
-                                }}>
+                        {/* Section 2 ------------------------------------------------------------------------------------------------------------------------------------------------------------ */}
+                        <Grid container rowSpacing={0} xs={12} className='section2'>
+                            <Grid container spacing={1} rowSpacing={1} className='section2-container'>
                                 <Grid item xs={12}>
-                                    <Item sx={{
-                                        overflowX: 'auto',
-                                        width: '100%',
-                                        backgroundColor: 'transparent',
-                                        boxShadow: 0,
-                                        boxSizing: 'border-box',
-                                    }}>
+                                    <Item className='section2-item-grid'>
 
                                         <Tabs
                                             value={value}
@@ -120,13 +129,7 @@ const Market = () => {
                                             indicatorColor="#ccc"
                                             variant="scrollable"
                                             scrollButtons="auto"
-                                            sx={{
-                                                backgroundColor: '#B5B5B5',
-                                                borderRadius: '7px',
-                                                width: 'fit-content',
-                                                maxHeight: '42px',
-                                                padding: '6px',
-                                            }}
+                                            className='section2-tabs'
                                         >
                                             {tabsData.map(tab => (
                                                 <Tab
@@ -134,13 +137,13 @@ const Market = () => {
                                                     value={tab.value}
                                                     label={tab.label}
                                                     sx={{
-                                                        border: value === tab.value ? '#e0e0e0' : '#fff',
                                                         minWidth: '120px',
                                                         maxHeight: '30px',
                                                         padding: '10px',
                                                         borderRadius: '5px',
-
                                                         margin: '0px',
+
+                                                        border: value === tab.value ? '#e0e0e0' : '#fff',
                                                         color: value === tab.value ? '#000' : '#fff',
                                                         backgroundColor: value === tab.value ? '#fff' : '#B5B5B5'
                                                     }}
@@ -152,8 +155,8 @@ const Market = () => {
 
 
                                 </Grid>
-                                {listedItems.filter(item => value === "All" || item.cat === value).map((item, index) => (<Grid item xs={6} md={3} key={index}
-                                >
+
+                                {listedItems.filter(item => value === "All" || item.cat === value).map((item, index) => (<Grid item xs={6} md={3} key={index}>
                                     <CardActionArea onClick={() => handleItemClick(item)} sx={{
                                         borderRadius: '10px',
                                         border: '1px solid #000',
@@ -167,12 +170,14 @@ const Market = () => {
                                     </CardActionArea>
                                 </Grid>
                                 ))}
+
                             </Grid>
                         </Grid>
 
                     </Item>
                 </Grid>
 
+                {/* Section 3 ------------------------------------------------------------------------------------------------------------------------------------------------------------ */}
                 <Grid item xs={12} md={4}>
                     <Item>
                         <h2>Section 3</h2>
@@ -180,60 +185,52 @@ const Market = () => {
 
                             <Grid item xs={12}>
                                 {selectedItems.length > 0 ? (selectedItems.map(selectedItem => (
-                                    <Paper
-                                        sx={{
-                                            p: 2,
-                                            margin: 'auto',
-                                            maxWidth: 500,
-                                            flexGrow: 1,
-                                            backgroundColor: (theme) =>
-                                                theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-                                        }}
-                                    >
-                                        <Grid container spacing={0}>
+                                    <Paper className='section3-paper'>
+                                        <Grid container>
                                             <Grid item>
-                                                <Img alt="complex" src={selectedItem.image}
-                                                    sx={{
-                                                        maxHeight: '256px',
-                                                        maxWidth: '256px',
-                                                        minHeight: '256px',
-                                                        minWidth: '256px',
-                                                    }} />
+                                                <Img alt={selectedItem.name} src={selectedItem.image} className='section3-img' />
                                             </Grid>
 
                                             <Grid item xs={12} sm container>
-                                                <Grid item xs container direction="column" spacing={2}>
+                                                <Grid item xs container direction="column" spacing={1}>
+
                                                     <Grid item xs>
                                                         <Typography gutterBottom variant="subtitle1" component="div">
                                                             {selectedItem.name}
                                                         </Typography>
+
                                                         <Typography variant="body2" gutterBottom>
                                                             {selectedItem.description}
                                                         </Typography>
+
                                                         <Typography variant="body2" color="text.secondary">
                                                             {selectedItem.seller}
                                                         </Typography>
                                                     </Grid>
+
                                                     <Grid item>
                                                         <Typography variant="body2" color="text.secondary">
                                                             Quantity:
                                                         </Typography>
+
                                                         <Select
                                                             value={itemQuantities[selectedItem.name] || 1}
                                                             onChange={(e) => handleQuantityChange(selectedItem.name, e.target.value)}
-                                                            sx={{ minWidth: 50, marginLeft: 1 }}
+                                                            className='section3-selectbutton'
                                                         >
                                                             {[...Array(10).keys()].map(i => (
                                                                 <MenuItem key={i + 1} value={i + 1}>{i + 1}</MenuItem>
                                                             ))}
                                                         </Select>
+
                                                     </Grid>
+
                                                     <Grid item>
                                                         <Button
                                                             variant="outlined"
                                                             startIcon={<DeleteIcon />}
                                                             color="error"
-                                                            onClick={() => handleItemClick(selectedItem, 'remove')}  // Modify this line
+                                                            onClick={() => handleItemClick(selectedItem, 'remove')}
                                                         >
                                                             Remove
                                                         </Button>
@@ -256,18 +253,30 @@ const Market = () => {
                                 )}
                             </Grid>
 
-                            <Grid item xs={12}>
+                            <Grid item xs={12} md={12}>
                                 <Item>
-                                    <p> You are paying: </p>
-                                    Buy Section
-                                    <Stack spacing={2} direction="row">
-                                        <Button variant="outlined">Buy</Button>
+                                    <p> You are paying:  </p>
+                                    <div className='section3-pill'>
+                                        <span className='section3-pill-coin'>ETH</span>
+                                        <span className='section3-pill-total'>{total}</span>
+                                    </div>
+
+                                    <Stack spacing={2} sx={{ width: '100%' }}>
+                                        <Button variant="outlined" onClick={handleClick}>Buy</Button>
+
+                                        <Snackbar open={open} autoHideDuration={5100} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
+                                            <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+                                                Payment Successful
+                                            </Alert>
+                                        </Snackbar>
+
                                     </Stack>
                                 </Item>
                             </Grid>
                         </Grid>
                     </Item>
                 </Grid>
+                {/* END ------------------------------------------------------------------------------------------------------------------------------------------------------------------ */}
 
             </Grid >
 
