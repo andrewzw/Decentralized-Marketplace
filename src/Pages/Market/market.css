@@ -78,7 +78,7 @@ p {
 .section3-selectbutton {
     min-width: 50px;
     max-width: 100px;
-    color: #ebeced
+    color: #ebeced !important;
 }
 
 .section3-paper {
