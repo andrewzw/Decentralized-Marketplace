@@ -17,12 +17,21 @@ import { useTheme } from '@mui/material/styles';
 import { useMediaQuery } from '@mui/material';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import CardContent from '@mui/material/CardContent';
+import CardActions from '@mui/material/CardActions';
+import Box from '@mui/material/Box';
 import { tabsData, featuredItems, listedItems } from './marketData.js';
 import './market.css';
-
+const bull = (
+    <Box
+        component="span"
+        sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
+    >
+        •
+    </Box>
+);
 // Components Styling
 const Img = styled('img')({
-    margin: 'auto',
     display: 'block',
     maxWidth: '100%',
     maxHeight: '100%',
@@ -89,20 +98,16 @@ const Market = () => {
             <h1>Market</h1>
             <Grid container spacing={2} rowSpacing={1}
                 sx={{
-                    backgroundColor: '#fff',
                     padding: isMobile ? '0 10px' : '0 30px',
                 }}>
                 <Grid item xs={12} md={8} rowSpacing={14}>
-                    <Item
-                        sx={{
-                            backgroundColor: '#transparent',
-                        }}>
-                        {/* Section 1 ------------------------------------------------------------------------------------------------------------------------------------------------------------ */}
-                        <h2 >Section 1</h2>
-                        <Grid container spacing={5} rowSpacing={1}>
+                    {/* Section 1 ------------------------------------------------------------------------------------------------------------------------------------------------------------ */}
+                    <Item className='section1'>
+                        <h2 >Featured Items</h2>
+                        <Grid container spacing={2} rowSpacing={1} >
                             {featuredItems.map((item, index) => (
                                 <Grid item xs={6} md={3} key={index}>
-                                    <Card sx={{ maxWidth: 259, maxHeight: 298 }} onClick={() => handleItemClick(item)}>
+                                    <Card onClick={() => handleItemClick(item)}>
                                         <CardActionArea>
                                             <CardMedia
                                                 component="img"
@@ -111,6 +116,8 @@ const Market = () => {
                                                 alt={item.name}
                                             />
                                         </CardActionArea>
+
+
                                     </Card>
                                 </Grid>
                             ))}
@@ -121,7 +128,6 @@ const Market = () => {
                             <Grid container spacing={1} rowSpacing={1} className='section2-container'>
                                 <Grid item xs={12}>
                                     <Item className='section2-item-grid'>
-
                                         <Tabs
                                             value={value}
                                             onChange={handleChange}
@@ -137,20 +143,18 @@ const Market = () => {
                                                     value={tab.value}
                                                     label={tab.label}
                                                     sx={{
+                                                        padding: '10px',
+                                                        margin: '0',
                                                         minWidth: '120px',
                                                         maxHeight: '30px',
-                                                        padding: '10px',
                                                         borderRadius: '5px',
-                                                        margin: '0px',
-
-                                                        border: value === tab.value ? '#e0e0e0' : '#fff',
-                                                        color: value === tab.value ? '#000' : '#fff',
-                                                        backgroundColor: value === tab.value ? '#fff' : '#B5B5B5'
+                                                        color: value === tab.value ? '#fff' : '#d5d5d5',
+                                                        fontWeight: value === tab.value ? 'bold' : 'normal',
+                                                        backgroundColor: value === tab.value ? '#36414f' : 'transparent'
                                                     }}
                                                 />
                                             ))}
                                         </Tabs>
-
                                     </Item>
 
 
@@ -179,23 +183,25 @@ const Market = () => {
 
                 {/* Section 3 ------------------------------------------------------------------------------------------------------------------------------------------------------------ */}
                 <Grid item xs={12} md={4}>
-                    <Item>
-                        <h2>Section 3</h2>
+                    <Item className='section3'>
+                        <h2>Cart</h2>
                         <Grid container spacing={1} rowSpacing={1} >
 
                             <Grid item xs={12}>
                                 {selectedItems.length > 0 ? (selectedItems.map(selectedItem => (
                                     <Paper className='section3-paper'>
                                         <Grid container>
-                                            <Grid item>
+                                            {/* LEFT */}
+                                            <Grid item xs={6}>
                                                 <Img alt={selectedItem.name} src={selectedItem.image} className='section3-img' />
                                             </Grid>
 
-                                            <Grid item xs={12} sm container>
-                                                <Grid item xs container direction="column" spacing={1}>
+                                            {/* RIGHT */}
+                                            <Grid item xs={6} sm container className='section3-paper-text'>
+                                                <Grid item xs container direction="column" spacing={1} >
 
-                                                    <Grid item xs>
-                                                        <Typography gutterBottom variant="subtitle1" component="div">
+                                                    <Grid item xs >
+                                                        <Typography gutterBottom variant="subtitle1" component="div" >
                                                             {selectedItem.name}
                                                         </Typography>
 
@@ -203,13 +209,13 @@ const Market = () => {
                                                             {selectedItem.description}
                                                         </Typography>
 
-                                                        <Typography variant="body2" color="text.secondary">
+                                                        <Typography variant="body2" >
                                                             {selectedItem.seller}
                                                         </Typography>
                                                     </Grid>
 
                                                     <Grid item>
-                                                        <Typography variant="body2" color="text.secondary">
+                                                        <Typography variant="body2" >
                                                             Quantity:
                                                         </Typography>
 
@@ -235,7 +241,6 @@ const Market = () => {
                                                             Remove
                                                         </Button>
                                                     </Grid>
-
                                                 </Grid>
 
                                                 <Grid item>
@@ -253,9 +258,9 @@ const Market = () => {
                                 )}
                             </Grid>
 
-                            <Grid item xs={12} md={12}>
-                                <Item>
-                                    <p> You are paying:  </p>
+                            <Grid item xs={12} md={12} >
+                                <Item className='section3-bottom'>
+                                    <h3> You are paying:  </h3>
                                     <div className='section3-pill'>
                                         <span className='section3-pill-coin'>ETH</span>
                                         <span className='section3-pill-total'>{total}</span>
