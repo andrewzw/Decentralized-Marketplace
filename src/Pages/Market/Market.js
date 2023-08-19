@@ -20,13 +20,6 @@ import MuiAlert from '@mui/material/Alert';
 import { tabsData, featuredItems, listedItems } from './marketData.js';
 import './market.css';
 
-// Components Styling
-const Img = styled('img')({
-    display: 'block',
-    maxWidth: '100%',
-    maxHeight: '100%',
-});
-
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
