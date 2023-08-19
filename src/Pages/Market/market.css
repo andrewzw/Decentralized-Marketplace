@@ -1,9 +1,19 @@
+html,
 body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #171c24 !important;
     margin: 0;
     padding: 0;
+    height: 100%;
 }
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-image: url("/src/Assets/market/bg-img.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    position: relative;
+}
+
 
 h1,
 h2 {
@@ -17,11 +27,31 @@ h1 {
     margin-top: 20px;
 }
 
+.img-text {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    color: white;
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 5px;
+    border-radius: 5px;
+    text-align: left;
+}
+
 /* Section 1 ----------------------------------------------*/
 .section1 {
-    background-color: #222b36 !important;
+    /* background-color: #222b36 !important; */
+    background-color: #222b3684 !important;
+    border: 1px solid #3E4650;
+    text-align: center;
     color: #ebeced;
     border-radius: 10px;
+    box-shadow: 0px 0px 20px 1px rgba(255, 255, 255, 0.3);
+    -webkit-box-shadow: 0px 0px 20px 1px rgba(255, 255, 255, 0.3);
+    -moz-box-shadow: 0px 0px 20px 1px rgba(255, 255, 255, 0.3);
+    padding: 2%;
+    margin-bottom: 2%;
 }
 
 .section1>h2 {
@@ -29,12 +59,13 @@ h1 {
 }
 
 
+
 /* Section 2 ----------------------------------------------*/
 .section2 {
     background-color: transparent !important;
     border-radius: 7px;
     width: fit-content;
-    margin-top: 2%;
+    margin-top: 0%;
 }
 
 .section2-container {
@@ -49,25 +80,40 @@ h1 {
     box-shadow: none !important;
     box-sizing: border-box;
     padding: 0;
-    margin-top: 3%;
+    margin-top: 1%;
+    text-align: center;
+    padding: 2%;
 }
 
 .section2-tabs {
     background-color: transparent !important;
-    border: 1px solid #36414f;
+    border: 1px solid #3E4650;
     border-radius: 7px;
     width: fit-content;
     max-height: 42px;
     padding: 6px;
+    border: 1px solid #ebeced;
+    box-shadow: 0px 0px 10px 1px rgba(255, 255, 255, 0.3);
+    -webkit-box-shadow: 0px 0px 10px 1px rgba(255, 255, 255, 0.3);
+    -moz-box-shadow: 0px 0px 10px 1px rgba(255, 255, 255, 0.3);
 }
 
 
 /* Section 3 ----------------------------------------------*/
 .section3 {
     background-color: #222b36 !important;
+    background-color: #222b3684 !important;
+    border: 1px solid #3E4650;
     color: #ebeced;
     border-radius: 10px;
     color: #ebeced;
+    text-align: center;
+    padding: 2%;
+
+    border-radius: 10px;
+    box-shadow: 0px 0px 20px 1px rgba(255, 255, 255, 0.3);
+    -webkit-box-shadow: 0px 0px 20px 1px rgba(255, 255, 255, 0.3);
+    -moz-box-shadow: 0px 0px 20px 1px rgba(255, 255, 255, 0.3);
 }
 
 .section3>h2,
@@ -87,10 +133,11 @@ p {
     max-width: 500px;
     flex-grow: 1;
     background-color: transparent !important;
-    border: 1px solid #36414f;
+    border: 1px solid #36414f3b;
     margin-bottom: 10px;
-    border-radius: 5px;
     color: #ebeced;
+    border-radius: 5px;
+
 }
 
 .section3-paper-text {
@@ -98,6 +145,10 @@ p {
     margin: 10%;
     padding: 3%;
     color: #ebeced;
+    border-radius: 0 5px 5px 0;
+    box-shadow: 0px 0px 10px 2px rgba(255, 255, 255, 0.3);
+    -webkit-box-shadow: 0px 0px 10px 2px rgba(255, 255, 255, 0.3);
+    -moz-box-shadow: 0px 0px 10px 2px rgba(255, 255, 255, 0.3);
 }
 
 .section3-img {
@@ -106,6 +157,8 @@ p {
     object-fit: cover;
     margin: 0;
     border-radius: 5px 0px 0px 5px;
+    max-height: 256px;
+    min-height: 256px;
 }
 
 @media (max-width: 600px) {
@@ -161,6 +214,8 @@ p {
     border: 1px solid #36414f;
     border-radius: 5px;
     color: #ebeced;
+    text-align: center;
+    padding: 2%;
 }
 
 .section3-bottom>h3 {

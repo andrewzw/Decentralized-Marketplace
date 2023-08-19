@@ -17,31 +17,15 @@ import { useTheme } from '@mui/material/styles';
 import { useMediaQuery } from '@mui/material';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Box from '@mui/material/Box';
 import { tabsData, featuredItems, listedItems } from './marketData.js';
 import './market.css';
-const bull = (
-    <Box
-        component="span"
-        sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
-    >
-        •
-    </Box>
-);
+
 // Components Styling
 const Img = styled('img')({
     display: 'block',
     maxWidth: '100%',
     maxHeight: '100%',
 });
-
-const Item = styled(Paper)(({ theme }) => ({
-    padding: theme.spacing(2),
-    textAlign: 'center',
-
-}));
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -100,21 +84,36 @@ const Market = () => {
                 sx={{
                     padding: isMobile ? '0 10px' : '0 30px',
                 }}>
-                <Grid item xs={12} md={8} rowSpacing={14}>
+
+                {/* Left Grid (Section 1 + 2) ------------------------------------------------------------------------------------------------------------------------------------------------------------ */}
+                <Grid item xs={12} md={8} rowSpacing={14} className='left-grid'>
                     {/* Section 1 ------------------------------------------------------------------------------------------------------------------------------------------------------------ */}
-                    <Item className='section1'>
+                    <div className='section1'>
                         <h2 >Featured Items</h2>
                         <Grid container spacing={2} rowSpacing={1} >
                             {featuredItems.map((item, index) => (
-                                <Grid item xs={6} md={3} key={index}>
-                                    <Card onClick={() => handleItemClick(item)}>
-                                        <CardActionArea>
-                                            <CardMedia
-                                                component="img"
-                                                width="100%"
-                                                image={item.image}
-                                                alt={item.name}
-                                            />
+                                <Grid item xs={6} md={3} key={index} >
+                                    <Card onClick={() => handleItemClick(item)} sx={{
+                                        borderRadius: '10px',
+                                        backgroundColor: 'transparent',
+                                    }}>
+                                        <CardActionArea >
+                                            <div style={{ position: 'relative' }}>
+                                                <CardMedia
+                                                    component="img"
+                                                    width="100%"
+                                                    image={item.image}
+                                                    alt={item.name}
+                                                    sx={{
+                                                        borderRadius: '10px',
+                                                        maxHeight: "300px",
+                                                        minHeight: "350px",
+                                                    }}
+                                                />
+                                                <div className='img-text' >
+                                                    {item.name}
+                                                </div>
+                                            </div>
                                         </CardActionArea>
 
 
@@ -127,7 +126,7 @@ const Market = () => {
                         <Grid container rowSpacing={0} xs={12} className='section2'>
                             <Grid container spacing={1} rowSpacing={1} className='section2-container'>
                                 <Grid item xs={12}>
-                                    <Item className='section2-item-grid'>
+                                    <div className='section2-item-grid'>
                                         <Tabs
                                             value={value}
                                             onChange={handleChange}
@@ -150,12 +149,13 @@ const Market = () => {
                                                         borderRadius: '5px',
                                                         color: value === tab.value ? '#fff' : '#d5d5d5',
                                                         fontWeight: value === tab.value ? 'bold' : 'normal',
-                                                        backgroundColor: value === tab.value ? '#36414f' : 'transparent'
+                                                        backgroundColor: value === tab.value ? '#transparent' : 'transparent',
+                                                        border: value === tab.value ? '1px solid #ebeced' : 'transparent'
                                                     }}
                                                 />
                                             ))}
                                         </Tabs>
-                                    </Item>
+                                    </div>
 
 
                                 </Grid>
@@ -163,14 +163,29 @@ const Market = () => {
                                 {listedItems.filter(item => value === "All" || item.cat === value).map((item, index) => (<Grid item xs={6} md={3} key={index}>
                                     <CardActionArea onClick={() => handleItemClick(item)} sx={{
                                         borderRadius: '10px',
-                                        border: '1px solid #000',
-                                    }} >
-                                        <CardMedia
-                                            component="img"
-                                            width="100%"
-                                            image={item.image}
-                                            alt={item.name}
-                                        />
+                                        maxHeight: "256px",
+                                        minHeight: "256px",
+                                    }}>
+
+
+                                        <div style={{ position: 'relative' }}>
+                                            <CardMedia
+                                                component="img"
+                                                width="100%"
+                                                image={item.image}
+                                                alt={item.name}
+                                                sx={{
+                                                    borderRadius: '10px',
+                                                    maxHeight: "256px",
+                                                    minHeight: "256px",
+                                                }}
+                                            />
+                                            <div className='img-text' >
+                                                {item.name}
+                                                <br></br>
+                                                ETH: {item.price}
+                                            </div>
+                                        </div>
                                     </CardActionArea>
                                 </Grid>
                                 ))}
@@ -178,12 +193,12 @@ const Market = () => {
                             </Grid>
                         </Grid>
 
-                    </Item>
+                    </div>
                 </Grid>
 
                 {/* Section 3 ------------------------------------------------------------------------------------------------------------------------------------------------------------ */}
                 <Grid item xs={12} md={4}>
-                    <Item className='section3'>
+                    <div className='section3'>
                         <h2>Cart</h2>
                         <Grid container spacing={1} rowSpacing={1} >
 
@@ -193,7 +208,7 @@ const Market = () => {
                                         <Grid container>
                                             {/* LEFT */}
                                             <Grid item xs={6}>
-                                                <Img alt={selectedItem.name} src={selectedItem.image} className='section3-img' />
+                                                <img alt={selectedItem.name} src={selectedItem.image} className='section3-img' />
                                             </Grid>
 
                                             {/* RIGHT */}
@@ -259,7 +274,7 @@ const Market = () => {
                             </Grid>
 
                             <Grid item xs={12} md={12} >
-                                <Item className='section3-bottom'>
+                                <div className='section3-bottom'>
                                     <h3> You are paying:  </h3>
                                     <div className='section3-pill'>
                                         <span className='section3-pill-coin'>ETH</span>
@@ -276,10 +291,10 @@ const Market = () => {
                                         </Snackbar>
 
                                     </Stack>
-                                </Item>
+                                </div>
                             </Grid>
                         </Grid>
-                    </Item>
+                    </div>
                 </Grid>
                 {/* END ------------------------------------------------------------------------------------------------------------------------------------------------------------------ */}
 
