@@ -1,13 +1,23 @@
+html,
 body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #f4f6f8;
     margin: 0;
     padding: 0;
+    height: 100%;
 }
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-image: url("/src/Assets/market/bg-img.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    position: relative;
+}
+
 
 h1,
 h2 {
-    color: #333;
+    color: #ebeced;
     margin-bottom: 20px;
 }
 
@@ -17,12 +27,205 @@ h1 {
     margin-top: 20px;
 }
 
-h2 {
-    font-size: 1.5rem;
-    border-bottom: 2px solid #ddd;
-    padding-bottom: 10px;
+.img {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.img-text {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    color: white;
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 5px;
+    border-radius: 5px;
+    text-align: left;
+}
+
+/* Section 1 ----------------------------------------------*/
+.section1 {
+    /* background-color: #222b36 !important; */
+    background-color: #222b3684 !important;
+    border: 1px solid #3E4650;
+    text-align: center;
+    color: #ebeced;
+    border-radius: 10px;
+    box-shadow: 0px 0px 20px 1px rgba(255, 255, 255, 0.3);
+    -webkit-box-shadow: 0px 0px 20px 1px rgba(255, 255, 255, 0.3);
+    -moz-box-shadow: 0px 0px 20px 1px rgba(255, 255, 255, 0.3);
+    padding: 2%;
+    margin-bottom: 2%;
+}
+
+.section1>h2 {
+    color: #ebeced;
 }
 
 
 
-/* You can add more global styles here */
+/* Section 2 ----------------------------------------------*/
+.section2 {
+    background-color: transparent !important;
+    border-radius: 7px;
+    width: fit-content;
+    margin-top: 0%;
+}
+
+.section2-container {
+    padding: 10px;
+    padding-top: 0px;
+}
+
+.section2-item-grid {
+    overflow-x: auto;
+    width: 100%;
+    background-color: #00000000 !important;
+    box-shadow: none !important;
+    box-sizing: border-box;
+    padding: 0;
+    margin-top: 1%;
+    text-align: center;
+    padding: 2%;
+}
+
+.section2-tabs {
+    background-color: transparent !important;
+    border: 1px solid #3E4650;
+    border-radius: 7px;
+    width: fit-content;
+    max-height: 42px;
+    padding: 6px;
+    border: 1px solid #ebeced;
+    box-shadow: 0px 0px 10px 1px rgba(255, 255, 255, 0.3);
+    -webkit-box-shadow: 0px 0px 10px 1px rgba(255, 255, 255, 0.3);
+    -moz-box-shadow: 0px 0px 10px 1px rgba(255, 255, 255, 0.3);
+}
+
+
+/* Section 3 ----------------------------------------------*/
+.section3 {
+    background-color: #222b36 !important;
+    background-color: #222b3684 !important;
+    border: 1px solid #3E4650;
+    color: #ebeced;
+    border-radius: 10px;
+    color: #ebeced;
+    text-align: center;
+    padding: 2%;
+
+    border-radius: 10px;
+    box-shadow: 0px 0px 20px 1px rgba(255, 255, 255, 0.3);
+    -webkit-box-shadow: 0px 0px 20px 1px rgba(255, 255, 255, 0.3);
+    -moz-box-shadow: 0px 0px 20px 1px rgba(255, 255, 255, 0.3);
+}
+
+.section3>h2,
+p {
+    color: #ebeced;
+}
+
+.section3-selectbutton {
+    min-width: 50px;
+    max-width: 100px;
+    color: #ebeced !important;
+}
+
+.section3-paper {
+    padding: 0rem;
+    margin: auto;
+    max-width: 500px;
+    flex-grow: 1;
+    background-color: transparent !important;
+    border: 1px solid #36414f3b;
+    margin-bottom: 10px;
+    color: #ebeced;
+    border-radius: 5px;
+
+}
+
+.section3-paper-text {
+    text-align: left;
+    margin: 10%;
+    padding: 3%;
+    color: #ebeced;
+    border-radius: 0 5px 5px 0;
+    box-shadow: 0px 0px 10px 2px rgba(255, 255, 255, 0.3);
+    -webkit-box-shadow: 0px 0px 10px 2px rgba(255, 255, 255, 0.3);
+    -moz-box-shadow: 0px 0px 10px 2px rgba(255, 255, 255, 0.3);
+}
+
+.section3-img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    margin: 0;
+    border-radius: 5px 0px 0px 5px;
+    max-height: 256px;
+    min-height: 256px;
+}
+
+@media (max-width: 600px) {
+    .section3-img {
+        border-radius: 5px 0px 0px 5px;
+    }
+}
+
+.section3-pill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2% 4%;
+    max-width: 445px;
+    height: 79px;
+    margin: 0 auto 5%;
+}
+
+.section3-pill>span {
+    flex: 1;
+    text-align: center;
+    font-size: 200%;
+}
+
+.section3-pill-coin {
+    border-right: 2px solid #000;
+    background-color: #f5f5f5 !important;
+    border-top-left-radius: 70px;
+    border-bottom-left-radius: 70px;
+    padding: 3.5%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #f5f5f5;
+    color: #000;
+}
+
+.section3-pill-total {
+    border-left: 2px solid #000;
+    background-color: transparent !important;
+    border-top-right-radius: 70px;
+    border-bottom-right-radius: 70px;
+    padding: 3.5%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #f5f5f5;
+    color: #fff;
+}
+
+.section3-bottom {
+    background-color: transparent !important;
+    border: 1px solid #36414f;
+    border-radius: 5px;
+    color: #ebeced;
+    text-align: center;
+    padding: 2%;
+}
+
+.section3-bottom>h3 {
+    color: #ebeced;
+    text-align: left;
+    padding-left: 4%;
+}
