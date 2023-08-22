@@ -220,19 +220,7 @@ const Dashboard = () => {
                         <Grid container spacing={1} rowSpacing={1}>
                             {assetsItems.map((item, index) => (
                                 <Grid item xs={6} md={3} key={index}>
-                                    <Card 
-                                        sx={{ 
-                                            maxWidth: '256px', 
-                                            maxHeight: '256px', 
-                                            margin: '5px', 
-                                            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                                            transition: 'transform 0.2s, box-shadow 0.2s',
-                                            '&:hover': {
-                                                transform: 'scale(1.05)',
-                                                boxShadow: '0 6px 8px rgba(0, 0, 0, 0.2)',
-                                            }
-                                        }}
-                                    >
+                                    
                                         <CardActionArea sx={{
                                         borderRadius: '10px',
                                         maxHeight: "256px",
@@ -257,7 +245,7 @@ const Dashboard = () => {
                                             </div>
                                         </div>
                                         </CardActionArea>
-                                    </Card>
+                                    
                                 </Grid>
                             ))}
                         </Grid>
