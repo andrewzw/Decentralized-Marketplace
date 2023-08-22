@@ -1,11 +1,67 @@
-ul li a {
-    color: #000;
+/* Navbar.css */
+.navbar-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-right: 0px;
+    border-radius: 50px;
+    background-color: #ff0000;
+    /* Light gray background */
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+    /* Optional: Add a subtle shadow */
+    width: 90%;
+    height: 40px;
+    margin: 1% auto;
 }
 
-ul li a:hover {
-    color: #00a8ff;
+.search-bar {
+    flex: 1;
+    /* Take available space */
+    padding: 10px;
+    border: none;
+    border-radius: 50px;
+    outline: none;
+
 }
 
-ul li a.active {
-    color: #00a8ff;
+.nav-button {
+    padding: 10px 20px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 20px;
+    background-color: #007BFF;
+    /* Blue color */
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.nav-button:hover {
+    background-color: #0056b3;
+    /* Darker blue on hover */
+}
+
+.profile-button {
+    padding: 0px;
+    border: none;
+    border-radius: 50%;
+    background-color: #000000;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.profile-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-button:hover {
+    background-color: #0056b3;
+}
+
+.left {
+    margin: 0%;
 }
