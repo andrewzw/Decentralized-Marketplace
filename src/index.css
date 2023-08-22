@@ -5,6 +5,26 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  font-family: 'Roboto', sans-serif;
+  background-image: url("/src/Assets/market/bg-img.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+  position: relative;
+
+}
+
+h1,
+h2 {
+  color: #ebeced;
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-size: 2rem;
+  text-align: center;
+  margin-top: 5%;
 }
 
 code {
