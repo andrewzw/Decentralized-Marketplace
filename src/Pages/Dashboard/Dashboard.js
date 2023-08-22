@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Route, Switch, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './Dashboard.css';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
@@ -8,6 +8,7 @@ import { CardActionArea } from '@mui/material';
 import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 import{
     Chart as ChartJS,
     BarElement,
@@ -76,13 +77,31 @@ const mockHistoryData = [
     { date: "2023-08-16", description: "Bought ValtusNFTs", amount: "-$1000"},
     { date: "2023-08-16", description: "Bought ValsaltusNFTs", amount: "-$1000"}
 ];
+
+
 const Dashboard = () => {
     {/* set up navigate instance to navigate within page */}
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    useEffect(() => {
+        if (!localStorage.getItem('isLoggedIn')) {
+            navigate("/Login");
+        }
+    }, [navigate]);
+
+    const handleLogout = () => {
+        localStorage.removeItem('isLoggedIn');  // Remove the flag from localStorage
+        navigate("/Login");  // Redirect to the login page
+    };
+    
     const [expandedSection, setExpandedSection] = useState('overview'); //overview will lead to original state of page
     return (
         <div>
             <h1>My Dashboard</h1>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '0 15px' }}>
+                <Button variant="outlined" color="primary" onClick={handleLogout}>
+                    Logout
+                </Button>
+            </div>
             {/* whole screen Grid container */}
             <Grid container rowSpacing={2} style={{ padding: '15px' }}>
                 {/* button Grid container */}

@@ -7,8 +7,10 @@ import Market from "./Pages/Market/Market";
 import Login from "./Pages/Login/Login";
 import NoMatch from "./Pages/NoMatch/NoMatch";
 import './App.css';
+import React, { useState } from "react";
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('isLoggedIn'));
   return (
     <div>
       <Navbar />
