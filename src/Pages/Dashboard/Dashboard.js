@@ -9,6 +9,15 @@ import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import tech1 from '../../Assets/market/tech/tech1.jpg';
+import tech2 from '../../Assets/market/tech/tech2.jpg';
+import tech3 from '../../Assets/market/tech/tech3.jpg';
+import tech4 from '../../Assets/market/tech/tech4.jpg';
+
+import fashion1 from '../../Assets/market/fashion/fashion1.png';
+import fashion2 from '../../Assets/market/fashion/fashion2.png';
+import fashion3 from '../../Assets/market/fashion/fashion3.jpg';
+import fashion4 from '../../Assets/market/fashion/fashion4.jpg';
 import{
     Chart as ChartJS,
     BarElement,
@@ -58,14 +67,14 @@ const chartOptions = {
 };
 
 const assetsItems = [
-    { name: "asset 1", description: "Description", image: "https://placehold.co/259x298", cat: "Tech", price: "0.1", seller: "Andrew" },
-    { name: "asset 2", description: "Description", image: "https://placehold.co/259x298", cat: "Entertainment", price: "0.1", seller: "Andrew" },
-    { name: "asset 3", description: "Description", image: "https://placehold.co/259x298", cat: "Fashion", price: "0.1", seller: "Andrew" },
-    { name: "asset 4", description: "Description", image: "https://placehold.co/259x298", cat: "Tech", price: "0.1", seller: "Andrew" },
-    { name: "asset 5", description: "Description", image: "https://placehold.co/259x298", cat: "Tech", price: "0.1", seller: "Andrew" },
-    { name: "asset 6", description: "Description", image: "https://placehold.co/259x298", cat: "Tech", price: "0.1", seller: "Andrew" },
-    { name: "asset 7", description: "Description", image: "https://placehold.co/259x298", cat: "Tech", price: "0.1", seller: "Andrew" },
-    { name: "asset 8", description: "Description", image: "https://placehold.co/259x298", cat: "Tech", price: "0.1", seller: "Andrew" },
+    { name: "item 1", description: "Description", image: tech1, cat: "Tech", price: "0.1", seller: "Andrew" },
+    { name: "item 2", description: "Description", image: tech2, cat: "Entertainment", price: "0.1", seller: "Andrew" },
+    { name: "item 3", description: "Description", image: tech3, cat: "Fashion", price: "0.1", seller: "Andrew" },
+    { name: "item 4", description: "Description", image: tech4, cat: "Tech", price: "0.1", seller: "Andrew" },
+    { name: "item 5", description: "Description", image: fashion1, cat: "Tech", price: "0.1", seller: "Andrew" },
+    { name: "item 6", description: "Description", image: fashion2, cat: "Tech", price: "0.1", seller: "Andrew" },
+    { name: "item 7", description: "Description", image: fashion3, cat: "Tech", price: "0.1", seller: "Andrew" },
+    { name: "item 8", description: "Description", image: fashion4, cat: "Tech", price: "0.1", seller: "Andrew" },
 ];
 const mockHistoryData = [
     { date: "2023-08-01", description: "Bought Apes", amount: "-$500" },
@@ -213,9 +222,9 @@ const Dashboard = () => {
                                 <Grid item xs={6} md={3} key={index}>
                                     <Card 
                                         sx={{ 
-                                            maxWidth: 259, 
-                                            maxHeight: 298, 
-                                            margin: '10px', 
+                                            maxWidth: '256px', 
+                                            maxHeight: '256px', 
+                                            margin: '5px', 
                                             boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
                                             transition: 'transform 0.2s, box-shadow 0.2s',
                                             '&:hover': {
@@ -224,17 +233,29 @@ const Dashboard = () => {
                                             }
                                         }}
                                     >
-                                        <CardActionArea>
+                                        <CardActionArea sx={{
+                                        borderRadius: '10px',
+                                        maxHeight: "256px",
+                                        minHeight: "256px",
+                                        }}>
+                                        <div style={{ position: 'relative' }}>
                                             <CardMedia
                                                 component="img"
                                                 width="100%"
                                                 image={item.image}
                                                 alt={item.name}
+                                                sx={{
+                                                    borderRadius: '10px',
+                                                    maxHeight: "256px",
+                                                    minHeight: "256px",
+                                                }}
                                             />
-                                            <CardContent>
-                                                <Typography variant="h6">{item.name}</Typography>
-                                                <Typography variant="body2" color="textSecondary">{item.category}</Typography>
-                                            </CardContent>
+                                            <div className='img-text' >
+                                                {item.name}
+                                                <br></br>
+                                                ETH: {item.price}
+                                            </div>
+                                        </div>
                                         </CardActionArea>
                                     </Card>
                                 </Grid>
