@@ -138,7 +138,7 @@ const FAQ = () => {
 
                 <Grid item xs={12} md={4}>
                     <div className='section3'>
-                        <Typography sx={{ m: 2 }} variant="h5">Need Help?</Typography>
+                        <Typography sx={{ mt: 1, mb: 2 }} variant="h5">Need Help?</Typography>
 
                         <Divider className='yourWhiteness' variant="middle" />
 
@@ -150,7 +150,7 @@ const FAQ = () => {
                         <Typography sx={{ mb: 4 }} variant="body1">9am-6pm</Typography>
 
                         <Typography sx={{ mt: 4 }} variant="body1">Weekends</Typography>
-                        <Typography sx={{ mb: 2 }} variant="body1">10am-5pm</Typography>
+                        <Typography sx={{ mb: 1 }} variant="body1">10am-5pm</Typography>
                     </div>
                 </Grid>
             </Grid>

@@ -1,0 +1,15 @@
+.yourWhiteness {
+    color: white;
+}
+
+.circle {
+    height: 60em;
+    width: 30em;
+    background-color: #555;
+    border-radius: 100% 0 0 100% / 50% 0 0 50%;
+
+    position:absolute;
+    top: 10em; right: 0;
+    overflow-x: hidden !important;
+    z-index: -1;
+}
