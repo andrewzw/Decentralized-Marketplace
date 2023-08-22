@@ -11,7 +11,7 @@ import './App.css';
 function App() {
   return (
     <div>
-      <Navbar ></Navbar>
+      <Navbar />
       <Routes>
         <Route path="/" element={<Market />} />
         <Route path="/About" element={<About />} />
