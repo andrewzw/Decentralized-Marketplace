@@ -26,10 +26,8 @@
     padding: 0;
 
     text-decoration: none;
-    
+
 }
-
-
 
 .line {
     border-left: 2px solid rgb(255, 255, 255);
@@ -62,17 +60,29 @@
 
 .search-bar {
     flex: 1;
-    /* Take available space */
     padding: 10px;
     border: none;
     border-radius: 50px;
     outline: none;
     margin: 0.5%;
 
-    background-color: #ffffff7b;
-    border: 1px solid #ffffff;
+    background-color: #ffffff2c;
+    border: 1px solid #ffffff2c;
     color: #ffffff;
+}
 
+.search-bar::placeholder {
+    color: #ffffffce;
+}
+
+.search-bar:hover {
+    background-color: #ffffffce;
+    border: 1px solid #ffffffce;
+    color: #000;
+}
+
+.search-bar:hover::placeholder {
+    color: #000000ce;
 }
 
 .nav-button {
@@ -92,6 +102,11 @@
 
 .nav-button:hover {
     background-color: #8660cd;
+}
+
+.active-tab {
+    background-color: #8660cd;
+    font-weight: bold;
 }
 
 .profile-button {
@@ -150,17 +165,17 @@
         display: none;
     }
 
-    .container{
+    .container {
         top: 3%;
     }
 }
 
-@media  (max-width: 1000px) {
-    .line{
+@media (max-width: 1000px) {
+    .line {
         display: none;
     }
 
-    .container{
+    .container {
         top: 1%;
     }
 }
@@ -172,6 +187,7 @@
     .hamburger {
         display: block;
     }
+
     .nav-button {
         text-align: center;
         padding: 10px 20px;
@@ -180,8 +196,8 @@
         color: white;
         text-decoration: none;
         transition: background-color 0.3s;
-    
-       flex: 0.3;
+
+        flex: 0.3;
         border: none;
         border-radius: 50px;
         outline: none;
@@ -217,10 +233,10 @@
     }
 
     .profile-img {
-        display: none; 
+        display: none;
     }
 
     .profile-button {
-        justify-content: center; 
+        justify-content: center;
     }
 }
