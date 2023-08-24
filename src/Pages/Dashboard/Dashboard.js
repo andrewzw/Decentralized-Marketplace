@@ -13,7 +13,7 @@ import tech1 from '../../Assets/market/tech/tech1.jpg';
 import tech2 from '../../Assets/market/tech/tech2.jpg';
 import tech3 from '../../Assets/market/tech/tech3.jpg';
 import tech4 from '../../Assets/market/tech/tech4.jpg';
-
+import {assetsItems,mockHistoryData} from '../../Assets/database.js';
 import fashion1 from '../../Assets/market/fashion/fashion1.png';
 import fashion2 from '../../Assets/market/fashion/fashion2.png';
 import fashion3 from '../../Assets/market/fashion/fashion3.jpg';
@@ -99,26 +99,7 @@ const chartOptions = {
 
 
 
-const assetsItems = [
-    { name: "item 1", description: "Description", image: tech1, cat: "Tech", price: "0.1", seller: "Andrew" },
-    { name: "item 2", description: "Description", image: tech2, cat: "Entertainment", price: "0.1", seller: "Andrew" },
-    { name: "item 3", description: "Description", image: tech3, cat: "Fashion", price: "0.1", seller: "Andrew" },
-    { name: "item 4", description: "Description", image: tech4, cat: "Tech", price: "0.1", seller: "Andrew" },
-    { name: "item 5", description: "Description", image: fashion1, cat: "Tech", price: "0.1", seller: "Andrew" },
-    { name: "item 6", description: "Description", image: fashion2, cat: "Tech", price: "0.1", seller: "Andrew" },
-    { name: "item 7", description: "Description", image: fashion3, cat: "Tech", price: "0.1", seller: "Andrew" },
-    { name: "item 8", description: "Description", image: fashion4, cat: "Tech", price: "0.1", seller: "Andrew" },
-];
-const mockHistoryData = [
-    { date: "2023-08-01", description: "Bought Apes", amount: "-$500" },
-    { date: "2023-08-02", description: "Sold Birds", amount: "+$2,000" },
-    { date: "2023-08-03", description: "Sold DracoNfts", amount: "+$5,000" },
-    { date: "2023-08-04", description: "Bought ChampsNFTs", amount: "-$200" },
-    { date: "2023-08-05", description: "Bought MomNFTs", amount: "-$150" },
-    { date: "2023-08-15", description: "Bought VitusNFTs", amount: "-$1000"},
-    { date: "2023-08-16", description: "Bought ValtusNFTs", amount: "-$1000"},
-    { date: "2023-08-16", description: "Bought ValsaltusNFTs", amount: "-$1000"}
-];
+
 
 
 const Dashboard = () => {
