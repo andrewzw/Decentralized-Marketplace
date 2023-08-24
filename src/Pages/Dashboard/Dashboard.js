@@ -254,8 +254,9 @@ const Dashboard = () => {
                         <Grid container spacing={1} rowSpacing={1}>
                             {assetsItems.map((item, index) => (
                                 <Grid item xs={6} md={3} key={index}>
-                                    <Card
-                                    sx={{ 
+
+                                    <Card  
+                                        sx={{ 
                                             maxWidth: 259, 
                                             maxHeight: 298, 
                                             borderRadius: '20px',
