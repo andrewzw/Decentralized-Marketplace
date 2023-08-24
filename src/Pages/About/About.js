@@ -9,8 +9,8 @@ import PaletteIcon from '@mui/icons-material/Palette';
 import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
 
 import './about.css';
-import memberImage1 from '../../Assets/members/Tom.jpeg';
-import memberImage2 from '../../Assets/members/Andrew.JPG';
+import memberImage1 from '../../Assets/members/Tom.jpg';
+import memberImage2 from '../../Assets/members/Andrew.jpg';
 import memberImage3 from '../../Assets/members/Yuan.jpg';
 
 const peopleImage = [
