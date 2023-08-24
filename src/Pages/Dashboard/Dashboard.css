@@ -17,26 +17,10 @@
     color: #ebeced;
 }
 
-.mainsection{
-    
-    border: 1px solid #3E4650;
-    text-align: center;
-    color: #ebeced;
-    border-radius: 10px;
-    box-shadow: 0px 0px 20px 1px rgba(255, 255, 255, 0.3);
-    -webkit-box-shadow: 0px 0px 20px 1px rgba(255, 255, 255, 0.3);
-    -moz-box-shadow: 0px 0px 20px 1px rgba(255, 255, 255, 0.3);
-    padding: 0.75%;
-    margin-bottom: 2%;
-    font-family: 'Roboto', sans-serif; /* Example using Roboto font */
-    font-size: 16px;
-    line-height: 1.6;
-    
-}
-.mainsection:hover {
-    box-shadow: 0px 0px 25px 2px rgba(255, 255, 255, 0.4);
-}
 
+.mainsection{
+    text-align: center;
+}
 
 .customCard{
     background: linear-gradient(to right, #222b36, #2a3348);
@@ -69,12 +53,13 @@
     padding: 0.5rem;
     background: rgba(0,0,0,0.1);  /* Slight background to make headers stand out */
     border-bottom: 1px solid #3E4650; 
+    color: #ebeced;
 }
 
 
 .transaction {
     padding: 10px;
-    
+    color: #ebeced;
 }
 
 
