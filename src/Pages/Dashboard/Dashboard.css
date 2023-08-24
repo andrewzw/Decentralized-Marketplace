@@ -17,27 +17,6 @@
     color: #ebeced;
 }
 
-.mainsection{
-    
-    border: 1px solid #3E4650;
-    text-align: center;
-    color: #ebeced;
-    border-radius: 10px;
-    box-shadow: 0px 0px 20px 1px rgba(255, 255, 255, 0.3);
-    -webkit-box-shadow: 0px 0px 20px 1px rgba(255, 255, 255, 0.3);
-    -moz-box-shadow: 0px 0px 20px 1px rgba(255, 255, 255, 0.3);
-    padding: 0.75%;
-    margin-bottom: 2%;
-    font-family: 'Roboto', sans-serif; /* Example using Roboto font */
-    font-size: 16px;
-    line-height: 1.6;
-    
-}
-.mainsection:hover {
-    box-shadow: 0px 0px 25px 2px rgba(255, 255, 255, 0.4);
-}
-
-
 .customCard{
     background: linear-gradient(to right, #222b36, #2a3348);
     color: #ebeced;
@@ -49,15 +28,17 @@
     color: #ebeced;
     border: 1px solid #3E4650;
     border-radius: 8px;
+    height: 30px;
 }
 
-.cardHover:hover {
+.cardStyle:hover {
     background: linear-gradient(to right, #1c2230, #191d2a);
 }
 
 .cardText {
     color: #ebeced;
     transition: color 0.3s ease;
+    text-align: center;
 }
 /* slightly change text when cardHover is hover */
 .cardHover:hover .cardText {

@@ -13,13 +13,6 @@ import memberImage1 from '../../Assets/members/Tom.jpeg';
 import memberImage2 from '../../Assets/members/Andrew.JPG';
 import memberImage3 from '../../Assets/members/Yuan.jpg';
 
-const goalImage = [
-    { imaging: memberImage1, alting: "Tom" },
-    { imaging: memberImage2, alting: "Yuan" },
-    { imaging: memberImage3, alting: "Andrew" },
-    { imaging: memberImage3, alting: "Andrew" },
-]
-
 const peopleImage = [
     { imaging: memberImage1, alting: "Tom" },
     { imaging: memberImage2, alting: "Yuan" },
