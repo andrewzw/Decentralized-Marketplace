@@ -1,8 +1,11 @@
-import Grid from '@mui/material/Grid';
-import CardMedia from '@mui/material/CardMedia';
-import Divider from '@mui/material/Divider';
-
 import { grey } from '@mui/material/colors';
+import Grid from '@mui/material/Grid';
+
+import Typography from '@mui/material/Typography';
+
+import CardMedia from '@mui/material/CardMedia';
+
+import Divider from '@mui/material/Divider';
 
 import './about.css';
 import goalImage1 from '../../Assets/goals/trend.png';
@@ -36,12 +39,12 @@ const About = () => {
                 <Grid item xs={12} md={8} rowSpacing={1}>
                     
                         <h2>Our Goals</h2>
-                        
-                        <p>
+
+                        <Typography sx={{ mb: 4 }} variant="body1">
                             Our goal at "SafeSpace" is to enable creative individuals by giving them a platform for presenting their digital works with the world.
                             Every digital creations becomes a work of art in our humble view, and as such, it must to be recognised and appreciated.
                             We want to revolutionise how people see, value, and engage with digital art and collectibles.
-                        </p>
+                        </Typography>
 
                         <Grid container spacing={0.5} rowSpacing={0.5}>
                             {goalImage.map((items, index) => (
@@ -60,10 +63,10 @@ const About = () => {
 
                         <h2>Who we are</h2>
 
-                        <p>
+                        <Typography sx={{ mb: 4 }} variant="body1">
                             A vast but passionate team of people who have a strong interest in the field of NFT is the driving force behind "SafeSpace".
                             We're determined to work hard to broaden the possibilities of NFTs and create an environment where creativity is unrestricted.
-                        </p>
+                        </Typography>
 
                         <Grid container spacing={1} rowSpacing={1} >
                             {peopleImage.map((items, index) => (
@@ -84,27 +87,27 @@ const About = () => {
                     <div className='about-aside'>
                         <h2>What we offer</h2>
 
-                        <p>
+                        <Typography sx={{ m: 4 }} variant="body1">
                             Discover Unique masterpieces: If you're looking for unique digital masterpieces, look no further than our marketplace.
-                        </p>
+                        </Typography>
 
-                        <Divider className='yourWhiteness' sx={{borderColor: grey[50]}} variant="middle" />
+                        <Divider sx={{borderColor: grey[50]}} variant="middle" />
 
-                        <p>
+                        <Typography sx={{ m: 4 }} variant="body1">
                             Empowerment through Ownership: By purchasing an NFT, you get a digital product and you can support your favoured artists on their journey.
-                        </p>
+                        </Typography>
 
-                        <Divider className='yourWhiteness' sx={{borderColor: grey[50]}} variant="middle" />
+                        <Divider sx={{borderColor: grey[50]}} variant="middle" />
 
-                        <p>
+                        <Typography sx={{ m: 4 }} variant="body1">
                             Transparent and Secure Transactions: Our system is based on blockchain technology which guarantees the privacy of your financial transactions and personal data.
-                        </p>
+                        </Typography>
 
-                        <Divider className='yourWhiteness' sx={{borderColor: grey[50]}} variant="middle" />
+                        <Divider sx={{borderColor: grey[50]}} variant="middle" />
 
-                        <p>
+                        <Typography sx={{ m: 4 }} variant="body1">
                             Community and Collaboration: "SafeSpace" has an active group of artists, collectors, and fans, it is more than just a marketplace. 
-                        </p>
+                        </Typography>
                     </div>
                     
                 </Grid>
