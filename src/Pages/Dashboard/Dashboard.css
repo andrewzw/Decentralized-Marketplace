@@ -18,7 +18,7 @@
 }
 
 .mainsection{
-    background-color: #222b3684 !important;
+    
     border: 1px solid #3E4650;
     text-align: center;
     color: #ebeced;
@@ -31,14 +31,19 @@
     font-family: 'Roboto', sans-serif; /* Example using Roboto font */
     font-size: 16px;
     line-height: 1.6;
-    background: linear-gradient(to bottom, #2a3348, #222b36);
+    
 }
 .mainsection:hover {
     box-shadow: 0px 0px 25px 2px rgba(255, 255, 255, 0.4);
 }
 
 
-
+.customCard{
+    background: linear-gradient(to right, #222b36, #2a3348);
+    color: #ebeced;
+    border: 1px solid #3E4650;
+    border-radius: 8px;   
+}
 .cardStyle {
     background: linear-gradient(to right, #222b36, #2a3348);
     color: #ebeced;
