@@ -53,6 +53,14 @@ const chartData = {
 };
 
 const chartOptions = {
+    layout: {
+        padding: {
+            left: 10,
+            right: 10,
+            top: 10,
+            bottom: 37  
+        }
+    },
     scales: {
         x: {
             grid: {

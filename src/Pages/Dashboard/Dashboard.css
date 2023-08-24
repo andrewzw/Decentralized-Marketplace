@@ -17,6 +17,10 @@
     color: #ebeced;
 }
 
+.mainsection{
+    text-align: center;
+}
+
 .customCard{
     background: linear-gradient(to right, #222b36, #2a3348);
     color: #ebeced;
@@ -50,12 +54,13 @@
     padding: 0.5rem;
     background: rgba(0,0,0,0.1);  /* Slight background to make headers stand out */
     border-bottom: 1px solid #3E4650; 
+    color: #ebeced;
 }
 
 
 .transaction {
     padding: 10px;
-    
+    color: #ebeced;
 }
 
 
