@@ -1,7 +1,5 @@
-import { styled } from '@mui/material/styles';
 import { grey } from '@mui/material/colors';
 import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
 
 import Typography from '@mui/material/Typography';
 
@@ -20,17 +18,6 @@ import Divider from '@mui/material/Divider';
 import InputBase from '@mui/material/InputBase';
 
 import './faq.css';
-
-const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    ...theme.typography.body1,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-}));
-
-
-
 
 const FAQ = () => {
     const faqStuff = [
@@ -80,7 +67,7 @@ const FAQ = () => {
             <Grid container direction="column" alignItems="center">
                 <TextField
                     className='search-bar-faq'
-                    sx={{ color: grey[50] }}
+                    sx={{ borderColor: grey[50] }}
                     placeholder="Search..."
                     InputProps={{
                         className: 'yourWhiteness',
@@ -100,6 +87,7 @@ const FAQ = () => {
                         sx={{ ml: 1, flex: 1 }}
                         placeholder="Search..."
                         inputProps={{
+                            className: 'yourWhiteness',
                         }}
                     />
                 </div>
@@ -137,14 +125,19 @@ const FAQ = () => {
                 </Grid>
 
                 <Grid item xs={12} md={4}>
-                    <div className='section3'>
+                    <div className='cards'>
                         <Typography sx={{ mt: 1, mb: 2 }} variant="h5">Need Help?</Typography>
+                        
+                        <p>
+                            We can assist you whether you're a creator, a collector, or just interested in learning more about the world of NFTs.
+                            For any questions, help, or feedback, you can get in touch with our helpful support staff.
+                        </p>
 
-                        <Divider className='yourWhiteness' variant="middle" />
+                        <Divider className='yourWhiteness' sx={{borderColor: grey[50]}} variant="middle" />
 
-                        <Typography sx={{ m: 4 }} variant="body1">+0000000000</Typography>
+                        <Typography sx={{ m: 4 }} variant="body1">+123456789</Typography>
 
-                        <Typography sx={{ m: 4 }} variant="body1">xxx@xxx.xxx</Typography>
+                        <Typography sx={{ m: 4 }} variant="body1">nft@nft.nft</Typography>
 
                         <Typography sx={{ mt: 4 }} variant="body1">Weekdays</Typography>
                         <Typography sx={{ mb: 4 }} variant="body1">9am-6pm</Typography>
