@@ -8,7 +8,7 @@
 
 .about-goal-image {
     max-width: 100px;
-    margin: auto;
+    margin: 1em auto;
 }
 
 .about-goal-text {
@@ -21,7 +21,7 @@
     min-height: 50px;
     max-width: 300px;
     min-width: 50px;
-    margin: auto;
+    margin: 1em auto;
 }
 
 .about-aside {
