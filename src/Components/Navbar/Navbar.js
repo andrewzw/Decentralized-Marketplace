@@ -97,5 +97,5 @@ const currentPath = location.pathname;
     );
 };
 
-
 export default Navbar;
+

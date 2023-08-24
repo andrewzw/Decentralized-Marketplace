@@ -24,6 +24,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 });
 
 
+
 const Market = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -85,7 +86,7 @@ const Market = () => {
                         <Grid container spacing={2} rowSpacing={1} >
                             {featuredItems.map((item, index) => (
                                 <Grid item xs={6} md={3} key={index} >
-                                    <Card onClick={() => handleItemClick(item)} sx={{
+                                    <Card onClick={() => handleItemClick(item)} className='cards-hover' sx={{
                                         borderRadius: '10px',
                                         backgroundColor: 'transparent',
                                     }}>
@@ -153,7 +154,7 @@ const Market = () => {
                                 </Grid>
 
                                 {listedItems.filter(item => value === "All" || item.cat === value).map((item, index) => (<Grid item xs={6} md={3} key={index}>
-                                    <CardActionArea onClick={() => handleItemClick(item)} sx={{
+                                    <CardActionArea onClick={() => handleItemClick(item)} className='cards-hover' sx={{
                                         borderRadius: '10px',
                                         maxHeight: "256px",
                                         minHeight: "256px",

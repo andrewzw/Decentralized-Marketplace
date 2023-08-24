@@ -35,6 +35,15 @@ h1 {
     text-align: left;
 }
 
+.cards-hover:hover {
+    border-radius: 10px;
+    background-color: transparent;
+    box-shadow: 0px 0px 20px 1px rgba(255, 255, 255, 0.5);
+    -webkit-box-shadow: 0px 0px 20px 1px rgba(255, 255, 255, 0.5);
+    -moz-box-shadow: 0px 0px 20px 1px rgba(255, 255, 255, 0.5);
+
+}
+
 /* Section 1 ----------------------------------------------*/
 .section1 {
     /* background-color: #222b36 !important; */
