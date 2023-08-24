@@ -16,7 +16,7 @@ import { useTheme } from '@mui/material/styles';
 import { useMediaQuery } from '@mui/material';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-import { tabsData, featuredItems, listedItems } from './marketData.js';
+import { tabsData, featuredItems, listedItems } from '../../Assets/database.js';
 import './market.css';
 
 const Alert = React.forwardRef(function Alert(props, ref) {

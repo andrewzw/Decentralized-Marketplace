@@ -1,17 +1,18 @@
-import tech1 from '../../Assets/market/tech/tech1.jpg';
-import tech2 from '../../Assets/market/tech/tech2.jpg';
-import tech3 from '../../Assets/market/tech/tech3.jpg';
-import tech4 from '../../Assets/market/tech/tech4.jpg';
+// Market data --------------------------------------------------------------------------------------------------------------------
+import tech1 from './market/tech/tech1.jpg';
+import tech2 from './market/tech/tech2.jpg';
+import tech3 from './market/tech/tech3.jpg';
+import tech4 from './market/tech/tech4.jpg';
 
-import fashion1 from '../../Assets/market/fashion/fashion1.png';
-import fashion2 from '../../Assets/market/fashion/fashion2.png';
-import fashion3 from '../../Assets/market/fashion/fashion3.jpg';
-import fashion4 from '../../Assets/market/fashion/fashion4.jpg';
+import fashion1 from './market/fashion/fashion1.png';
+import fashion2 from './market/fashion/fashion2.png';
+import fashion3 from './market/fashion/fashion3.jpg';
+import fashion4 from './market/fashion/fashion4.jpg';
 
-import art1 from '../../Assets/market/art/art1.png';
-import art2 from '../../Assets/market/art/art2.png';
-import art3 from '../../Assets/market/art/art3.png';
-import art4 from '../../Assets/market/art/art4.png';
+import art1 from './market/art/art1.png';
+import art2 from './market/art/art2.png';
+import art3 from './market/art/art3.png';
+import art4 from './market/art/art4.png';
 
 export const tabsData = [
     { value: "All", label: "All" },
