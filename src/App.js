@@ -18,8 +18,7 @@ function App() {
         <Route path="/Dashboard" element={<Dashboard />} />
         <Route path="/FAQ" element={<FAQ />} />
         <Route path="/Login" element={<Login />} />
-        {/* Shows when theres no match */}
-        <Route path="*" element={<NoMatch />} />
+        <Route path="*" element={<NoMatch />} /> 
       </Routes>
     </div>
   );

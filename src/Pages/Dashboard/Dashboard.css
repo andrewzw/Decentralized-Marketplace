@@ -3,9 +3,64 @@
     font-size: 1.5rem;
     text-align: center;
     margin-left: 10px; 
+    color: #ebeced;
+
 }
 
 .childtext{
+    color: #ebeced;
     text-align: center;
     margin-left: 10px; 
 }
+
+.maintext{
+    color: #ebeced;
+}
+
+.mainsection{
+    text-align: center;
+}
+
+.customCard{
+    background: linear-gradient(to right, #222b36, #2a3348);
+    color: #ebeced;
+    border: 1px solid #3E4650;
+    border-radius: 8px;   
+}
+.cardStyle {
+    background: linear-gradient(to right, #222b36, #2a3348);
+    color: #ebeced;
+    border: 1px solid #3E4650;
+    border-radius: 8px;
+    height: 30px;
+}
+
+.cardStyle:hover {
+    background: linear-gradient(to right, #1c2230, #191d2a);
+}
+
+.cardText {
+    color: #ebeced;
+    transition: color 0.3s ease;
+    text-align: center;
+}
+/* slightly change text when cardHover is hover */
+.cardHover:hover .cardText {
+    color: #f0f0f0;
+}
+
+.cardHeader {
+    font-size: 0.8rem;
+    padding: 0.5rem;
+    background: rgba(0,0,0,0.1);  /* Slight background to make headers stand out */
+    border-bottom: 1px solid #3E4650; 
+    color: #ebeced;
+}
+
+
+.transaction {
+    padding: 10px;
+    color: #ebeced;
+}
+
+
