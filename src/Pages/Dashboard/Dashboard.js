@@ -64,18 +64,18 @@ const chartOptions = {
     scales: {
         x: {
             grid: {
-                color: 'rgba(0, 0, 0, 0.1)'  // Faint grey grid lines
+                color: 'rgba(255, 255, 255, 0.1)'  // Faint white grid lines
             },
             ticks: {
-                color: '#333'  // Dark grey color for better visibility on white
+                color: '#fff'  // White color for the X-axis labels
             }
         },
         y: {
             grid: {
-                color: 'rgba(0, 0, 0, 0.1)'  
+                color: 'rgba(255, 255, 255, 0.1)'  
             },
             ticks: {
-                color: '#333',  // Dark grey color
+                color: '#fff',  // White color for the Y-axis labels
                 beginAtZero: true
             }
         }
@@ -83,14 +83,14 @@ const chartOptions = {
     plugins: {
         legend: {
             labels: {
-                color: '#333'   // Dark grey color
+                color: '#fff'   // White color for the legend labels
             }
         },
         tooltip: {
-            backgroundColor: '#f0f0f0',  // Light grey
-            titleColor: '#333',          // Dark grey color
-            bodyColor: '#333',           // Dark grey color
-            borderColor: '#ccc',         // Light grey border
+            backgroundColor: '#f0f0f0',  // Light grey (this stays the same)
+            titleColor: '#000',          // White color for tooltip title
+            bodyColor: '#000',           // White color for tooltip body
+            borderColor: '#ccc',         // Light grey border (this stays the same)
             borderWidth: 1
         }
     }
