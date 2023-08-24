@@ -1,11 +1,248 @@
-ul li a {
+/* Navbar.css */
+.container {
+    position: sticky;
+    top: 4%;
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    z-index: 1;
+    padding: 0%;
+    width: 80%;
+    height: 50px;
+    margin: 0% auto;
+}
+
+.left-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    justify-items: center;
+    text-align: center;
+
+    border-radius: 50px;
+    width: 13%;
+    height: 100%;
+    margin: 0% auto;
+    padding: 0;
+
+    text-decoration: none;
+
+}
+
+.line {
+    border-left: 2px solid rgb(255, 255, 255);
+    padding-left: 5%;
+    font-size: large;
+
+    text-shadow: rgb(0, 0, 0) 1px 0 10px;
+}
+
+.right-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    justify-items: center;
+
+    border-radius: 50px;
+    width: 85%;
+    height: 100%;
+    margin: 0% auto;
+    padding: 0.3% 0 0.3% 0.3%;
+    margin-left: 3%;
+
+    background-color: #222b36e4 !important;
+    box-shadow: 0px 0px 10px 1px rgba(255, 255, 255, 0.5);
+    -webkit-box-shadow: 0px 0px 10px 1px rgba(255, 255, 255, 0.5);
+    -moz-box-shadow: 0px 0px 10px 1px rgba(255, 255, 255, 0.5);
+    border: 1px solid #ffffff;
+
+}
+
+.search-bar {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 50px;
+    outline: none;
+    margin: 0.5%;
+
+    background-color: #ffffff2c;
+    border: 1px solid #ffffff2c;
+    color: #ffffff;
+}
+
+.search-bar::placeholder {
+    color: #ffffffce;
+}
+
+.search-bar:hover {
+    background-color: #ffffffce;
+    border: 1px solid #ffffffce;
     color: #000;
 }
 
-ul li a:hover {
-    color: #00a8ff;
+.search-bar:hover::placeholder {
+    color: #000000ce;
 }
 
-ul li a.active {
-    color: #00a8ff;
+.nav-button {
+    text-align: center;
+    padding: 10px 20px;
+    margin: 0 5px;
+    background-color: #00000042;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.3s;
+
+    flex: 0.3;
+    border: none;
+    border-radius: 50px;
+    outline: none;
+}
+
+.nav-button:hover {
+    background-color: #8660cd;
+}
+
+.active-tab {
+    background-color: #8660cd;
+    font-weight: bold;
+}
+
+.profile-button {
+    display: flex;
+    align-items: center;
+    justify-items: center;
+
+    text-align: center;
+    margin: 0px;
+    background-color: #007BFF;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    width: 60px;
+    height: 100%;
+    padding: 0px;
+    border: none;
+    border-radius: 50px;
+    outline: none;
+}
+
+.profile-img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.logo-img {
+    width: 80px;
+    height: 50px;
+    object-fit: cover;
+    margin-right: 5%;
+}
+
+
+.profile-button:hover {
+    background-color: #0056b3;
+}
+
+/* Responsiveness */
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    z-index: 2;
+    position: absolute;
+    right: 0.2%;
+
+    color: #fff;
+    text-shadow: 0px 0px 5px rgb(255, 255, 255, 0.5);
+    -webkit-text-shadow: 0px 0px 5px rgb(255, 255, 255, 0.5);
+    -moz-text-shadow: 0px 0px 5px rgb(255, 255, 255, 0.5);
+
+}
+
+/* Media query for screens smaller than 1600px */
+@media (max-width: 1600px) {
+    .line {
+        display: none;
+    }
+
+    .container {
+        top: 3%;
+    }
+}
+
+@media (max-width: 1000px) {
+    .line {
+        display: none;
+    }
+
+    .container {
+        top: 1%;
+    }
+}
+
+/* Media query for screens smaller than 800px */
+@media (max-width: 800px) {
+
+
+    .hamburger {
+        display: block;
+    }
+
+    .nav-button {
+        text-align: center;
+        padding: 10px 20px;
+        margin: 1% 5px;
+        background-color: #00000042;
+        color: white;
+        text-decoration: none;
+        transition: background-color 0.3s;
+
+        flex: 0.3;
+        border: none;
+        border-radius: 50px;
+        outline: none;
+    }
+
+    .right-container {
+        display: none;
+        position: absolute;
+        top: 60px;
+        right: 0;
+        width: 200px;
+        background-color: #222b36e4;
+        height: auto;
+        padding: 2%;
+        border-radius: 10px;
+    }
+
+    .right-container.open {
+        display: block;
+    }
+
+    .line {
+        border: none;
+    }
+
+    .line h2 {
+        display: block;
+    }
+
+    .nav-button {
+        display: block;
+        text-align: left;
+    }
+
+    .profile-img {
+        display: none;
+    }
+
+    .profile-button {
+        justify-content: center;
+    }
 }
