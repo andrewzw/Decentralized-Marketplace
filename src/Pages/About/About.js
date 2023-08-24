@@ -10,7 +10,7 @@ import goalImage2 from '../../Assets/goals/tag.png';
 import goalImage3 from '../../Assets/goals/palette.png';
 import goalImage4 from '../../Assets/goals/support.png';
 
-import memberImage1 from '../../Assets/members/Tom.jpeg';
+import memberImage1 from '../../Assets/members/Tom.jpg';
 import memberImage2 from '../../Assets/members/Andrew.JPG';
 import memberImage3 from '../../Assets/members/Yuan.jpg';
 
