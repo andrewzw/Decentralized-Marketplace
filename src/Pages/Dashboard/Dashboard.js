@@ -39,32 +39,65 @@ const chartData = {
     datasets:[
         {
             label: 'Monetary assets gain',
-            backgroundColor: 'rgba(75,192,192,0.2)',
-            borderColor: 'rgba(75,192,192,1)',
+            backgroundColor: [
+                'rgba(78, 85, 90, 0.7)',   // Dark muted colors with transparency
+                'rgba(85, 92, 100, 0.7)',
+                'rgba(92, 100, 110, 0.7)',
+                'rgba(100, 110, 120, 0.7)',
+                'rgba(110, 120, 130, 0.7)',
+                'rgba(120, 130, 140, 0.7)',
+                'rgba(130, 140, 150, 0.7)',
+                'rgba(140, 150, 160, 0.7)',
+                'rgba(150, 160, 170, 0.7)',
+                'rgba(160, 170, 180, 0.7)',
+                'rgba(170, 180, 190, 0.7)',
+                'rgba(180, 190, 200, 0.7)'
+            ],
+            borderColor: 'rgba(160, 170, 180, 1)',  // A neutral color that matches the series
             borderWidth: 1,
-            hoverBackgroundColor: 'rgba(75,192,192,0.4)',
-            hoverBorderColor: 'rgba(75,192,192,1)',
-            data: [6500, 5900, 800, 810, 560,6000,70,800,90,100,20,3000]
+            data: [6500, 5900, 800, 810, 560, 6000, 70, 800, 90, 100, 20, 3000]
         }
     ]
-
 };
+
 const chartOptions = {
-    layout: {
-        padding: {
-            bottom: 28 // Adjust this value as needed
+    scales: {
+        x: {
+            grid: {
+                color: 'rgba(0, 0, 0, 0.1)'  // Faint grey grid lines
+            },
+            ticks: {
+                color: '#333'  // Dark grey color for better visibility on white
+            }
+        },
+        y: {
+            grid: {
+                color: 'rgba(0, 0, 0, 0.1)'  
+            },
+            ticks: {
+                color: '#333',  // Dark grey color
+                beginAtZero: true
+            }
         }
     },
-    scales: {
-        y: {
-            ticks: {
-                callback: function(value, index, values) {
-                    return '$' + value;
-                }
+    plugins: {
+        legend: {
+            labels: {
+                color: '#333'   // Dark grey color
             }
+        },
+        tooltip: {
+            backgroundColor: '#f0f0f0',  // Light grey
+            titleColor: '#333',          // Dark grey color
+            bodyColor: '#333',           // Dark grey color
+            borderColor: '#ccc',         // Light grey border
+            borderWidth: 1
         }
     }
 };
+
+
+
 
 const assetsItems = [
     { name: "item 1", description: "Description", image: tech1, cat: "Tech", price: "0.1", seller: "Andrew" },
@@ -104,9 +137,9 @@ const Dashboard = () => {
     
     const [expandedSection, setExpandedSection] = useState('overview'); //overview will lead to original state of page
     return (
-        <div>
-            <h1>My Dashboard</h1>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '0 15px' }}>
+        <div className = "mainsection">
+            <h1 style={{ marginBottom: '0.1rem' }}>My Dashboard</h1>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingBottom: '0.5rem' }}>
                 <Button variant="outlined" color="primary" onClick={handleLogout}>
                     Logout
                 </Button>
@@ -114,39 +147,40 @@ const Dashboard = () => {
             {/* whole screen Grid container */}
             <Grid container rowSpacing={2} style={{ padding: '15px' }}>
                 {/* button Grid container */}
-                <Grid container item xs={3} spacing={0.5}>
+                <Grid container className= "smallButtons" spacing={0.5} style={{ padding: '0.5rem' }}>
                     {/* Overview Grid item */}
-                    <Grid item xs={4}>
-                        <Card elevation={3} style={{ height: '30px' }}>
+                    <Grid item xs={12} sm = {2}>
+                        <Card className="cardStyle cardHover" elevation={3} style={{ height: '30px' }}>
                             <CardActionArea onClick={() => setExpandedSection('overview')}>
-                                <div style={{ padding: '1rem', marginTop: "-0.5rem" }}>Overview</div>
+                                <p className="cardText" style={{ padding: '1rem', marginTop: "-0.5rem" }}>Overview</p>
                             </CardActionArea>
                         </Card>
                     </Grid>
                     {/* History Grid item */}
-                    <Grid item xs={4}>
-                        <Card elevation={3} style={{ height: '30px' }}>
+                    <Grid item xs={12} sm ={2}>
+                        <Card className="cardStyle cardHover" elevation={3} style={{ height: '30px' }}>
                             <CardActionArea onClick={() => setExpandedSection('history')}>
-                                <div style={{ padding: '1rem', marginTop: "-0.5rem" }}>History</div>
+                                <p className="cardText" style={{ padding: '1rem', marginTop: "-0.5rem" }}>History</p>
                             </CardActionArea>
                         </Card>
                     </Grid>
                     {/* Assets Grid item */}
-                    <Grid item xs={4}>
-                        <Card elevation={3} style={{ height: '30px' }}>
+                    <Grid item xs={12} sm = {2}>
+                        <Card className="cardStyle cardHover" elevation={3} style={{ height: '30px' }}>
                             <CardActionArea onClick={() => setExpandedSection('assets')}>
-                                <div style={{ padding: '1rem', marginTop: "-0.5rem" }}>Assets</div>
+                                <p className="cardText" style={{ padding: '1rem', marginTop: "-0.5rem" }}>Assets</p>
                             </CardActionArea>
                         </Card>
                     </Grid>
                 </Grid>
                 
+                
                 {/* info grid container below */}
-                <Grid container spacing={1} rowSpacing={1} item xs={12}>
-                    <Grid item xs={4}>
-                        <Card elevation={3} style={{ height: '100px' }}>
+                <Grid container spacing={1} rowSpacing={1} style={{ padding: '0.5rem' }}>
+                    <Grid item xs={12} sm={6} md={4}>
+                        <Card className="cardStyle cardHover" elevation={3} style={{ height: '100px' }}>
                             <CardActionArea style={{ height: '100px' }} onClick={() => setExpandedSection('overview')}>
-                            <div style={{ padding: '1rem', marginTop: "-0.5rem" }}>
+                            <div className='maintext' style={{ padding: '1rem', marginTop: "-0.5rem" }}>
                                 Logged in as:
                                 <div className="boldtext">
                                     Andrew
@@ -155,10 +189,10 @@ const Dashboard = () => {
                             </CardActionArea>
                         </Card>
                     </Grid>
-                    <Grid item xs={4}>
-                        <Card elevation={3} style={{ height: '100px' }}>
+                    <Grid item xs={12} sm={6} md={4}>
+                        <Card className="cardStyle cardHover" elevation={3} style={{ height: '100px' }}>
                             <CardActionArea style={{ height: '100px' }} onClick={() => setExpandedSection('assets')}>
-                                <div style={{ padding: '1rem', marginTop: "-0.5rem" }}>
+                                <div className='maintext' style={{ padding: '1rem', marginTop: "-0.5rem" }}>
                                     Total Assets
                                     <div className='boldtext'>
                                         215
@@ -168,10 +202,10 @@ const Dashboard = () => {
                             </CardActionArea>
                         </Card>
                     </Grid>
-                    <Grid item xs={4}>
-                        <Card elevation={3} style={{ height: '100px' }}>
+                    <Grid item xs={12} sm={6} md={4}>
+                        <Card className="cardStyle cardHover" elevation={3} style={{ height: '100px' }}>
                             <CardActionArea style={{ height: '100px' }} onClick={() => setExpandedSection('history')}>
-                                <div style={{ padding: '1rem', marginTop: "-0.5 rem" }}>
+                                <div className='maintext' style={{ padding: '1rem', marginTop: "-0.5 rem" }}>
                                     Total Spent
                                     <div className='boldtext'>
                                         $100,000,000
@@ -183,29 +217,29 @@ const Dashboard = () => {
                     </Grid>
                 </Grid>
                 {/* graph + history Grid container */}
-                <Grid container spacing={1} rowSpacing={1} item xs={12}>
+                <Grid container spacing={1} rowSpacing={1} style={{ padding: '0.5rem' }}>
                     {(expandedSection === 'overview') &&(
-                    <Grid item xs={8}>
-                        <Card elevation={3} style={{ height: '400px'}}>
-                            <div style={{fontSize:'0.8rem',padding:'0.5rem'}}>Profile Overview</div>
-                            <div style={{height:'100%', display:'flex',justifyContent:'center'}}>
+                    <Grid item xs={12} sm={12} md={8}>
+                        <Card className="customCard" elevation={3} style={{ height: '400px'}}>
+                            <div className="cardHeader" style={{fontSize:'0.8rem',padding:'0.5rem'}}>Profile Overview</div>
+                            <div className="cardContent" style={{height:'100%', display:'flex',justifyContent:'center'}}>
                                 <Bar data = {chartData} options={chartOptions}/>
                             </div>
                         </Card>
                     </Grid>
                     )}
                     {(expandedSection === 'overview' || expandedSection === 'history') &&(
-                    <Grid item xs = {expandedSection === 'history'? 12 : 4 }> 
-                        <Card elevation = {3} style={{height: '400px'}}>
-                            <div style={{fontSize:'0.8rem',padding:'0.5rem'}}>History</div>
-                            <div style={{overflowY:'auto',maxHeight:'350px'}}>
+                    <Grid item xs={12} sm={expandedSection === 'history' ? 12 : 12} md={expandedSection === 'history' ? 12 : 4}> 
+                        <Card className="customCard" elevation = {3} style={{height: '400px'}}>
+                            <div className="cardHeader" style={{fontSize:'0.8rem',padding:'0.5rem'}}>History</div>
+                            <div className="cardContent"  style={{overflowY:'auto',maxHeight:'350px'}}>
                                 {/* map iterates over each item,For each transaction in the array, 
                                 a new <div> element is created.*/}
                                 {
                                     (expandedSection === 'overview' ?
                                         mockHistoryData.slice(0,5) :
                                         mockHistoryData).map((transaction,index) =>(
-                                        <div key={index} style={{ padding: '10px', borderBottom: '1px solid #eee' }}>
+                                        <div className='transaction' key={index} style={{ padding: '10px', borderBottom: '1px solid #eee' }}>
                                             <div><strong>Date:</strong> {transaction.date}</div>
                                             <div><strong>Description:</strong> {transaction.description}</div>
                                             <div><strong>Amount:</strong> {transaction.amount}</div>
