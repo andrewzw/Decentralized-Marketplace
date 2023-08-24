@@ -53,7 +53,7 @@ const currentPath = location.pathname;
         <div className='container'>
             <NavLink to="/" className="left-container">
                 <img src={logo} alt="Profile" className="logo-img" />
-                <div className='line'><h2>Safespace</h2></div>
+                <div className='line'><h2>SafeSpace</h2></div>
             </NavLink>
 
             <button className="hamburger" onClick={() => setIsOpen(!isOpen)}>
