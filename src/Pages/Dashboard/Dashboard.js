@@ -1,23 +1,15 @@
 import * as React from 'react';
-import { Route, Switch, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import './Dashboard.css';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import { CardActionArea } from '@mui/material';
 import CardMedia from '@mui/material/CardMedia';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
+
 import Button from '@mui/material/Button';
-import tech1 from '../../Assets/market/tech/tech1.jpg';
-import tech2 from '../../Assets/market/tech/tech2.jpg';
-import tech3 from '../../Assets/market/tech/tech3.jpg';
-import tech4 from '../../Assets/market/tech/tech4.jpg';
 import {assetsItems,mockHistoryData} from '../../Assets/database.js';
-import fashion1 from '../../Assets/market/fashion/fashion1.png';
-import fashion2 from '../../Assets/market/fashion/fashion2.png';
-import fashion3 from '../../Assets/market/fashion/fashion3.jpg';
-import fashion4 from '../../Assets/market/fashion/fashion4.jpg';
+
 import{
     Chart as ChartJS,
     BarElement,
@@ -104,15 +96,8 @@ const chartOptions = {
     }
 };
 
-
-
-
-
-
-
 const Dashboard = () => {
-    {/* set up navigate instance to navigate within page */}
-    const navigate = useNavigate();
+    const navigate = useNavigate(); //navigate within page
     useEffect(() => {
         if (!localStorage.getItem('isLoggedIn')) {
             navigate("/Login");
@@ -126,7 +111,7 @@ const Dashboard = () => {
     
     const [expandedSection, setExpandedSection] = useState('overview'); //overview will lead to original state of page
     return (
-        <div className = "mainsection">
+        <div>
             <h1 style={{ marginBottom: '0.1rem' }}>My Dashboard</h1>
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingBottom: '0.5rem' }}>
                 <Button variant="outlined" color="primary" onClick={handleLogout}>
@@ -134,12 +119,12 @@ const Dashboard = () => {
                 </Button>
             </div>
             {/* whole screen Grid container */}
-            <Grid container rowSpacing={2} style={{ padding: '15px' }}>
+            <Grid container rowSpacing={2} style={{ padding: '35px' }}>
                 {/* button Grid container */}
                 <Grid container className= "smallButtons" spacing={0.5} style={{ padding: '0.5rem' }}>
                     {/* Overview Grid item */}
                     <Grid item xs={12} sm = {2}>
-                        <Card className="cardStyle cardHover" elevation={3} style={{ height: '30px' }}>
+                        <Card className="cardStyle cardHover" elevation={3} >
                             <CardActionArea onClick={() => setExpandedSection('overview')}>
                                 <p className="cardText" style={{ padding: '1rem', marginTop: "-0.5rem" }}>Overview</p>
                             </CardActionArea>
@@ -147,7 +132,7 @@ const Dashboard = () => {
                     </Grid>
                     {/* History Grid item */}
                     <Grid item xs={12} sm ={2}>
-                        <Card className="cardStyle cardHover" elevation={3} style={{ height: '30px' }}>
+                        <Card className="cardStyle cardHover" elevation={3} >
                             <CardActionArea onClick={() => setExpandedSection('history')}>
                                 <p className="cardText" style={{ padding: '1rem', marginTop: "-0.5rem" }}>History</p>
                             </CardActionArea>
@@ -155,7 +140,7 @@ const Dashboard = () => {
                     </Grid>
                     {/* Assets Grid item */}
                     <Grid item xs={12} sm = {2}>
-                        <Card className="cardStyle cardHover" elevation={3} style={{ height: '30px' }}>
+                        <Card className="cardStyle cardHover" elevation={3} >
                             <CardActionArea onClick={() => setExpandedSection('assets')}>
                                 <p className="cardText" style={{ padding: '1rem', marginTop: "-0.5rem" }}>Assets</p>
                             </CardActionArea>
@@ -206,10 +191,10 @@ const Dashboard = () => {
                     </Grid>
                 </Grid>
                 {/* graph + history Grid container */}
-                <Grid container spacing={1} rowSpacing={1} style={{ padding: '0.5rem' }}>
+                <Grid container spacing={1} rowSpacing={1} style={{ padding: '0.5rem', }}>
                     {(expandedSection === 'overview') &&(
                     <Grid item xs={12} sm={12} md={8}>
-                        <Card className="customCard" elevation={3} style={{ height: '400px'}}>
+                        <Card className="customCard" elevation={3} style={{ height: '400px', color: '#fff' }}>
                             <div className="cardHeader" style={{fontSize:'0.8rem',padding:'0.5rem'}}>Profile Overview</div>
                             <div className="cardContent" style={{height:'100%', display:'flex',justifyContent:'center'}}>
                                 <Bar data = {chartData} options={chartOptions}/>
@@ -219,7 +204,7 @@ const Dashboard = () => {
                     )}
                     {(expandedSection === 'overview' || expandedSection === 'history') &&(
                     <Grid item xs={12} sm={expandedSection === 'history' ? 12 : 12} md={expandedSection === 'history' ? 12 : 4}> 
-                        <Card className="customCard" elevation = {3} style={{height: '400px'}}>
+                        <Card className="customCard" elevation = {3} style={{height: '400px', color: '#fff' }}>
                             <div className="cardHeader" style={{fontSize:'0.8rem',padding:'0.5rem'}}>History</div>
                             <div className="cardContent"  style={{overflowY:'auto',maxHeight:'350px'}}>
                                 {/* map iterates over each item,For each transaction in the array, 
