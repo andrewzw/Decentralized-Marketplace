@@ -17,7 +17,6 @@
     color: #ebeced;
 }
 
-
 .mainsection{
     text-align: center;
 }
@@ -33,15 +32,17 @@
     color: #ebeced;
     border: 1px solid #3E4650;
     border-radius: 8px;
+    height: 30px;
 }
 
-.cardHover:hover {
+.cardStyle:hover {
     background: linear-gradient(to right, #1c2230, #191d2a);
 }
 
 .cardText {
     color: #ebeced;
     transition: color 0.3s ease;
+    text-align: center;
 }
 /* slightly change text when cardHover is hover */
 .cardHover:hover .cardText {

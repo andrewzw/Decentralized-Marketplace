@@ -136,7 +136,7 @@
 }
 
 .logo-img {
-    width: 80px;
+    width: auto;
     height: 50px;
     object-fit: cover;
     margin-right: 5%;
