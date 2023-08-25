@@ -105,11 +105,6 @@ const chartOptions = {
 };
 
 
-
-
-
-
-
 const Dashboard = () => {
     {/* set up navigate instance to navigate within page */}
     const navigate = useNavigate();
