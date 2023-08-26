@@ -21,26 +21,28 @@ function Login() {
   }
 
   return (
-    <div className="login">
+    <div>
       <h1>Dashboard Login</h1>
-
-      <div className="login-box">
-        <p>Enter your login details:</p>
-        <input
-          type="text"
-          placeholder="Enter wallet to sign in..."
-          value={wallet}
-          onChange={(e) => setWallet(e.target.value)}
-          className="login-input"
-        />
-        <Button
-          onClick={handleLogin}
-          className="login-button"
-          variant="contained"
-          endIcon={<VpnKeyIcon />}
-        >
-          Login
-        </Button>
+      <div className="login">
+        <div className="login-box">
+          <h2>Login with MetaMask</h2>
+          <p>Enter your account details</p>
+          <input
+            type="text"
+            placeholder="Enter wallet to sign in..."
+            value={wallet}
+            onChange={(e) => setWallet(e.target.value)}
+            className="login-input"
+          />
+          <Button
+            onClick={handleLogin}
+            className="login-button"
+            variant="contained"
+            endIcon={<VpnKeyIcon />}
+          >
+            Login
+          </Button>
+        </div>
       </div>
     </div>
   );
