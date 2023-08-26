@@ -31,6 +31,7 @@ const Market = () => {
   const [itemQuantities, setItemQuantities] = React.useState({});
   const [searchItem, setSearchItem] = React.useState("");
 
+  //toggle add/remove item in cart
   const handleItemClick = (item, action = "toggle") => {
     if (
       action === "remove" ||
@@ -44,6 +45,7 @@ const Market = () => {
     }
   };
 
+  //change quantity of item in cart
   const handleQuantityChange = (itemName, quantity) => {
     setItemQuantities((prevQuantities) => ({
       ...prevQuantities,
@@ -51,10 +53,12 @@ const Market = () => {
     }));
   };
 
+  //change tab
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
+  //Handle the opening and closing of the snackbar
   const [open, setOpen] = React.useState(false);
 
   const handleClick = () => {
@@ -149,11 +153,6 @@ const Market = () => {
                           value={tab.value}
                           label={tab.label}
                           sx={{
-                            padding: "10px",
-                            margin: "0",
-                            minWidth: "120px",
-                            maxHeight: "30px",
-                            borderRadius: "5px",
                             color: value === tab.value ? "#fff" : "#d5d5d5",
                             fontWeight: value === tab.value ? "bold" : "normal",
                             backgroundColor:
@@ -165,6 +164,7 @@ const Market = () => {
                                 ? "1px solid #ebeced"
                                 : "transparent",
                           }}
+                          className="section2-tab"
                         />
                       ))}
                     </Tabs>
@@ -193,11 +193,6 @@ const Market = () => {
                       <CardActionArea
                         onClick={() => handleItemClick(item)}
                         className="cards-hover"
-                        sx={{
-                          borderRadius: "10px",
-                          maxHeight: "256px",
-                          minHeight: "256px",
-                        }}
                       >
                         <div style={{ position: "relative" }}>
                           <CardMedia
@@ -205,12 +200,9 @@ const Market = () => {
                             width="100%"
                             image={item.image}
                             alt={item.name}
-                            sx={{
-                              borderRadius: "10px",
-                              maxHeight: "256px",
-                              minHeight: "256px",
-                            }}
+                            className="cards-media"
                           />
+
                           <div className="img-text">
                             {item.name}
                             <br></br>
