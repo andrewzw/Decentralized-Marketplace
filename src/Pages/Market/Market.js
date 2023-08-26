@@ -153,6 +153,7 @@ const Market = () => {
                           value={tab.value}
                           label={tab.label}
                           sx={{
+                            //change color of tab if selected
                             color: value === tab.value ? "#fff" : "#d5d5d5",
                             fontWeight: value === tab.value ? "bold" : "normal",
                             backgroundColor:
@@ -271,7 +272,7 @@ const Market = () => {
 
                             <Grid item>
                               <Typography variant="body2">Quantity:</Typography>
-
+                              {/* change quantity of item in cart */}
                               <Select
                                 value={itemQuantities[selectedItem.name] || 1}
                                 onChange={(e) =>
@@ -280,10 +281,12 @@ const Market = () => {
                                     e.target.value
                                   )
                                 }
-                                className="section3-selectbutton"
+                                className="section3-quantitybutton"
                               >
+                                {/* limit item quantity to 10 */}
                                 {[...Array(10).keys()].map((i) => (
                                   <MenuItem key={i + 1} value={i + 1}>
+                                    {/* add item quantity */}
                                     {i + 1}
                                   </MenuItem>
                                 ))}
@@ -331,6 +334,7 @@ const Market = () => {
                       Buy
                     </Button>
 
+                    {/* Snackbar - payment notification*/}
                     <Snackbar
                       open={open}
                       autoHideDuration={5100}

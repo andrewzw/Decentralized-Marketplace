@@ -172,9 +172,22 @@ p {
     color: #ebeced;
 }
 
-.section3-selectbutton {
+.section3-quantitybutton {
     min-width: 50px;
-    max-width: 100px;
+    max-width: 80px;
+    max-height: 40px;
+    padding: 0% !important;
+    border: 1px solid #ffffff3b;
+    color: #ebeced !important;
+}
+
+.section3-quantitybutton:hover {
+    min-width: 50px;
+    max-width: 80px;
+    max-height: 40px;
+    padding: 0% !important;
+    border: 1px solid #ffffffa8;
+    background-color: #ffffff15;
     color: #ebeced !important;
 }
 
