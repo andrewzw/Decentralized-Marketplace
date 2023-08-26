@@ -93,8 +93,8 @@ const Navbar = () => {
         >
           FAQ
         </NavLink>
-        //check if dropdown menu is open, show profile button or profile image
-        depending on screen size
+        {/* check if dropdown menu is open, show profile button or profile image
+        depending on screen size */}
         {isOpen ? (
           <NavLink
             to="/dashboard"
