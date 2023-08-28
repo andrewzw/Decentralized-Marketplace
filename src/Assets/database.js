@@ -16,14 +16,14 @@ import art4 from './market/art/art4.png';
 
 
 // About data --------------------------------------------------------------------------------------------------------------------
-import goalImage1 from './goals/trend.png';
-import goalImage2 from './goals/tag.png';
-import goalImage3 from './goals/palette.png';
-import goalImage4 from './goals/support.png';
+import goalImage1 from './about/goals/trend.png';
+import goalImage2 from './about/goals/tag.png';
+import goalImage3 from './about/goals/palette.png';
+import goalImage4 from './about/goals/support.png';
 
-import memberImage1 from './members/Tom.jpg';
-import memberImage2 from './members/Andrew.JPG';
-import memberImage3 from './members/Yuan.jpg';
+import memberImage1 from './about/members/Tom.jpg';
+import memberImage2 from './about/members/Andrew.JPG';
+import memberImage3 from './about/members/Yuan.jpg';
 
 
 // Market
