@@ -187,7 +187,7 @@ const Market = () => {
                   .filter(
                     (item) =>
                       (value === "All" || item.cat === value) &&
-                      item.name.toLowerCase().includes(searchItem.toLowerCase())
+                      item.name.toLowerCase().includes(searchItem.toLowerCase()) //Filter by item name using search input AND/OR category
                   )
                   .map((item, index) => (
                     <Grid item xs={6} md={3} key={index}>
