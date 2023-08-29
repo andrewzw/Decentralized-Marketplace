@@ -16,7 +16,7 @@ import { useTheme } from "@mui/material/styles";
 import { useMediaQuery } from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
-import { tabsData, featuredItems, listedItems } from "../../Assets/database.js";
+import { tabsData, listedItems } from "../../Assets/database.js";
 import "./market.css";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -30,6 +30,13 @@ const Market = () => {
   const [selectedItems, setSelectedItems] = React.useState([]);
   const [itemQuantities, setItemQuantities] = React.useState({});
   const [searchItem, setSearchItem] = React.useState("");
+  const [featuredItems, setfeaturedItems] = React.useState([]);
+
+  React.useEffect(() => {
+    fetch("http://127.0.0.1:8000/featuredItems/")
+      .then((response) => response.json())
+      .then((data) => setfeaturedItems(data));
+  }, []);
 
   //toggle add/remove item in cart
   const handleItemClick = (item, action = "toggle") => {
@@ -112,7 +119,7 @@ const Market = () => {
                         <CardMedia
                           component="img"
                           width="100%"
-                          image={item.image}
+                          image={`http://127.0.0.1:8000${item.image}`}
                           alt={item.name}
                           sx={{
                             borderRadius: "10px",
