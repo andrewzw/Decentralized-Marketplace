@@ -1,3 +1,6 @@
+/* Name: Yong Yuan Chong */
+/* ID: 101224021 */
+
 import { useState } from "react";
 import { grey } from "@mui/material/colors"; //Make the divider white
 import Grid from "@mui/material/Grid";
