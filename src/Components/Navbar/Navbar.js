@@ -1,3 +1,6 @@
+/* Name: Zhe Wei Yap */
+/* ID: 103508895 */
+
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import "./navbar.css";
@@ -81,9 +84,8 @@ const Navbar = () => {
         </NavLink>
         <NavLink
           to="/about"
-          className={`nav-button ${
-            currentPath === "/about" ? "active-tab" : ""
-          }`}
+          className={`nav-button ${currentPath === "/about" ? "active-tab" : ""
+            }`}
         >
           About
         </NavLink>
@@ -98,18 +100,16 @@ const Navbar = () => {
         {isOpen ? (
           <NavLink
             to="/dashboard"
-            className={`nav-button ${
-              currentPath === "/dashboard" ? "active-tab" : ""
-            }`}
+            className={`nav-button ${currentPath === "/dashboard" ? "active-tab" : ""
+              }`}
           >
             Profile
           </NavLink>
         ) : (
           <NavLink
             to="/dashboard"
-            className={`profile-button ${
-              currentPath === "/dashboard" ? "active-tab" : ""
-            }`}
+            className={`profile-button ${currentPath === "/dashboard" ? "active-tab" : ""
+              }`}
           >
             <img
               src="https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80"

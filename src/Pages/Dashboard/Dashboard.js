@@ -1,3 +1,6 @@
+/* Name: Vu Gia Thinh Dang:*/
+/* ID: 103177240 */
+
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -287,56 +290,56 @@ const Dashboard = () => {
           )}
           {(expandedSection === "overview" ||
             expandedSection === "history") && (
-            <Grid
-              item
-              xs={12}
-              sm={expandedSection === "history" ? 12 : 12}
-              md={expandedSection === "history" ? 12 : 4}
-            >
-              <Card
-                className="customCard"
-                elevation={3}
-                style={{ height: "400px", color: "#fff" }}
+              <Grid
+                item
+                xs={12}
+                sm={expandedSection === "history" ? 12 : 12}
+                md={expandedSection === "history" ? 12 : 4}
               >
-                <div
-                  className="cardHeader"
-                  style={{ fontSize: "0.8rem", padding: "0.5rem" }}
+                <Card
+                  className="customCard"
+                  elevation={3}
+                  style={{ height: "400px", color: "#fff" }}
                 >
-                  History
-                </div>
-                <div
-                  className="cardContent"
-                  style={{ overflowY: "auto", maxHeight: "350px" }}
-                >
-                  {/* map iterates over each item,For each transaction in the array, 
+                  <div
+                    className="cardHeader"
+                    style={{ fontSize: "0.8rem", padding: "0.5rem" }}
+                  >
+                    History
+                  </div>
+                  <div
+                    className="cardContent"
+                    style={{ overflowY: "auto", maxHeight: "350px" }}
+                  >
+                    {/* map iterates over each item,For each transaction in the array, 
                                 a new <div> element is created.*/}
-                  {(expandedSection === "overview"
-                    ? mockHistoryData.slice(0, 5)
-                    : mockHistoryData
-                  ).map((transaction, index) => (
-                    <div
-                      className="transaction"
-                      key={index}
-                      style={{
-                        padding: "10px",
-                        borderBottom: "1px solid #eee",
-                      }}
-                    >
-                      <div>
-                        <strong>Date:</strong> {transaction.date}
+                    {(expandedSection === "overview"
+                      ? mockHistoryData.slice(0, 5)
+                      : mockHistoryData
+                    ).map((transaction, index) => (
+                      <div
+                        className="transaction"
+                        key={index}
+                        style={{
+                          padding: "10px",
+                          borderBottom: "1px solid #eee",
+                        }}
+                      >
+                        <div>
+                          <strong>Date:</strong> {transaction.date}
+                        </div>
+                        <div>
+                          <strong>Description:</strong> {transaction.description}
+                        </div>
+                        <div>
+                          <strong>Amount:</strong> {transaction.amount}
+                        </div>
                       </div>
-                      <div>
-                        <strong>Description:</strong> {transaction.description}
-                      </div>
-                      <div>
-                        <strong>Amount:</strong> {transaction.amount}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            </Grid>
-          )}
+                    ))}
+                  </div>
+                </Card>
+              </Grid>
+            )}
           {expandedSection === "assets" && (
             <Grid item xs={12}>
               <Grid container spacing={1} rowSpacing={1}>
