@@ -44,23 +44,6 @@ async def funcTest2():
 async def funcTest3():
     return "Hello, this is home data"
 
-
-@app.get("/jsonData")
-async def funcTest():
-    jsonResult = {
-        "name": "Your name",
-        "Uni-year": 2,
-        "isStudent": True,
-        "hobbies": ["reading", "swimming"]
-    }
-    return jsonResult
-
-
-@app.get("/student/{student_id}")
-async def getStudentId(student_id: int):
-    return {"student_id": student_id}
-
-
 @app.post("/items/", response_model=Item)
 def create_item(item: Item):
     return item
