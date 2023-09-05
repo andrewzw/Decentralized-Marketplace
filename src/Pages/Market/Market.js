@@ -33,7 +33,7 @@ const Market = () => {
   const [featuredItems, setfeaturedItems] = React.useState([]);
 
   React.useEffect(() => {
-    fetch("http://127.0.0.1:8000/featuredItems/")
+    fetch("http://127.0.0.1:8000/getFeaturedItems/") //fetch featured items from mysql database
       .then((response) => response.json())
       .then((data) => setfeaturedItems(data));
   }, []);

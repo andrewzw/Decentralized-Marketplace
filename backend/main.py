@@ -3,14 +3,25 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import mysql.connector
 
-app = FastAPI()
-
 # MySQL database connection configuration
+# If you get an error, change your password encryption on mysql to legacy mode
+# ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password'
+
+#STEP 1: Connect the MySQL in the terminal:
+#mysql -u <username> -p
+#or
+#/usr/local/mysql/bin/mysql -u root -p (for Mac)
+
+#use script
+#sudo mysql -u root -p < movies1.sql 
+#/usr/local/mysql/bin/mysql -u root -p < safespace_script.sql  (for Mac)
+
+app = FastAPI()
 db_config = {
 "host": "localhost",
 "user": "root",
 "password": "password",
-"database": "trial"
+"database": "SafeSpace"
 } 
 
 app.add_middleware(
@@ -20,15 +31,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-featuredItems = [
-    {"name": "Featured 1", "description": "Description", "image": "/src/Assets/market/tech/tech1.jpg", "cat": "Tech", "price": "0.1", "seller": "Andrew"},
-    {"name": "Featured 2", "description": "Description", "image": "/src/Assets/market/art/art1.png", "cat": "Art", "price": "0.1", "seller": "Andrew"},
-    {"name": "Featured 3", "description": "Description", "image": "/src/Assets/market/fashion/fashion1.png", "cat": "Fashion", "price": "0.1", "seller": "Andrew"},
-    {"name": "Featured 4", "description": "Description", "image": "/src/Assets/market/tech/tech2.jpg", "cat": "Tech", "price": "0.1", "seller": "Andrew"},
-]
-
-
 
 @app.get("/featuredItems/")
 async def get_featuredItems():
@@ -50,6 +52,36 @@ async def funcTest():
     }
 
     return jsonResult
+
+@app.get("/getFeaturedItems")
+def get_featuredItems():
+    try:
+        # Establish a database connection
+        connection = mysql.connector.connect(**db_config)
+
+        # Create a cursor to execute SQL queries
+        cursor = connection.cursor()
+
+        # Define the SQL query to retrieve data (e.g., all students)
+        query = "SELECT * FROM featuredItems"
+
+        # Execute the SQL query
+        cursor.execute(query)
+
+        # Fetch all the rows
+        result = cursor.fetchall()
+
+        # Convert the result to a list of dictionaries
+        featuredItems = [dict(zip(cursor.column_names, row)) for row in result]
+
+        # Close the cursor and the database connection
+        cursor.close()
+        connection.close()
+
+        return featuredItems
+
+    except mysql.connector.Error as err:
+        return {"error": f"Error: {err}"}
 
 
 @app.get("/students")
