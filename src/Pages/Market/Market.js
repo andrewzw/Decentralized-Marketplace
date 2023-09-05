@@ -95,7 +95,7 @@ const Market = () => {
       const quantity = itemQuantities[currentItem.name] || 1;
       return acc + currentItem.price * quantity;
     }, 0)
-    .toFixed(6);
+    .toFixed(10);
 
   return (
     <div>
@@ -274,6 +274,7 @@ const Market = () => {
                                 gutterBottom
                                 variant="subtitle1"
                                 component="div"
+                                fontWeight="bold"
                               >
                                 {selectedItem.name}
                               </Typography>
@@ -283,7 +284,7 @@ const Market = () => {
                               </Typography>
 
                               <Typography variant="body2">
-                                {selectedItem.seller}
+                                Seller: {selectedItem.seller}
                               </Typography>
                             </Grid>
 
@@ -325,7 +326,7 @@ const Market = () => {
                           </Grid>
 
                           <Grid item>
-                            <Typography variant="subtitle1" component="div">
+                            <Typography variant="subtitle1" component="div" fontWeight="bold">
                               ETH: {selectedItem.price}
                             </Typography>
                           </Grid>
