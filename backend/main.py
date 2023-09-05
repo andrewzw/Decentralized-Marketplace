@@ -1,10 +1,21 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+import mysql.connector
+
 app = FastAPI()
+
+# MySQL database connection configuration
+db_config = {
+"host": "localhost",
+"user": "root",
+"password": "password",
+"database": "trial"
+} 
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Adjust this to your frontend's origin for security in production
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -17,6 +28,8 @@ featuredItems = [
     {"name": "Featured 4", "description": "Description", "image": "/src/Assets/market/tech/tech2.jpg", "cat": "Tech", "price": "0.1", "seller": "Andrew"},
 ]
 
+
+
 @app.get("/featuredItems/")
 async def get_featuredItems():
     return featuredItems
@@ -27,8 +40,47 @@ class Item(BaseModel):
     price: float
     tax: float = None
 
-# for section 3
+@app.get("/jsonData")
+async def funcTest():
+    jsonResult = {
+        "name": "Your name",
+        "Uni-year": 2,
+        "isStudent": True,
+        "hobbies": ["reading", "swimming"]
+    }
 
+    return jsonResult
+
+
+@app.get("/students")
+def get_students():
+    try:
+        # Establish a database connection
+        connection = mysql.connector.connect(**db_config)
+
+        # Create a cursor to execute SQL queries
+        cursor = connection.cursor()
+
+        # Define the SQL query to retrieve data (e.g., all students)
+        query = "SELECT * FROM students"
+
+        # Execute the SQL query
+        cursor.execute(query)
+
+        # Fetch all the rows
+        result = cursor.fetchall()
+
+        # Convert the result to a list of dictionaries
+        students = [dict(zip(cursor.column_names, row)) for row in result]
+
+        # Close the cursor and the database connection
+        cursor.close()
+        connection.close()
+
+        return students
+
+    except mysql.connector.Error as err:
+        return {"error": f"Error: {err}"}
 
 @app.get("/")
 async def funcTest1():
