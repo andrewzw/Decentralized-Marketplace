@@ -13,7 +13,7 @@ import mysql.connector
 #/usr/local/mysql/bin/mysql -u root -p (for Mac)
 
 #use script
-#sudo mysql -u root -p < movies1.sql 
+#sudo mysql -u root -p < safespace_script.sql 
 #/usr/local/mysql/bin/mysql -u root -p < safespace_script.sql  (for Mac)
 
 app = FastAPI()
