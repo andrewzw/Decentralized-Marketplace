@@ -32,26 +32,22 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/featuredItems/")
-async def get_featuredItems():
-    return featuredItems
+@app.get("/tabsData")
+async def funcTest():
+    jsonResult = [
+        { "value": "All", "label": "All" },
+        { "value": "Tech", "label": "Tech" },
+        { "value": "Art", "label": "Art" },
+        { "value": "Fashion", "label": "Fashion" }
+    ]
+    return jsonResult
+
 
 class Item(BaseModel):
     name: str
     description: str = None
     price: float
     tax: float = None
-
-@app.get("/jsonData")
-async def funcTest():
-    jsonResult = {
-        "name": "Your name",
-        "Uni-year": 2,
-        "isStudent": True,
-        "hobbies": ["reading", "swimming"]
-    }
-
-    return jsonResult
 
 @app.get("/getFeaturedItems")
 def get_featuredItems():
@@ -82,6 +78,37 @@ def get_featuredItems():
 
     except mysql.connector.Error as err:
         return {"error": f"Error: {err}"}
+
+@app.get("/getListedItems")
+def get_listedItems():
+    try:
+        # Establish a database connection
+        connection = mysql.connector.connect(**db_config)
+
+        # Create a cursor to execute SQL queries
+        cursor = connection.cursor()
+
+        # Define the SQL query to retrieve data (e.g., all students)
+        query = "SELECT * FROM listedItems"
+
+        # Execute the SQL query
+        cursor.execute(query)
+
+        # Fetch all the rows
+        result = cursor.fetchall()
+
+        # Convert the result to a list of dictionaries
+        listedItems = [dict(zip(cursor.column_names, row)) for row in result]
+
+        # Close the cursor and the database connection
+        cursor.close()
+        connection.close()
+
+        return listedItems
+
+    except mysql.connector.Error as err:
+        return {"error": f"Error: {err}"}
+
 
 
 @app.get("/students")

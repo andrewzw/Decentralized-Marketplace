@@ -16,7 +16,7 @@ import { useTheme } from "@mui/material/styles";
 import { useMediaQuery } from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
-import { tabsData, listedItems } from "../../Assets/database.js";
+import { useState, useEffect } from "react";
 import "./market.css";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -26,16 +26,26 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 const Market = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const [value, setValue] = React.useState("All");
-  const [selectedItems, setSelectedItems] = React.useState([]);
-  const [itemQuantities, setItemQuantities] = React.useState({});
-  const [searchItem, setSearchItem] = React.useState("");
-  const [featuredItems, setfeaturedItems] = React.useState([]);
+  const [value, setValue] = useState("All");
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [itemQuantities, setItemQuantities] = useState({});
+  const [searchItem, setSearchItem] = useState("");
+  const [featuredItems, setfeaturedItems] = useState([]);
+  const [listedItems, setListedItems] = useState([]);
+  const [tabsData, setTabs] = useState([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetch("http://127.0.0.1:8000/getFeaturedItems/") //fetch featured items from mysql database
       .then((response) => response.json())
       .then((data) => setfeaturedItems(data));
+
+    fetch("http://127.0.0.1:8000/tabsData")     // Fetch the tabs data from the backend
+      .then((response) => response.json())
+      .then((data) => setTabs(data));
+
+    fetch("http://127.0.0.1:8000/getListedItems/") //fetch listed items from mysql database
+      .then((response) => response.json())
+      .then((data) => setListedItems(data));
   }, []);
 
   //toggle add/remove item in cart
@@ -66,7 +76,7 @@ const Market = () => {
   };
 
   //Handle the opening and closing of the snackbar
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleClick = () => {
     setOpen(true);
@@ -119,7 +129,7 @@ const Market = () => {
                         <CardMedia
                           component="img"
                           width="100%"
-                          image={`http://127.0.0.1:8000${item.image}`}
+                          image={item.image}
                           alt={item.name}
                           sx={{
                             borderRadius: "10px",
