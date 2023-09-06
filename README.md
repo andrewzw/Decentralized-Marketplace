@@ -2,6 +2,22 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+
+
+## Known Issues
+ "error": "Error: Authentication plugin 'caching_sha2_password' is not supported" - caching sha2 password is not supported mysql
+ Solutions: 
+ 1) Install mysql connector for python
+ 2) Type : ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password' in MySQL terminal
+
+##Step by Step tutorial to run project - assuming every dependency is installed correctly (Anaconda environment, fastAPI, etc.)
+1) Start MySQL
+2) Run `npm install` in the project folder
+3) Run `npm start` in the project folder
+4) `conda activate myenv` in terminal
+5) Open terminal in `backend` folder and run `mysql -u root -p < safespace_script.sql` OR `/usr/local/mysql/bin/mysql -u root -p < safespace_script.sql` (for Mac)
+6) In `backend` folder, run ` uvicorn main:app --reload` to start fastAPI
+
 ## Available Scripts
 
 In the project directory, you can run:
