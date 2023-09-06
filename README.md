@@ -10,7 +10,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
  1) Install mysql connector for python
  2) Type : ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password' in MySQL terminal
 
-##Step by Step tutorial to run project - assuming every dependency is installed correctly (Anaconda environment, fastAPI, etc.)
+## Step by Step tutorial to run project - assuming every dependency is installed correctly (Anaconda environment, fastAPI, etc.)
 1) Start MySQL
 2) Run `npm install` in the project folder
 3) Run `npm start` in the project folder
@@ -18,8 +18,11 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 5) Open terminal in `backend` folder and run `mysql -u root -p < safespace_script.sql` OR `/usr/local/mysql/bin/mysql -u root -p < safespace_script.sql` (for Mac)
 6) In `backend` folder, run ` uvicorn main:app --reload` to start fastAPI
 
-## Available Scripts
+### Connect to MySQL 
+1) open new terminal to connect to MySQL
+2) Type `mysql -u root -p` OR `/usr/local/mysql/bin/mysql -u root -p` (for Mac)
 
+## Available Scripts
 In the project directory, you can run:
 
 ### `npm start`
