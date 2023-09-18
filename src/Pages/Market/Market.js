@@ -43,7 +43,8 @@ const Market = () => {
       })
       .catch(error => {
         // Handle the error
-        console.error('There was an error fetching the data:', error);
+        console.error('There was an error fetching featured items', error);
+        <Alert severity="error">There was an error fetching featured items!</Alert>
       });
 
     // Fetch the tabs data from the backend
@@ -53,7 +54,8 @@ const Market = () => {
       })
       .catch(error => {
         // Handle the error
-        console.error('There was an error fetching the data:', error);
+        console.error('There was an error fetching tabs data:', error);
+        <Alert severity="error">There was an error fetching tabs data!</Alert>
       });
 
     //fetch listed items from mysql database
@@ -63,8 +65,10 @@ const Market = () => {
       })
       .catch(error => {
         // Handle the error
-        console.error('There was an error fetching the data:', error);
+        console.error('There was an error fetching listed items:', error);
+        <Alert severity="error">There was an error fetching listed items!</Alert>
       });
+
   }, []);
 
   //toggle add/remove item in cart
