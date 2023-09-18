@@ -18,6 +18,7 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import { useState, useEffect } from "react";
 import "./market.css";
+import axios from "axios";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -30,22 +31,40 @@ const Market = () => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [itemQuantities, setItemQuantities] = useState({});
   const [searchItem, setSearchItem] = useState("");
-  const [featuredItems, setfeaturedItems] = useState([]);
+  const [featuredItems, setFeaturedItems] = useState([]);
   const [listedItems, setListedItems] = useState([]);
   const [tabsData, setTabs] = useState([]);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/getFeaturedItems/") //fetch featured items from mysql database
-      .then((response) => response.json())
-      .then((data) => setfeaturedItems(data));
+    //fetch featured items from mysql database
+    axios.get('http://127.0.0.1:8000/getFeaturedItems/')
+      .then(response => {
+        setFeaturedItems(response.data);
+      })
+      .catch(error => {
+        // Handle the error
+        console.error('There was an error fetching the data:', error);
+      });
 
-    fetch("http://127.0.0.1:8000/tabsData")     // Fetch the tabs data from the backend
-      .then((response) => response.json())
-      .then((data) => setTabs(data));
+    // Fetch the tabs data from the backend
+    axios.get('http://127.0.0.1:8000/tabsData')
+      .then(response => {
+        setTabs(response.data);
+      })
+      .catch(error => {
+        // Handle the error
+        console.error('There was an error fetching the data:', error);
+      });
 
-    fetch("http://127.0.0.1:8000/getListedItems/") //fetch listed items from mysql database
-      .then((response) => response.json())
-      .then((data) => setListedItems(data));
+    //fetch listed items from mysql database
+    axios.get('http://127.0.0.1:8000/getListedItems/')
+      .then(response => {
+        setListedItems(response.data);
+      })
+      .catch(error => {
+        // Handle the error
+        console.error('There was an error fetching the data:', error);
+      });
   }, []);
 
   //toggle add/remove item in cart
