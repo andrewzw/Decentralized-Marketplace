@@ -166,7 +166,7 @@ const Market = () => {
       const quantity = itemQuantities[currentItem.name] || 1;
       return acc + currentItem.price * quantity;
     }, 0)
-    .toFixed(10);
+    .toFixed(6);
 
   return (
     <div>

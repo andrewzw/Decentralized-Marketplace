@@ -59,7 +59,7 @@ def get_featuredItems():
         cursor = connection.cursor()
 
         # Define the SQL query to retrieve data (e.g., all students)
-        query = "SELECT * FROM featuredItems"
+        query = "SELECT * FROM listedItems WHERE featured = 1"
 
         # Execute the SQL query
         cursor.execute(query)
