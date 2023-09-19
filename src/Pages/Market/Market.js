@@ -35,41 +35,86 @@ const Market = () => {
   const [listedItems, setListedItems] = useState([]);
   const [tabsData, setTabs] = useState([]);
 
+  //Error handling
+  const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false);
+  const [errorMessages, setErrorMessages] = useState([]);
+  const handleErrorSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setErrorSnackbarOpen(false);
+  };
+
+  const fetchApiData = async (url, setData, errorMessage) => {
+    let tempErrorMessage = '';
+    let errorLogged = false;
+
+    try {
+      const response = await axios.get(url); //fetch data from url
+      if ('error' in response.data) {
+        if (!errorLogged) {
+          tempErrorMessage += errorMessage; //append error message - RESPOND error
+          errorLogged = true; //only log error once
+        }
+        console.log(response.data.error);
+      } else if (Array.isArray(response.data) && response.data.length === 0) { //add error message if no data
+        tempErrorMessage += 'No items available. ';
+      } else {
+        setData(response.data); //set data if no error
+      }
+    } catch (error) {
+      if (!errorLogged) {
+        tempErrorMessage += errorMessage; //append error message - FECTHING error
+        errorLogged = true;
+      }
+    }
+
+    return tempErrorMessage;
+  };
+
+
   useEffect(() => {
-    //fetch featured items from mysql database
-    axios.get('http://127.0.0.1:8000/getFeaturedItems/')
-      .then(response => {
-        setFeaturedItems(response.data);
-      })
-      .catch(error => {
-        // Handle the error
-        console.error('There was an error fetching featured items', error);
-        <Alert severity="error">There was an error fetching featured items!</Alert>
-      });
+    const fetchData = async () => {
+      let allErrorMessages = [];
 
-    // Fetch the tabs data from the backend
-    axios.get('http://127.0.0.1:8000/tabsData')
-      .then(response => {
-        setTabs(response.data);
-      })
-      .catch(error => {
-        // Handle the error
-        console.error('There was an error fetching tabs data:', error);
-        <Alert severity="error">There was an error fetching tabs data!</Alert>
-      });
+      const featuredItemsError = await fetchApiData(
+        'http://127.0.0.1:8000/getFeaturedItems/', //url
+        setFeaturedItems, //setData
+        'Error fetching featured items. ' //errorMessage
+      );
+      if (featuredItemsError) allErrorMessages.push(featuredItemsError);
 
-    //fetch listed items from mysql database
-    axios.get('http://127.0.0.1:8000/getListedItems/')
-      .then(response => {
-        setListedItems(response.data);
-      })
-      .catch(error => {
-        // Handle the error
-        console.error('There was an error fetching listed items:', error);
-        <Alert severity="error">There was an error fetching listed items!</Alert>
-      });
+      const tabsDataError = await fetchApiData(
+        'http://127.0.0.1:8000/tabsData',
+        setTabs,
+        'Error fetching tabs data. '
+      );
+      if (tabsDataError) allErrorMessages.push(tabsDataError);
 
+      const listedItemsError = await fetchApiData(
+        'http://127.0.0.1:8000/getListedItems/',
+        setListedItems,
+        'Error fetching listed items. '
+      );
+      if (listedItemsError) allErrorMessages.push(listedItemsError);
+
+      if (allErrorMessages.length > 0) {
+        setErrorMessages((prevMessages) => [...prevMessages, ...allErrorMessages]);
+        setErrorSnackbarOpen(true);
+      }
+
+      if (allErrorMessages.length > 0) {
+        setErrorMessages(allErrorMessages); // set new error messages
+        setErrorSnackbarOpen(true); // open snackbar
+      } else {
+        setErrorMessages([]); // clear any existing error messages
+      }
+    };
+
+    fetchData(); //call function
   }, []);
+
+
 
   //toggle add/remove item in cart
   const handleItemClick = (item, action = "toggle") => {
@@ -122,6 +167,20 @@ const Market = () => {
 
   return (
     <div>
+      <Snackbar
+        open={errorSnackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleErrorSnackbarClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        {/* Display all error messages */}
+        <Alert onClose={handleErrorSnackbarClose} severity="error">
+          {errorMessages.map((message, index) => (
+            <div key={index}>{message}</div>
+          ))}
+        </Alert>
+      </Snackbar>
+
       <h1>Market</h1>
       <Grid
         container
@@ -137,7 +196,7 @@ const Market = () => {
           <div className="section1">
             <h2>Featured Items</h2>
             <Grid container spacing={2} rowSpacing={1}>
-              {featuredItems.map((item, index) => (
+              {Array.isArray(featuredItems) && featuredItems.map((item, index) => (
                 <Grid item xs={6} md={3} key={index}>
                   <Card
                     onClick={() => handleItemClick(item)}
@@ -187,7 +246,7 @@ const Market = () => {
                       scrollButtons="auto"
                       className="section2-tabs"
                     >
-                      {tabsData.map((tab) => (
+                      {Array.isArray(tabsData) && tabsData.map((tab) => (
                         <Tab
                           key={tab.value}
                           value={tab.value}
@@ -223,7 +282,7 @@ const Market = () => {
                 </Grid>
 
                 {/* filter item based on the search input */}
-                {listedItems
+                {Array.isArray(listedItems) && listedItems
                   .filter(
                     (item) =>
                       (value === "All" || item.cat === value) &&
