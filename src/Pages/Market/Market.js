@@ -19,8 +19,9 @@ import { useTheme } from "@mui/material/styles";
 import { useMediaQuery } from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
-import { tabsData, featuredItems, listedItems } from "../../Assets/database.js";
+import { useState, useEffect } from "react";
 import "./market.css";
+import axios from "axios";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -29,10 +30,94 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 const Market = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const [value, setValue] = React.useState("All");
-  const [selectedItems, setSelectedItems] = React.useState([]);
-  const [itemQuantities, setItemQuantities] = React.useState({});
-  const [searchItem, setSearchItem] = React.useState("");
+  const [value, setValue] = useState("All");
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [itemQuantities, setItemQuantities] = useState({});
+  const [searchItem, setSearchItem] = useState("");
+  const [featuredItems, setFeaturedItems] = useState([]);
+  const [listedItems, setListedItems] = useState([]);
+  const [tabsData, setTabs] = useState([]);
+
+  //Error handling
+  const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false);
+  const [errorMessages, setErrorMessages] = useState([]);
+  const handleErrorSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setErrorSnackbarOpen(false);
+  };
+
+  const fetchApiData = async (url, setData, errorMessage) => {
+    let tempErrorMessage = '';
+    let errorLogged = false;
+
+    try {
+      const response = await axios.get(url); //fetch data from url
+      if ('error' in response.data) {
+        if (!errorLogged) {
+          tempErrorMessage += errorMessage; //append error message - RESPOND error
+          errorLogged = true; //only log error once
+        }
+        console.log(response.data.error);
+      } else if (Array.isArray(response.data) && response.data.length === 0) { //add error message if no data
+        tempErrorMessage += 'No items available. ';
+      } else {
+        setData(response.data); //set data if no error
+      }
+    } catch (error) {
+      if (!errorLogged) {
+        tempErrorMessage += errorMessage; //append error message - FECTHING error
+        errorLogged = true;
+      }
+    }
+
+    return tempErrorMessage;
+  };
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      let allErrorMessages = [];
+
+      const featuredItemsError = await fetchApiData(
+        'http://127.0.0.1:8000/getFeaturedItems/', //url
+        setFeaturedItems, //setData
+        'Error fetching featured items. ' //errorMessage
+      );
+      if (featuredItemsError) allErrorMessages.push(featuredItemsError);
+
+      const tabsDataError = await fetchApiData(
+        'http://127.0.0.1:8000/tabsData',
+        setTabs,
+        'Error fetching tabs data. '
+      );
+      if (tabsDataError) allErrorMessages.push(tabsDataError);
+
+      const listedItemsError = await fetchApiData(
+        'http://127.0.0.1:8000/getListedItems/',
+        setListedItems,
+        'Error fetching listed items. '
+      );
+      if (listedItemsError) allErrorMessages.push(listedItemsError);
+
+      if (allErrorMessages.length > 0) {
+        setErrorMessages((prevMessages) => [...prevMessages, ...allErrorMessages]);
+        setErrorSnackbarOpen(true);
+      }
+
+      if (allErrorMessages.length > 0) {
+        setErrorMessages(allErrorMessages); // set new error messages
+        setErrorSnackbarOpen(true); // open snackbar
+      } else {
+        setErrorMessages([]); // clear any existing error messages
+      }
+    };
+
+    fetchData(); //call function
+  }, []);
+
+
 
   //toggle add/remove item in cart
   const handleItemClick = (item, action = "toggle") => {
@@ -62,7 +147,7 @@ const Market = () => {
   };
 
   //Handle the opening and closing of the snackbar
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleClick = () => {
     setOpen(true);
@@ -81,10 +166,24 @@ const Market = () => {
       const quantity = itemQuantities[currentItem.name] || 1;
       return acc + currentItem.price * quantity;
     }, 0)
-    .toFixed(6);
+    .toFixed(10);
 
   return (
     <div>
+      <Snackbar
+        open={errorSnackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleErrorSnackbarClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        {/* Display all error messages */}
+        <Alert onClose={handleErrorSnackbarClose} severity="error">
+          {errorMessages.map((message, index) => (
+            <div key={index}>{message}</div>
+          ))}
+        </Alert>
+      </Snackbar>
+
       <h1>Market</h1>
       <Grid
         container
@@ -100,7 +199,7 @@ const Market = () => {
           <div className="section1">
             <h2>Featured Items</h2>
             <Grid container spacing={2} rowSpacing={1}>
-              {featuredItems.map((item, index) => (
+              {Array.isArray(featuredItems) && featuredItems.map((item, index) => (
                 <Grid item xs={6} md={3} key={index}>
                   <Card
                     onClick={() => handleItemClick(item)}
@@ -150,7 +249,7 @@ const Market = () => {
                       scrollButtons="auto"
                       className="section2-tabs"
                     >
-                      {tabsData.map((tab) => (
+                      {Array.isArray(tabsData) && tabsData.map((tab) => (
                         <Tab
                           key={tab.value}
                           value={tab.value}
@@ -186,7 +285,7 @@ const Market = () => {
                 </Grid>
 
                 {/* filter item based on the search input */}
-                {listedItems
+                {Array.isArray(listedItems) && listedItems
                   .filter(
                     (item) =>
                       (value === "All" || item.cat === value) &&
@@ -260,6 +359,7 @@ const Market = () => {
                                 gutterBottom
                                 variant="subtitle1"
                                 component="div"
+                                fontWeight="bold"
                               >
                                 {selectedItem.name}
                               </Typography>
@@ -269,7 +369,7 @@ const Market = () => {
                               </Typography>
 
                               <Typography variant="body2">
-                                {selectedItem.seller}
+                                Seller: {selectedItem.seller}
                               </Typography>
                             </Grid>
 
@@ -311,7 +411,7 @@ const Market = () => {
                           </Grid>
 
                           <Grid item>
-                            <Typography variant="subtitle1" component="div">
+                            <Typography variant="subtitle1" component="div" fontWeight="bold">
                               ETH: {selectedItem.price}
                             </Typography>
                           </Grid>
