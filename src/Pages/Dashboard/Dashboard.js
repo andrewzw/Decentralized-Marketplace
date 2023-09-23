@@ -12,7 +12,8 @@ import CardMedia from "@mui/material/CardMedia";
 import axios from "axios";
 import Button from "@mui/material/Button";
 import {mockHistoryData } from "../../Assets/database.js";
-
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 import {
   Chart as ChartJS,
   BarElement,
@@ -167,7 +168,7 @@ const fetchApiData = async (url, setData, errorMessage) => {
       const assetItemsError = await fetchApiData(
         'http://127.0.0.1:8000/getAssetItems/', //url
         setAssetItem, //setData
-        'Error fetching featured items. ' //errorMessage
+        'Error fetching asset items. ' //errorMessage
       );
       if (assetItemsError) allErrorMessages.push(assetItemsError);
 
@@ -190,6 +191,19 @@ const fetchApiData = async (url, setData, errorMessage) => {
   const [expandedSection, setExpandedSection] = useState("overview"); //overview will lead to original state of page
   return (
     <div>
+      <Snackbar
+        open={errorSnackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleErrorSnackbarClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        {/* Display all error messages */}
+        <Alert onClose={handleErrorSnackbarClose} severity="error">
+          {errorMessages.map((message, index) => (
+            <div key={index}>{message}</div>
+          ))}
+        </Alert>
+      </Snackbar>
       <h1 style={{ marginBottom: "0.1rem" }}>My Dashboard</h1>
       <div
         style={{
