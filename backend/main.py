@@ -110,6 +110,35 @@ def get_listedItems():
         return {"error": f"Error: {err}"}
 
 
+@app.get("/getAssetItems")
+def get_assetItems():
+    try:
+        #Establish database connection
+        connection = mysql.connector.connect(**db_config)
+
+        # Create a cursor to execute SQL queries
+        cursor = connection.cursor()
+
+        # Define the SQL query to retrieve data (e.g., all students)
+        query = "SELECT * FROM assetItems"
+
+        # Execute the SQL query
+        cursor.execute(query)
+
+        # Fetch all the rows
+        result = cursor.fetchall()
+
+        # Convert the result to a list of dictionaries
+        assetItems = [dict(zip(cursor.column_names, row)) for row in result]
+
+        # Close the cursor and the database connection
+        cursor.close()
+        connection.close()
+
+        return assetItems
+    
+    except mysql.connector.Error as err:
+        return {"error": f"Error: {err}"}
 
 @app.get("/students")
 def get_students():

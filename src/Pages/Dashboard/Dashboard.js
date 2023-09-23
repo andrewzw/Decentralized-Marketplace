@@ -9,9 +9,9 @@ import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import { CardActionArea } from "@mui/material";
 import CardMedia from "@mui/material/CardMedia";
-
+import axios from "axios";
 import Button from "@mui/material/Button";
-import { assetsItems, mockHistoryData } from "../../Assets/database.js";
+import {mockHistoryData } from "../../Assets/database.js";
 
 import {
   Chart as ChartJS,
@@ -106,7 +106,12 @@ const chartOptions = {
   },
 };
 
+
+
+
+//Dashboard elements
 const Dashboard = () => {
+  const [assetsItems,setAssetItem] = useState([])
   const navigate = useNavigate(); //navigate within page
   useEffect(() => {
     if (!localStorage.getItem("isLoggedIn")) {
@@ -118,6 +123,69 @@ const Dashboard = () => {
     localStorage.removeItem("isLoggedIn"); // Remove the flag from localStorage
     navigate("/Login"); // Redirect to the login page
   };
+
+//Error handling + fetch data
+const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false);
+const [errorMessages, setErrorMessages] = useState([]);
+const handleErrorSnackbarClose = (event, reason) => {
+  if (reason === 'clickaway') {
+    return;
+  }
+  setErrorSnackbarOpen(false);
+};
+
+const fetchApiData = async (url, setData, errorMessage) => {
+  let tempErrorMessage = '';
+  let errorLogged = false;
+
+  try {
+    const response = await axios.get(url); //fetch data from url
+    if ('error' in response.data) {
+      if (!errorLogged) {
+        tempErrorMessage += errorMessage; //append error message - RESPOND error
+        errorLogged = true; //only log error once
+      }
+      console.log(response.data.error);
+    } else if (Array.isArray(response.data) && response.data.length === 0) { //add error message if no data
+      tempErrorMessage += 'No items available. ';
+    } else {
+      setData(response.data); //set data if no error
+    }
+  } catch (error) {
+    if (!errorLogged) {
+      tempErrorMessage += errorMessage; //append error message - FECTHING error
+      errorLogged = true;
+    }
+  }
+
+  return tempErrorMessage;
+};
+  useEffect(() => {
+    const fetchData = async () => {
+      let allErrorMessages = [];
+
+      const assetItemsError = await fetchApiData(
+        'http://127.0.0.1:8000/getAssetItems/', //url
+        setAssetItem, //setData
+        'Error fetching featured items. ' //errorMessage
+      );
+      if (assetItemsError) allErrorMessages.push(assetItemsError);
+
+      if (allErrorMessages.length > 0) {
+        setErrorMessages((prevMessages) => [...prevMessages, ...allErrorMessages]);
+        setErrorSnackbarOpen(true);
+      }
+
+      if (allErrorMessages.length > 0) {
+        setErrorMessages(allErrorMessages); // set new error messages
+        setErrorSnackbarOpen(true); // open snackbar
+      } else {
+        setErrorMessages([]); // clear any existing error messages
+      }
+    };
+
+    fetchData(); //call function
+  }, []);
 
   const [expandedSection, setExpandedSection] = useState("overview"); //overview will lead to original state of page
   return (
