@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import mysql.connector
+from web3 import Web3
 
 # MySQL database connection configuration
 # If you get an error, change your password encryption on mysql to legacy mode
@@ -31,6 +32,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/")
+async def funcTest1():
+    return "Hello, this is fastAPI data"
 
 @app.get("/tabsData")
 async def funcTest():
@@ -110,51 +115,79 @@ def get_listedItems():
         return {"error": f"Error: {err}"}
 
 
-
-@app.get("/students")
-def get_students():
-    try:
-        # Establish a database connection
-        connection = mysql.connector.connect(**db_config)
-
-        # Create a cursor to execute SQL queries
-        cursor = connection.cursor()
-
-        # Define the SQL query to retrieve data (e.g., all students)
-        query = "SELECT * FROM students"
-
-        # Execute the SQL query
-        cursor.execute(query)
-
-        # Fetch all the rows
-        result = cursor.fetchall()
-
-        # Convert the result to a list of dictionaries
-        students = [dict(zip(cursor.column_names, row)) for row in result]
-
-        # Close the cursor and the database connection
-        cursor.close()
-        connection.close()
-
-        return students
-
-    except mysql.connector.Error as err:
-        return {"error": f"Error: {err}"}
-
 @app.get("/")
 async def funcTest1():
-    return "Hello, this is fastAPI data"
+    #Configure Ganache
+    w3 = Web3(Web3.HTTPProvider("HTTP://127.0.0.1:7545"))
+    #Default is PORT 1337 for Ganache
+    chan_id = 1337
+    #Found in account
+    my_address = ""
+    private_key = ""
+
+    with open("./SimpleStorage.sol", "r") as file:
+        simple_storage_file = file.read()
+        
+    install_solc("0.6.0")
+    compiled_sol = compile_standard(
+        {
+            "language": "Solidity",
+            "sources": {"SimpleStorage.sol": {"content": simple_storage_file}},
+            "settings": {
+                "outputSelection": {
+                    "*": {"*": ["abi", "metadata", "evm.bytecode", "evm.sourceMap"]}
+                }
+            },
+        },
+        solc_version="0.6.0",
+    )
+
+    with open("compiled_code.json", "w") as file:
+        json.dump(compiled_sol, file)
+
+    # get bytecode
+    bytecode = compiled_sol["contracts"]["SimpleStorage.sol"]["SimpleStorage"]["evm"]["bytecode"]["object"]
+
+    # get abi
+    abi = compiled_sol["contracts"]["SimpleStorage.sol"]["SimpleStorage"]["abi"]
 
 
-@app.get("/getAboutData")
-async def funcTest2():
-    return "Hello, this is about us data"
+    SimpleStorage = w3.eth.contract(abi=abi, bytecode=bytecode)
+
+    nonce = w3.eth.get_transaction_count(my_address)
+
+    transaction = SimpleStorage.constructor().build_transaction(
+        {
+            "chainId": chain_id,
+            "gasPrice": w3.eth.gas_price,
+            "from": my_address,
+            "nonce": nonce,
+        }
+    )
+    transaction.pop('to')
 
 
-@app.get("/getHomeData")
-async def funcTest3():
-    return "Hello, this is home data"
+    signed_txn = w3.eth.account.sign_transaction(transaction, private_key=private_key)
+    tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+    tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
 
-@app.post("/items/", response_model=Item)
-def create_item(item: Item):
-    return item
+
+    simple_storage = w3.eth.contract(address=tx_receipt.contractAddress, abi=abi)
+
+    store_transaction = simple_storage.functions.store(67).build_transaction(
+        {
+            "chainId": chain_id,
+            "gasPrice": w3.eth.gas_price,
+            "from": my_address,
+            "nonce": nonce + 1,
+        }
+    )
+
+    signed_store_txn = w3.eth.account.sign_transaction(store_transaction, private_key=private_key)
+    send_store_tx = w3.eth.send_raw_transaction(signed_store_txn.rawTransaction)
+    tx_receipt = w3.eth.wait_for_transaction_receipt(send_store_tx)
+
+    
+    return "Hello, this is contract deploy preocess"
+
+
