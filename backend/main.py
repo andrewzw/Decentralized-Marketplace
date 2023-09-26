@@ -125,7 +125,7 @@ async def funcTest1():
     w3 = Web3(Web3.HTTPProvider("HTTP://127.0.0.1:7545"))
     #Default is 1337 for Ganache
     chain_id = 1337
-    #Found in account
+    #Found in account REQUIRED
     my_address = "0x03db7fE88Bf4a8bc3Ba191883D26F8344D7B3bdB"
     private_key = "0xc90671f46e9ee7dfeb8c1985be2d568cce861b1a49946b6e90b1573278cdfe89"
 
@@ -183,7 +183,7 @@ async def buy_item(token_id: int, price: float):
     w3 = Web3(Web3.HTTPProvider("HTTP://127.0.0.1:7545"))
     #Default is 1337 for Ganache
     chain_id = 1337
-    #Found in account
+    #Found in account REQUIRED
     my_address = "0x03db7fE88Bf4a8bc3Ba191883D26F8344D7B3bdB"
     private_key = "0xc90671f46e9ee7dfeb8c1985be2d568cce861b1a49946b6e90b1573278cdfe89"
 
@@ -192,7 +192,8 @@ async def buy_item(token_id: int, price: float):
     with open("compiled_code.json", "r") as file:
         compiled_sol = json.load(file)
     abi = compiled_sol["contracts"]["SmartContract.sol"]["SmartContract"]["abi"]
-    contract_address = "your_contract_address_here"  # Replace with your contract address
+    # Replace with your contract address REQUIRED
+    contract_address = "0x6eeb357ABF9F99e402207715DbBC65BF6880F9E3"  
 
     smart_contract = w3.eth.contract(address=contract_address, abi=abi)
 
