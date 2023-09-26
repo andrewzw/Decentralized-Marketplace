@@ -48,6 +48,7 @@ const Market = () => {
     setErrorSnackbarOpen(false);
   };
 
+  //Function to Fetch data from backend and handle errors
   const fetchApiData = async (url, setData, errorMessage) => {
     let tempErrorMessage = '';
     let errorLogged = false;
@@ -75,7 +76,7 @@ const Market = () => {
     return tempErrorMessage;
   };
 
-
+  //Call to backend to fetch data
   useEffect(() => {
     const fetchData = async () => {
       let allErrorMessages = [];
