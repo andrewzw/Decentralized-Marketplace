@@ -176,6 +176,9 @@ async def funcTest1():
 
 @app.post("/buyItem")
 async def buy_item(token_id: int, price: float):
+    #Debug
+    print("Token ID:", token_id)
+    print("Price:", price)
     #Configure Ganache
     w3 = Web3(Web3.HTTPProvider("HTTP://127.0.0.1:7545"))
     #Default is 1337 for Ganache
