@@ -45,6 +45,30 @@ INSERT INTO assetItems(name, description, image, cat, price, seller, featured) V
 INSERT INTO assetItems(name, description, image, cat, price, seller, featured) VALUE ("Item 7", "Item 7 Description", "https://i.ibb.co/YDnrM2r/art3.png", "Art", "0.123456789", "Yuan", 0);
 INSERT INTO assetItems(name, description, image, cat, price, seller, featured) VALUE ("Item 8", "Item 8 Description", "https://i.ibb.co/Jv5f5Jd/art4.png", "Art", "0.123456789", "Yuan", 0);
 
+-- User table--
+CREATE TABLE users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    wallet VARCHAR(255) NOT NULL,
+    balance DECIMAL(10, 2) NOT NULL,
+    UNIQUE (wallet));
+
+
+INSERT INTO users (wallet, balance) VALUES ('cat-dog-cat-bob', 100.00);
+INSERT INTO users (wallet, balance) VALUES ('dog-cat-bob-cat', 50.00);
+
+-- Bought table--
+CREATE TABLE bought (
+    user_id INT,
+    item_id INT,
+    purchase_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (item_id) REFERENCES listedItems(item_id)
+);
+
+-- Insert some sample bought items
+INSERT INTO bought (user_id, item_id) VALUES (1, 1); -- us1 bought Item 1
+INSERT INTO bought (user_id, item_id) VALUES (1, 2); -- us1 bought Item 2
+INSERT INTO bought (user_id, item_id) VALUES (2, 3); -- us3 bought Item 3
 
 
 -- https://i.ibb.co/ChYQdQC/art1.png

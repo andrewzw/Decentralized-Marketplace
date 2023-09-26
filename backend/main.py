@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI,HTTPException
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import mysql.connector
@@ -23,6 +23,10 @@ db_config = {
 "password": "password",
 "database": "SafeSpace"
 } 
+
+# Define Pydantic model
+class Wallet(BaseModel):
+    wallet: str
 
 app.add_middleware(
     CORSMiddleware,
@@ -49,6 +53,41 @@ class Item(BaseModel):
     price: float
     tax: float = None
 
+@app.post("/verifyWallet")
+async def verify_wallet(wallet: Wallet):
+    wallet_str = wallet.wallet
+    
+    try:
+        # Establish a database connection
+        connection = mysql.connector.connect(**db_config)
+        
+        # Create a cursor to execute SQL queries
+        cursor = connection.cursor()
+        
+        # Define the SQL query to check if the wallet exists
+        query = "SELECT * FROM users WHERE wallet = %s"
+        
+        # Execute the SQL query with the wallet parameter
+        cursor.execute(query, (wallet_str,))
+        
+        # Fetch the result. If there is any result, the wallet exists.
+        result = cursor.fetchone()
+        
+        # Close the cursor and the database connection
+        cursor.close()
+        connection.close()
+        
+        # If the wallet exists, return a success message or status
+        if result:
+            return {"status": "success", "message": "Wallet verified"}
+        else:
+            # If the wallet does not exist, return an error message or status
+            raise HTTPException(status_code=404, detail="Wallet not found")
+    
+    except mysql.connector.Error as err:
+        # If a database error occurs, return an error message
+        return {"error": f"Error: {err}"}
+    
 @app.get("/getFeaturedItems")
 def get_featuredItems():
     try:

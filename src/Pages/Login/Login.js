@@ -9,22 +9,40 @@ import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import "./login.css";
-
+import axios from "axios";
 function Login() {
   const navigate = useNavigate();
   const [wallet, setWallet] = useState(""); // assuming a wallet string for prototype
 
-  function handleLogin() {
+  async function handleLogin() {
     if (wallet) {
-      // Just a simple check to see if something was entered
-      localStorage.setItem("isLoggedIn", "true");
-      navigate("/Dashboard");
+      try {
+        console.log("Sending wallet:", wallet);
+        // Send a POST request to the /verifyWallet endpoint with the wallet string
+        const response = await axios.post("http://127.0.0.1:8000/verifyWallet", {
+          wallet,
+        });
+        console.log("Response data:", response.data);
+        // Check if the wallet exists in the database
+        if (response.data.status === "success") {
+          localStorage.setItem("isLoggedIn", "true");
+          navigate("/Dashboard");
+        } else {
+          alert("Wallet does not exist. Please sign up.");
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 404) {
+          alert("Wallet does not exist. Please sign up.");
+        } else {
+          console.error("Error verifying wallet:", error);
+          alert("Error verifying wallet. Please try again.");
+        }
+      }
     } else {
-      alert(
-        "Please enter your wallet info (it can be anything for this prototype)"
-      );
+      alert("Please enter your wallet info");
     }
-  }
+  };
+  
 
   return (
     <div>
