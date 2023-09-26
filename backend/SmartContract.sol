@@ -11,11 +11,21 @@ contract SmartContract {
         string seller;
     }
 
-    mapping(uint256 => Item) public items; // Token ID to Item
+    struct Transaction {
+        address toAddress;
+        address fromAddress;
+        uint256 price;
+        uint256 item;
+    }
+
+    mapping(uint256 => Item) public items;
+    mapping(uint256 => Transaction) public transactions;
 
     address public owner;
+    uint256 public transactionCount = 0;
 
     event ItemPurchased(uint256 indexed tokenId, address buyer, uint256 price, uint256 time);
+    event TransactionAdded(uint256 indexed transactionId, address toAddress, address fromAddress, uint256 price, uint256 item);
 
     constructor() public {
         owner = msg.sender;
@@ -34,11 +44,21 @@ contract SmartContract {
         items[12] = Item("Item 12", "Item 12 Description", "https://i.ibb.co/YZtrQ36/fashion4.jpg", "Fashion", 123456789, "Tom");
     }
 
-
     function buyItem(uint256 _tokenId) public payable {
         require(items[_tokenId].price > 0, "Item does not exist");
         require(msg.value == items[_tokenId].price, "Incorrect ETH value sent");
 
+        // Add transaction
+        transactions[transactionCount] = Transaction(owner, msg.sender, items[_tokenId].price, _tokenId);
+        emit TransactionAdded(transactionCount, owner, msg.sender, items[_tokenId].price, _tokenId);
+        transactionCount++;
+
         emit ItemPurchased(_tokenId, msg.sender, items[_tokenId].price, block.timestamp);
+    }
+
+    function addTransaction(address _toAddress, address _fromAddress, uint256 _price, uint256 _item) public {
+        transactions[transactionCount] = Transaction(_toAddress, _fromAddress, _price, _item);
+        emit TransactionAdded(transactionCount, _toAddress, _fromAddress, _price, _item);
+        transactionCount++;
     }
 }
