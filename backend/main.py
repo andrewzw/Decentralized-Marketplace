@@ -1,8 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import mysql.connector
 from web3 import Web3
+import os
+from solcx import compile_standard, install_solc
+import json
+
 
 # MySQL database connection configuration
 # If you get an error, change your password encryption on mysql to legacy mode
@@ -115,24 +119,24 @@ def get_listedItems():
         return {"error": f"Error: {err}"}
 
 
-@app.get("/")
+@app.get("/deployContract")
 async def funcTest1():
     #Configure Ganache
     w3 = Web3(Web3.HTTPProvider("HTTP://127.0.0.1:7545"))
-    #Default is PORT 1337 for Ganache
-    chan_id = 1337
+    #Default is 1337 for Ganache
+    chain_id = 1337
     #Found in account
-    my_address = ""
-    private_key = ""
+    my_address = "0xfbEF9a0eC422856aD709a4d399F82FCF924d2bBe"
+    private_key = "0x261ee38e2ad860658c83b6cbb32c3d82644cd2e40a038f666e285ac835d9420c"
 
-    with open("./SimpleStorage.sol", "r") as file:
+    with open("./SmartContract.sol", "r") as file:
         simple_storage_file = file.read()
         
     install_solc("0.6.0")
     compiled_sol = compile_standard(
         {
             "language": "Solidity",
-            "sources": {"SimpleStorage.sol": {"content": simple_storage_file}},
+            "sources": {"SmartContract.sol": {"content": smart_contract_file}},
             "settings": {
                 "outputSelection": {
                     "*": {"*": ["abi", "metadata", "evm.bytecode", "evm.sourceMap"]}
@@ -146,17 +150,17 @@ async def funcTest1():
         json.dump(compiled_sol, file)
 
     # get bytecode
-    bytecode = compiled_sol["contracts"]["SimpleStorage.sol"]["SimpleStorage"]["evm"]["bytecode"]["object"]
+    bytecode = compiled_sol["contracts"]["SmartContract.sol"]["SmartContract"]["evm"]["bytecode"]["object"]
 
     # get abi
-    abi = compiled_sol["contracts"]["SimpleStorage.sol"]["SimpleStorage"]["abi"]
+    abi = compiled_sol["contracts"]["SmartContract.sol"]["SmartContract"]["abi"]
 
 
-    SimpleStorage = w3.eth.contract(abi=abi, bytecode=bytecode)
+    SmartContract = w3.eth.contract(abi=abi, bytecode=bytecode)
 
     nonce = w3.eth.get_transaction_count(my_address)
 
-    transaction = SimpleStorage.constructor().build_transaction(
+    transaction = SmartContract.constructor().build_transaction(
         {
             "chainId": chain_id,
             "gasPrice": w3.eth.gas_price,
@@ -191,3 +195,13 @@ async def funcTest1():
     return "Hello, this is contract deploy preocess"
 
 
+@app.post("/buyItem")
+async def buy_item(token_id: int, price: float):
+    # Web3 and contract setup here (similar to deploy_contract)
+    # ...
+
+    # Build and send the transaction to buy an item
+    # Update the database to reflect the purchase
+    # ...
+
+    return {"status": "Item purchased"}
