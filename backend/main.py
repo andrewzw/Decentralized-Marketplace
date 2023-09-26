@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import mysql.connector
@@ -126,11 +126,11 @@ async def funcTest1():
     #Default is 1337 for Ganache
     chain_id = 1337
     #Found in account
-    my_address = "0xfbEF9a0eC422856aD709a4d399F82FCF924d2bBe"
-    private_key = "0x261ee38e2ad860658c83b6cbb32c3d82644cd2e40a038f666e285ac835d9420c"
+    my_address = "0x03db7fE88Bf4a8bc3Ba191883D26F8344D7B3bdB"
+    private_key = "0xc90671f46e9ee7dfeb8c1985be2d568cce861b1a49946b6e90b1573278cdfe89"
 
     with open("./SmartContract.sol", "r") as file:
-        simple_storage_file = file.read()
+        smart_contract_file = file.read()
         
     install_solc("0.6.0")
     compiled_sol = compile_standard(
@@ -155,11 +155,9 @@ async def funcTest1():
     # get abi
     abi = compiled_sol["contracts"]["SmartContract.sol"]["SmartContract"]["abi"]
 
-
+    # Deploy the contract
     SmartContract = w3.eth.contract(abi=abi, bytecode=bytecode)
-
     nonce = w3.eth.get_transaction_count(my_address)
-
     transaction = SmartContract.constructor().build_transaction(
         {
             "chainId": chain_id,
@@ -170,38 +168,47 @@ async def funcTest1():
     )
     transaction.pop('to')
 
+    signed_txn = w3.eth.account.sign_transaction(transaction, private_key=private_key)
+    tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+    tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
+
+    return {"Smart Contract deployed"}
+
+@app.post("/buyItem")
+async def buy_item(token_id: int, price: float):
+    #Configure Ganache
+    w3 = Web3(Web3.HTTPProvider("HTTP://127.0.0.1:7545"))
+    #Default is 1337 for Ganache
+    chain_id = 1337
+    #Found in account
+    my_address = "0x03db7fE88Bf4a8bc3Ba191883D26F8344D7B3bdB"
+    private_key = "0xc90671f46e9ee7dfeb8c1985be2d568cce861b1a49946b6e90b1573278cdfe89"
+
+
+    # Assuming you have the ABI and contract address stored
+    with open("compiled_code.json", "r") as file:
+        compiled_sol = json.load(file)
+    abi = compiled_sol["contracts"]["SmartContract.sol"]["SmartContract"]["abi"]
+    contract_address = "your_contract_address_here"  # Replace with your contract address
+
+    smart_contract = w3.eth.contract(address=contract_address, abi=abi)
+
+    # Build and send the transaction to buy an item
+    nonce = w3.eth.get_transaction_count(my_address)
+    amount_in_wei = w3.toWei(price, 'ether')
+
+    transaction = smart_contract.functions.buyItem(token_id).build_transaction(
+        {
+            "chainId": chain_id,
+            "gasPrice": w3.eth.gas_price,
+            "from": my_address,
+            "nonce": nonce,
+            "value": amount_in_wei
+        }
+    )
 
     signed_txn = w3.eth.account.sign_transaction(transaction, private_key=private_key)
     tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
     tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
 
-
-    simple_storage = w3.eth.contract(address=tx_receipt.contractAddress, abi=abi)
-
-    store_transaction = simple_storage.functions.store(67).build_transaction(
-        {
-            "chainId": chain_id,
-            "gasPrice": w3.eth.gas_price,
-            "from": my_address,
-            "nonce": nonce + 1,
-        }
-    )
-
-    signed_store_txn = w3.eth.account.sign_transaction(store_transaction, private_key=private_key)
-    send_store_tx = w3.eth.send_raw_transaction(signed_store_txn.rawTransaction)
-    tx_receipt = w3.eth.wait_for_transaction_receipt(send_store_tx)
-
-    
-    return "Hello, this is contract deploy preocess"
-
-
-@app.post("/buyItem")
-async def buy_item(token_id: int, price: float):
-    # Web3 and contract setup here (similar to deploy_contract)
-    # ...
-
-    # Build and send the transaction to buy an item
-    # Update the database to reflect the purchase
-    # ...
-
-    return {"status": "Item purchased"}
+    return {"status": "Item purchased", "transaction_receipt": tx_receipt}
