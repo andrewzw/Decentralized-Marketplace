@@ -204,7 +204,7 @@ def get_MainQuestion():
         return mainQuestion
     except mysql.connector.Error as err:
         return {"error": f"Error: {err}"}
-    
+      
 @app.get("/getSubQuestion")
 def get_SubQuestion():
     try:
@@ -234,6 +234,36 @@ def get_SubQuestion():
     except mysql.connector.Error as err:
         return {"error": f"Error: {err}"}
 
+@app.get("/getUser")
+def get_userBalance():
+    try:
+        # Establish a database connection
+        connection = mysql.connector.connect(**db_config)
+
+        # Create a cursor to execute SQL queries
+        cursor = connection.cursor()
+
+        # Define the SQL query to retrieve data (e.g., all students)
+        query = "SELECT * FROM users WHERE user_id = 1"
+
+        # Execute the SQL query
+        cursor.execute(query)
+
+        # Fetch all the rows
+        result = cursor.fetchall()
+
+        # Convert the result to a list of dictionaries
+        listedItems = [dict(zip(cursor.column_names, row)) for row in result]
+
+        # Close the cursor and the database connection
+        cursor.close()
+        connection.close()
+
+        return listedItems
+
+    except mysql.connector.Error as err:
+        return {"error": f"Error: {err}"}
+
 @app.get("/deployContract")
 async def funcTest1():
     #Configure Ganache
@@ -241,8 +271,8 @@ async def funcTest1():
     #Default is 1337 for Ganache
     chain_id = 1337
     #Found in account REQUIRED
-    my_address = "0x03db7fE88Bf4a8bc3Ba191883D26F8344D7B3bdB"
-    private_key = "0xc90671f46e9ee7dfeb8c1985be2d568cce861b1a49946b6e90b1573278cdfe89"
+    my_address = "0x2b53E3D811Db52F45e568e41B3E96c16Fb461Fb8"
+    private_key = "0x6cfb3810b880e4412560c9974593d00dc22c5c7715e810d697650c681b0f310f"
 
     with open("./SmartContract.sol", "r") as file:
         smart_contract_file = file.read()

@@ -37,6 +37,7 @@ const Market = () => {
   const [featuredItems, setFeaturedItems] = useState([]);
   const [listedItems, setListedItems] = useState([]);
   const [tabsData, setTabs] = useState([]);
+  const [user, setUser] = useState([]);
 
   //Error handling
   const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false);
@@ -80,6 +81,13 @@ const Market = () => {
   useEffect(() => {
     const fetchData = async () => {
       let allErrorMessages = [];
+
+      const userError = await fetchApiData(
+        'http://127.0.0.1:8000/getUser/', //url
+        setUser, //setData
+        'Error fetching user\'s info. ' //errorMessage
+      );
+      if (userError) allErrorMessages.push(userError)
 
       const featuredItemsError = await fetchApiData(
         'http://127.0.0.1:8000/getFeaturedItems/', //url
@@ -428,10 +436,13 @@ const Market = () => {
               <Grid item xs={12} md={12}>
                 <div className="section3-bottom">
                   <h3> You are paying: </h3>
+
+                  <h4 style={{ color: "green", backgroundColor: "white", border: "1px solid white", borderRadius: "5px", padding: "5px", width: "fit-content", margin: "auto" }}>Your Balance: {user.balance === "" ? "0.000000" : user[0]?.balance}</h4> {/* Hardcoded user id */}
                   <div className="section3-pill">
                     <span className="section3-pill-coin">ETH</span>
                     <span className="section3-pill-total">{total}</span>
                   </div>
+
 
                   <Stack spacing={2} sx={{ width: "100%" }}>
                     <Button variant="outlined" onClick={handleClick}>

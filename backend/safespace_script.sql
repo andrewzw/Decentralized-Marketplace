@@ -131,3 +131,13 @@ INSERT INTO subQuestion(main_id, sub_question, answer) VALUE ("6", "Social Media
 -- https://i.ibb.co/KLcTHw2/Tom.jpg
 -- https://i.ibb.co/M6NcG4c/Andrew.jpg
 -- https://i.ibb.co/rf6XcSF/Yuan.jpg
+
+CREATE TABLE users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    wallet VARCHAR(255) NOT NULL,
+    balance DECIMAL(10, 6) NOT NULL,
+    UNIQUE (wallet));
+
+
+INSERT INTO users (wallet, balance) VALUES ('cat-dog-cat-bob', 100.00);
+INSERT INTO users (wallet, balance) VALUES ('dog-cat-bob-cat', 50.00);
