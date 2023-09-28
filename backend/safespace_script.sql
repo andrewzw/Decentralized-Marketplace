@@ -42,3 +42,13 @@ INSERT INTO listedItems(name, description, image, cat, price, seller, featured) 
 -- https://i.ibb.co/kJ23Wbb/tech2.jpg
 -- https://i.ibb.co/zsmJY80/tech3.jpg
 -- https://i.ibb.co/XyFRTBY/tech4.jpg
+
+CREATE TABLE users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    wallet VARCHAR(255) NOT NULL,
+    balance DECIMAL(10, 6) NOT NULL,
+    UNIQUE (wallet));
+
+
+INSERT INTO users (wallet, balance) VALUES ('cat-dog-cat-bob', 100.00);
+INSERT INTO users (wallet, balance) VALUES ('dog-cat-bob-cat', 50.00);
