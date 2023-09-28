@@ -121,13 +121,14 @@ def get_listedItems():
 
 @app.get("/deployContract")
 async def funcTest1():
+    global deployed_contract_address
     #Configure Ganache
     w3 = Web3(Web3.HTTPProvider("HTTP://127.0.0.1:7545"))
     #Default is 1337 for Ganache
     chain_id = 1337
     #Found in account REQUIRED
-    my_address = "0x03db7fE88Bf4a8bc3Ba191883D26F8344D7B3bdB"
-    private_key = "0xc90671f46e9ee7dfeb8c1985be2d568cce861b1a49946b6e90b1573278cdfe89"
+    my_address = "0x75E0dfcCACfD8970d8B9C4D2d9a81E700173Fc21"
+    private_key = "0x7990a67d04fb804dd015309158ea46cd45d86326785f0dfbcd71c17dc82e63c1"
 
     with open("./SmartContract.sol", "r") as file:
         smart_contract_file = file.read()
@@ -171,8 +172,37 @@ async def funcTest1():
     signed_txn = w3.eth.account.sign_transaction(transaction, private_key=private_key)
     tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
     tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
+    deployed_contract_address = tx_receipt.contractAddress
+    return {"Smart Contract deployed": deployed_contract_address}
 
-    return {"Smart Contract deployed"}
+
+@app.get("/getItemDetails/{item_id}")
+async def get_item_details(item_id: int):
+    w3 = Web3(Web3.HTTPProvider("HTTP://127.0.0.1:7545"))
+    
+    # Assuming you have the ABI and contract address stored
+    with open("compiled_code.json", "r") as file:
+        compiled_sol = json.load(file)
+    abi = compiled_sol["contracts"]["SmartContract.sol"]["SmartContract"]["abi"]
+    
+    # Replace with your contract address REQUIRED
+    contract_address = deployed_contract_address  
+    smart_contract = w3.eth.contract(address=contract_address, abi=abi)
+    
+    # Call the smart contract to get item details
+    try:
+        item = smart_contract.functions.items(item_id).call()
+        item_details = {
+            "name": item[0],
+            "description": item[1],
+            "image": item[2],
+            "category": item[3],
+            "price" : item[4],
+            "seller": item[5]
+        }
+        return item_details
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @app.post("/buyItem")
 async def buy_item(token_id: int, price: float):
