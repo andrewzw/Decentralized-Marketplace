@@ -15,8 +15,6 @@ import Divider from "@mui/material/Divider";
 
 import "./faq.css";
 
-import {faqStuff}  from "../../Assets/database.js";
-
 import axios from "axios";
 import { useState, useEffect } from "react";
 import Snackbar from "@mui/material/Snackbar";
