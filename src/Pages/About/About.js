@@ -12,11 +12,104 @@ import Divider from '@mui/material/Divider';
 
 import './about.css';
 
-import { goalImage, peopleImage } from "../../Assets/database.js"; //about images data
+import axios from "axios";
+import { useState, useEffect } from "react";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 const About = () => {
+    const [goalImages, setGoalImages] = useState([]);
+    const [memberImages, setMemberImages] = useState([]);
+
+    //Error handling
+    const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false);
+    const [errorMessages, setErrorMessages] = useState([]);
+    const handleErrorSnackbarClose = (event, reason) => {
+        if (reason === 'clickaway') {
+        return;
+        }
+        setErrorSnackbarOpen(false);
+    };
+
+    //Function to Fetch data from backend and handle errors
+    const fetchApiData = async (url, setData, errorMessage) => {
+        let tempErrorMessage = '';
+        let errorLogged = false;
+
+        try {
+        const response = await axios.get(url); //fetch data from url
+        if ('error' in response.data) {
+            if (!errorLogged) {
+            tempErrorMessage += errorMessage; //append error message - RESPOND error
+            errorLogged = true; //only log error once
+            }
+            console.log(response.data.error);
+        } else if (Array.isArray(response.data) && response.data.length === 0) { //add error message if no data
+            tempErrorMessage += 'No items available. ';
+        } else {
+            setData(response.data); //set data if no error
+        }
+        } catch (error) {
+        if (!errorLogged) {
+            tempErrorMessage += errorMessage; //append error message - FECTHING error
+            errorLogged = true;
+        }
+        }
+
+        return tempErrorMessage;
+    };
+
+    //Call to backend to fetch data
+    useEffect(() => {
+        const fetchData = async () => {
+        let allErrorMessages = [];
+
+        const goalImagesError = await fetchApiData(
+            'http://127.0.0.1:8000/getGoalImages/',
+            setGoalImages,
+            'Error fetching goal images. '
+        );
+        if (goalImagesError) allErrorMessages.push(goalImagesError);
+
+        const memberImagesError = await fetchApiData(
+            'http://127.0.0.1:8000/getMemberImages/',
+            setMemberImages,
+            'Error fetching member images. '
+        );
+        if (memberImagesError) allErrorMessages.push(memberImagesError);
+
+        if (allErrorMessages.length > 0) {
+            setErrorMessages((prevMessages) => [...prevMessages, ...allErrorMessages]);
+            setErrorSnackbarOpen(true);
+        }
+
+        if (allErrorMessages.length > 0) {
+            setErrorMessages(allErrorMessages); // set new error messages
+            setErrorSnackbarOpen(true); // open snackbar
+        } else {
+            setErrorMessages([]); // clear any existing error messages
+        }
+        };
+
+        fetchData(); //call function
+    }, []);
+
     return (
         <div>
+            <Snackbar
+                open={errorSnackbarOpen}
+                autoHideDuration={6000}
+                onClose={handleErrorSnackbarClose}
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            >
+                {/* Display all error messages */}
+                <Alert onClose={handleErrorSnackbarClose} severity="error">
+                {errorMessages.map((message, index) => (
+                    <div key={index}>{message}</div>
+                ))}
+                </Alert>
+            </Snackbar>
+            
             <h1>About</h1>
             <Grid container spacing={2} rowSpacing={1} className='about-padding'>
                     
@@ -31,16 +124,16 @@ const About = () => {
                         </Typography>
 
                         <Grid container spacing={0.5} rowSpacing={0.5}>
-                            {goalImage.map((items, index) => ( //loading goal images
+                            {Array.isArray(goalImages) && goalImages.map((items, index) => ( //loading goal images
                                 <Grid item xs={6} md={3}>
                                     <CardMedia
                                         component="img"
-                                        image={items.imaging}
-                                        alt={items.alting}
+                                        image={items.image}
+                                        alt={items.alt}
                                         className='about-goal-image'
                                     />
 
-                                    <p className='about-goal-text'>{items.words}</p>
+                                    <p className='about-goal-text'>{items.description}</p>
                                 </Grid>
                             ))}
                         </Grid>
@@ -53,13 +146,13 @@ const About = () => {
                         </Typography>
 
                         <Grid container spacing={1} rowSpacing={1} >
-                            {peopleImage.map((items, index) => ( //loading team member images
+                            {Array.isArray(memberImages) && memberImages.map((items, index) => ( //loading team member images
                                 <Grid item xs={12} md={4}>
                                     <CardMedia
                                         component="img"
                                         width="100%"
-                                        image={items.imaging}
-                                        alt={items.alting}
+                                        image={items.image}
+                                        alt={items.alt}
                                         className='about-member-image'
                                     />
                                 </Grid>

@@ -117,6 +117,122 @@ def get_listedItems():
 
     except mysql.connector.Error as err:
         return {"error": f"Error: {err}"}
+    
+@app.get("/getGoalImages")
+def get_goalImages():
+    try:
+        # Establish a database connection
+        connection = mysql.connector.connect(**db_config)
+
+        # Create a cursor to execute SQL queries
+        cursor = connection.cursor()
+
+        # Define the SQL query to retrieve data (e.g., all students)
+        query = "SELECT * FROM goalImages"
+
+        # Execute the SQL query
+        cursor.execute(query)
+
+        # Fetch all the rows
+        result = cursor.fetchall()
+
+        # Convert the result to a list of dictionaries
+        goalImages = [dict(zip(cursor.column_names, row)) for row in result]
+
+        # Close the cursor and the database connection
+        cursor.close()
+        connection.close()
+
+        return goalImages
+    except mysql.connector.Error as err:
+        return {"error": f"Error: {err}"}
+    
+@app.get("/getMemberImages")
+def get_memberImages():
+    try:
+        # Establish a database connection
+        connection = mysql.connector.connect(**db_config)
+
+        # Create a cursor to execute SQL queries
+        cursor = connection.cursor()
+
+        # Define the SQL query to retrieve data (e.g., all students)
+        query = "SELECT * FROM memberImages"
+
+        # Execute the SQL query
+        cursor.execute(query)
+
+        # Fetch all the rows
+        result = cursor.fetchall()
+
+        # Convert the result to a list of dictionaries
+        memberImages = [dict(zip(cursor.column_names, row)) for row in result]
+
+        # Close the cursor and the database connection
+        cursor.close()
+        connection.close()
+
+        return memberImages
+    except mysql.connector.Error as err:
+        return {"error": f"Error: {err}"}
+    
+@app.get("/getMainQuestion")
+def get_MainQuestion():
+    try:
+        # Establish a database connection
+        connection = mysql.connector.connect(**db_config)
+
+        # Create a cursor to execute SQL queries
+        cursor = connection.cursor()
+
+        # Define the SQL query to retrieve data (e.g., all students)
+        query = "SELECT main_question FROM mainQuestion"
+
+        # Execute the SQL query
+        cursor.execute(query)
+
+        # Fetch all the rows
+        result = cursor.fetchall()
+
+        # Convert the result to a list of dictionaries
+        mainQuestion = [dict(zip(cursor.column_names, row)) for row in result]
+
+        # Close the cursor and the database connection
+        cursor.close()
+        connection.close()
+
+        return mainQuestion
+    except mysql.connector.Error as err:
+        return {"error": f"Error: {err}"}
+      
+@app.get("/getSubQuestion")
+def get_SubQuestion():
+    try:
+        # Establish a database connection
+        connection = mysql.connector.connect(**db_config)
+
+        # Create a cursor to execute SQL queries
+        cursor = connection.cursor()
+
+        # Define the SQL query to retrieve data (e.g., all students)
+        query = "SELECT mainQuestion.main_id, subQuestion.* FROM mainQuestion INNER JOIN subQuestion ON mainQuestion.main_id = subQuestion.main_id"
+
+        # Execute the SQL query
+        cursor.execute(query)
+
+        # Fetch all the rows
+        result = cursor.fetchall()
+
+        # Convert the result to a list of dictionaries
+        subQuestion = [dict(zip(cursor.column_names, row)) for row in result]
+
+        # Close the cursor and the database connection
+        cursor.close()
+        connection.close()
+
+        return subQuestion
+    except mysql.connector.Error as err:
+        return {"error": f"Error: {err}"}
 
 @app.get("/getUser")
 def get_userBalance():
