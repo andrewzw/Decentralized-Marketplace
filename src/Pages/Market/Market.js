@@ -167,12 +167,19 @@ const Market = () => {
   const handleClick = () => {
     // Check if the user is logged in
     if (!localStorage.getItem("isLoggedIn")) {
-      // Redirect to login page if not logged in
+      // Redirect to login page 
       window.alert("Please log in to buy.");
       navigate("/Login");
     } else {
-      // Open the Snackbar if the user is logged in
-      setOpen(true);
+      // Check if the user has sufficient balance
+      if (parseFloat(1) >= parseFloat(total)) {
+        // Proceed payment
+        setOpen(true); // Open Snackbar
+      } else {
+        // alert if the balance is insufficient
+        setErrorSnackbarOpen(true);
+        setErrorMessages(["Insufficient balance. Please add more funds."]);
+      }
     }
   };
 
