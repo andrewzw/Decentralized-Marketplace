@@ -172,7 +172,7 @@ const Market = () => {
       navigate("/Login");
     } else {
       // Check if the user has sufficient balance
-      if (parseFloat(1) >= parseFloat(total)) {
+      if (parseFloat(currentUser.balance) >= parseFloat(total)) {
         // Proceed payment
         setOpen(true); // Open Snackbar
       } else {
