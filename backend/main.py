@@ -6,7 +6,14 @@ from web3 import Web3
 import os
 from solcx import compile_standard, install_solc
 import json
+from typing import List
+import logging
 
+logging.basicConfig(level=logging.INFO)
+#configure login class:
+class LoginRequest(BaseModel):
+    username:str
+    password:str
 
 # MySQL database connection configuration
 # If you get an error, change your password encryption on mysql to legacy mode
@@ -316,8 +323,36 @@ async def funcTest1():
     signed_txn = w3.eth.account.sign_transaction(transaction, private_key=private_key)
     tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
     tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
+    deployed_contract_address = tx_receipt.contractAddress
+    return {"Smart Contract deployed": deployed_contract_address}
 
-    return {"Smart Contract deployed"}
+@app.get("/getItemDetails/{item_id}")
+async def get_item_details(item_id: int):
+    w3 = Web3(Web3.HTTPProvider("HTTP://127.0.0.1:7545"))
+
+    # Assuming you have the ABI and contract address stored
+    with open("compiled_code.json", "r") as file:
+        compiled_sol = json.load(file)
+    abi = compiled_sol["contracts"]["SmartContract.sol"]["SmartContract"]["abi"]
+
+    # Replace with your contract address REQUIRED
+    contract_address = deployed_contract_address  
+    smart_contract = w3.eth.contract(address=contract_address, abi=abi)
+
+    # Call the smart contract to get item details
+    try:
+        item = smart_contract.functions.items(item_id).call()
+        item_details = {
+            "name": item[0],
+            "description": item[1],
+            "image": item[2],
+            "category": item[3],
+            "price" : item[4],
+            "seller": item[5]
+        }
+        return item_details
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @app.post("/buyItem")
 async def buy_item(token_id: int, price: float):
@@ -361,3 +396,50 @@ async def buy_item(token_id: int, price: float):
     tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
 
     return {"status": "Item purchased", "transaction_receipt": tx_receipt}
+
+@app.post("/login")
+async def login(request:LoginRequest):
+    logging.info(f"Received login request for username: {request.username}")
+    try:
+        connection = mysql.connector.connect(**db_config)
+        cursor = connection.cursor()
+        query = "SELECT * FROM users WHERE username = %s AND pass = %s"
+        cursor.execute(query,(request.username,request.password))
+        result = cursor.fetchone()
+        cursor.close()
+        connection.close()
+
+        if result:
+            user_id = result[0]
+            return{"status":"success","message":"User verified","user_id":user_id}
+        else:
+            raise HTTPException(status_code=404, detail="Invalid credentials")
+    except mysql.connector.Error as err:
+        return {"error": f"Error:{err}"}
+
+@app.get("/getItemsForUser/{user_id}")
+async def get_items_for_user(user_id: int):
+    try:
+        connection = mysql.connector.connect(**db_config)
+        cursor = connection.cursor()
+
+        query = """
+        SELECT listedItems.* FROM listedItems 
+        INNER JOIN bought ON listedItems.item_id = bought.item_id
+        WHERE bought.user_id = %s
+        """
+
+        cursor.execute(query, (user_id,))
+        result = cursor.fetchall()
+        #convert result to list of dict
+        items = [dict(zip(cursor.column_names, row)) for row in result]
+
+        cursor.close()
+        connection.close()
+
+        if not items:
+            raise HTTPException(status_code=404, detail="No items found for this user")
+
+        return items
+    except mysql.connector.Error as err:
+        return {"error": f"Error:{err}"}
