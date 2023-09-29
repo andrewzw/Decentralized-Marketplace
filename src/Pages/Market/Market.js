@@ -449,13 +449,24 @@ const Market = () => {
 
               <Grid item xs={12} md={12}>
                 <div className="section3-bottom">
-                  <h4 style={{ color: "green", backgroundColor: "white", border: "1px solid white", borderRadius: "5px", padding: "5px", width: "fit-content", margin: "auto" }}>
+                  <h4 style={{
+                    color: "#38E038",
+                    backgroundColor: "rgba(255, 255, 255, 0.1)", // White with 50% transparency
+                    border: "1px solid white",
+                    borderRadius: "5px",
+                    padding: "5px",
+                    width: "fit-content",
+                    margin: "auto",
+                    textShadow: "0px 0px 10px rgba(255, 255, 255, 0.2)",
+                  }}>
                     Your Balance: {
                       localStorage.getItem("isLoggedIn") && currentUser
                         ? currentUser.balance + " ETH"
-                        : <>Please <Link to="/Login">Login Here</Link> to view your balance</>
+                        : <>Please <Link to="/Login">log in</Link> to view your balance</>
                     }
-                  </h4>                  <h3> You are paying: </h3>
+                  </h4>
+
+                  <h3> You are paying: </h3>
 
                   <div className="section3-pill">
                     <span className="section3-pill-coin">ETH</span>
