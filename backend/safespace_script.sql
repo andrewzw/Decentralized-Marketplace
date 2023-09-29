@@ -26,6 +26,31 @@ INSERT INTO listedItems(name, description, image, cat, price, seller, featured) 
 INSERT INTO listedItems(name, description, image, cat, price, seller, featured) VALUE ("Item 11", "Item 11 Description", "https://i.ibb.co/RhwgT9P/fashion3.jpg", "Fashion", "0.123456789", "Tom", 0);
 INSERT INTO listedItems(name, description, image, cat, price, seller, featured) VALUE ("Item 12", "Item 12 Description", "https://i.ibb.co/YZtrQ36/fashion4.jpg", "Fashion", "0.123456789", "Tom", 0);
 
+CREATE TABLE users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    pass VARCHAR(255) NOT NULL,
+    balance DECIMAL(10, 2) NOT NULL,
+    UNIQUE (username));
+
+
+INSERT INTO users (username, pass,balance) VALUES ('user1','pass1', 100.00);
+INSERT INTO users (username, pass, balance) VALUES ('user2','pass2', 50.00);
+INSERT INTO users (username, pass, balance) VALUES ('user3','pass3',40.00);
+
+-- Bought table--
+CREATE TABLE bought (
+    user_id INT,
+    item_id INT,
+    purchase_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (item_id) REFERENCES listedItems(item_id)
+);
+
+-- Insert some sample bought items
+INSERT INTO bought (user_id, item_id) VALUES (1, 1); -- us1 bought Item 1
+INSERT INTO bought (user_id, item_id) VALUES (1, 2); -- us1 bought Item 2
+INSERT INTO bought (user_id, item_id) VALUES (2, 3); -- us3 bought Item 3
 
 -- https://i.ibb.co/ChYQdQC/art1.png
 -- https://i.ibb.co/842cvSM/art2.png

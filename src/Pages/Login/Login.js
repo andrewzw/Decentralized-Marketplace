@@ -9,20 +9,34 @@ import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import "./login.css";
+import axios from "axios";
 
 function Login() {
   const navigate = useNavigate();
-  const [wallet, setWallet] = useState(""); // assuming a wallet string for prototype
+  const [username, setUsername] = useState(""); //value name must be the same for object model in python
+  const [password, setPassword] = useState("");
 
-  function handleLogin() {
-    if (wallet) {
-      // Just a simple check to see if something was entered
-      localStorage.setItem("isLoggedIn", "true");
-      navigate("/Dashboard");
-    } else {
-      alert(
-        "Please enter your wallet info (it can be anything for this prototype)"
+  async function handleLogin() {
+    console.log("Username:", username);
+    console.log("Password:", password);
+    if (username && password) {
+      try{
+        const response = await axios.post("http://127.0.0.1:8000/login", {username,password}
       );
+      if (response.data.status === "success"){
+        localStorage.setItem("userId", response.data.user_id);
+        console.log("Stored user_id:", response.data.user_id);
+        localStorage.setItem("isLoggedIn","true");
+        navigate("/Dashboard");
+      } else{
+        alert("Invalid credentials. Enter again.");
+      }}
+      catch(error){
+        console.error("Error during login:", error);
+        alert("Invalid credentials. Enter again");
+      }
+    } else {
+      alert("Please enter your username and password");
     }
   }
 
@@ -31,13 +45,20 @@ function Login() {
       <h1>Dashboard Login</h1>
       <div className="login">
         <div className="login-box">
-          <h2>Login with MetaMask</h2>
+          <h2>Login</h2>
           <p>Enter your account details</p>
           <input
             type="text"
-            placeholder="Enter wallet to sign in..."
-            value={wallet}
-            onChange={(e) => setWallet(e.target.value)}
+            placeholder="Enter username"
+            value={username} //value of the input is bound to 'username'
+            onChange={(e) => setUsername(e.target.value)}
+            className="login-input"
+          />
+          <input
+            type="text"
+            placeholder="Enter password..."
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="login-input"
           />
           <Button
@@ -52,6 +73,7 @@ function Login() {
       </div>
     </div>
   );
+
 }
 
 export default Login;

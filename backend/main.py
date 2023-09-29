@@ -1,13 +1,15 @@
 from fastapi import FastAPI, Depends, HTTPException
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+from typing import List
 import mysql.connector
 from web3 import Web3
 import os
 from solcx import compile_standard, install_solc
 import json
+import logging
 
-
+logging.basicConfig(level=logging.INFO)
 # MySQL database connection configuration
 # If you get an error, change your password encryption on mysql to legacy mode
 # ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password'
@@ -22,6 +24,12 @@ import json
 #/usr/local/mysql/bin/mysql -u root -p < safespace_script.sql  (for Mac)
 
 app = FastAPI()
+
+#configure login class:
+class LoginRequest(BaseModel):
+    username:str
+    password:str
+
 db_config = {
 "host": "localhost",
 "user": "root",
@@ -41,6 +49,54 @@ app.add_middleware(
 async def funcTest1():
     return "Hello, this is fastAPI data"
 
+@app.post("/login")
+async def login(request:LoginRequest):
+    logging.info(f"Received login request for username: {request.username}")
+    try:
+        connection = mysql.connector.connect(**db_config)
+        cursor = connection.cursor()
+        query = "SELECT * FROM users WHERE username = %s AND pass = %s"
+        cursor.execute(query,(request.username,request.password))
+        result = cursor.fetchone()
+        cursor.close()
+        connection.close()
+
+        if result:
+            user_id = result[0]
+            return{"status":"success","message":"User verified","user_id":user_id}
+        else:
+            raise HTTPException(status_code=404, detail="Invalid credentials")
+    except mysql.connector.Error as err:
+        return {"error": f"Error:{err}"}
+
+@app.get("/getItemsForUser/{user_id}")
+async def get_items_for_user(user_id: int):
+    try:
+        connection = mysql.connector.connect(**db_config)
+        cursor = connection.cursor()
+
+        query = """
+        SELECT listedItems.* FROM listedItems 
+        INNER JOIN bought ON listedItems.item_id = bought.item_id
+        WHERE bought.user_id = %s
+        """
+
+        cursor.execute(query, (user_id,))
+        result = cursor.fetchall()
+        #convert result to list of dict
+        items = [dict(zip(cursor.column_names, row)) for row in result]
+
+        cursor.close()
+        connection.close()
+
+        if not items:
+            raise HTTPException(status_code=404, detail="No items found for this user")
+
+        return items
+    except mysql.connector.Error as err:
+        return {"error": f"Error:{err}"}
+
+
 @app.get("/tabsData")
 async def funcTest():
     jsonResult = [
@@ -50,7 +106,6 @@ async def funcTest():
         { "value": "Fashion", "label": "Fashion" }
     ]
     return jsonResult
-
 
 class Item(BaseModel):
     name: str
