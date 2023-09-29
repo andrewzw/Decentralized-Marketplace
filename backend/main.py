@@ -251,7 +251,7 @@ def get_userBalance():
         cursor = connection.cursor()
 
         # Define the SQL query to retrieve data (e.g., all students)
-        query = "SELECT * FROM users WHERE user_id = 1"
+        query = "SELECT * FROM users"
 
         # Execute the SQL query
         cursor.execute(query)

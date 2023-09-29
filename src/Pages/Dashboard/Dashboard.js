@@ -162,6 +162,12 @@ const Dashboard = () => {
       const userId = localStorage.getItem("userId");
       console.log("Stored user_id:", userId);
       let allErrorMessages = [];
+      const userError = await fetchApiData(
+        'http://127.0.0.1:8000/getUser/', //url
+        setUsers, //setData
+        'Error fetching user\'s info. ' //errorMessage
+      );
+      if (userError) allErrorMessages.push(userError)
 
       const assetItemsError = await fetchApiData(
         `http://127.0.0.1:8000/getItemsForUser/${userId}`, //url
@@ -187,6 +193,12 @@ const Dashboard = () => {
   }, []);
 
   const [expandedSection, setExpandedSection] = useState("overview"); //overview will lead to original state of page
+
+  const [users, setUsers] = useState([]);
+  const userId = localStorage.getItem("userId");
+  // Find the current user based on the userId from localStorage
+  const currentUser = users.find(u => u.user_id === parseInt(userId, 10));
+
   return (
     <div>
       <Snackbar
@@ -287,7 +299,7 @@ const Dashboard = () => {
                   style={{ padding: "1rem", marginTop: "-0.5rem" }}
                 >
                   Logged in as:
-                  <div className="boldtext">Andrew</div>
+                  <div className="boldtext">{currentUser ? currentUser.username : 'Loading...'}</div>
                 </div>
               </CardActionArea>
             </Card>
@@ -307,8 +319,8 @@ const Dashboard = () => {
                   style={{ padding: "1rem", marginTop: "-0.5rem" }}
                 >
                   Total Assets
-                  <div className="boldtext">215</div>
-                  <div className="childtext">+25</div>
+                  <div className="boldtext">{assetsItems.length}</div>
+                  <div className="childtext">Assets</div>
                 </div>
               </CardActionArea>
             </Card>
@@ -327,9 +339,9 @@ const Dashboard = () => {
                   className="maintext"
                   style={{ padding: "1rem", marginTop: "-0.5 rem" }}
                 >
-                  Total Spent
-                  <div className="boldtext">$100,000,000</div>
-                  <div className="childtext">+$20,000</div>
+                  Balance
+                  <div className="boldtext">{currentUser ? currentUser.balance : 'Loading...'}</div>
+                  <div className="childtext">ETH</div>
                 </div>
               </CardActionArea>
             </Card>
