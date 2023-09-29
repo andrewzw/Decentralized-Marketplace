@@ -22,7 +22,7 @@ import MuiAlert from "@mui/material/Alert";
 import { useState, useEffect } from "react";
 import "./market.css";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -449,12 +449,13 @@ const Market = () => {
 
               <Grid item xs={12} md={12}>
                 <div className="section3-bottom">
-
                   <h4 style={{ color: "green", backgroundColor: "white", border: "1px solid white", borderRadius: "5px", padding: "5px", width: "fit-content", margin: "auto" }}>
-                    Your Balance: {currentUser ? currentUser.balance + " ETH" : "0.000000"}
-                  </h4>
-
-                  <h3> You are paying: </h3>
+                    Your Balance: {
+                      localStorage.getItem("isLoggedIn") && currentUser
+                        ? currentUser.balance + " ETH"
+                        : <>Please <Link to="/Login">Login Here</Link> to view your balance</>
+                    }
+                  </h4>                  <h3> You are paying: </h3>
 
                   <div className="section3-pill">
                     <span className="section3-pill-coin">ETH</span>

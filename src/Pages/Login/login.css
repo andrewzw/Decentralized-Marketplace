@@ -14,8 +14,6 @@
 }
 
 .login-box {
-    padding: 0 1% 1%;
-    border-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -25,7 +23,7 @@
     height: 40%;
     border-radius: 10px;
     text-align: center;
-    padding: 1% 2% 2%;
+    padding: 3% 3% 4%;
 
     border: 1px solid #3e4650;
     background-color: #222b3684 !important;
