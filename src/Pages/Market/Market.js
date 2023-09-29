@@ -22,6 +22,7 @@ import MuiAlert from "@mui/material/Alert";
 import { useState, useEffect } from "react";
 import "./market.css";
 import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -38,6 +39,10 @@ const Market = () => {
   const [listedItems, setListedItems] = useState([]);
   const [tabsData, setTabs] = useState([]);
   const [user, setUser] = useState([]);
+  const userId = localStorage.getItem("userId");
+  // Find the current user based on the userId from localStorage
+  const currentUser = user.find(u => u.user_id === parseInt(userId, 10));
+  const navigate = useNavigate(); //navigate within page
 
   //Error handling
   const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false);
@@ -158,8 +163,17 @@ const Market = () => {
   //Handle the opening and closing of the snackbar
   const [open, setOpen] = useState(false);
 
+  //On click of buy button
   const handleClick = () => {
-    setOpen(true);
+    // Check if the user is logged in
+    if (!localStorage.getItem("isLoggedIn")) {
+      // Redirect to login page if not logged in
+      window.alert("Please log in to buy.");
+      navigate("/Login");
+    } else {
+      // Open the Snackbar if the user is logged in
+      setOpen(true);
+    }
   };
 
   const handleClose = (event, reason) => {
@@ -435,9 +449,14 @@ const Market = () => {
 
               <Grid item xs={12} md={12}>
                 <div className="section3-bottom">
-                  <h3> You are paying: </h3>
+                  <h4 style={{ color: "green", backgroundColor: "white", border: "1px solid white", borderRadius: "5px", padding: "5px", width: "fit-content", margin: "auto" }}>
+                    Your Balance: {
+                      localStorage.getItem("isLoggedIn") && currentUser
+                        ? currentUser.balance + " ETH"
+                        : <>Please <Link to="/Login">Login Here</Link> to view your balance</>
+                    }
+                  </h4>                  <h3> You are paying: </h3>
 
-                  <h4 style={{ color: "green", backgroundColor: "white", border: "1px solid white", borderRadius: "5px", padding: "5px", width: "fit-content", margin: "auto" }}>Your Balance: {user.balance === "" ? "0.000000" : user[0]?.balance}</h4> {/* Hardcoded user id */}
                   <div className="section3-pill">
                     <span className="section3-pill-coin">ETH</span>
                     <span className="section3-pill-total">{total}</span>
