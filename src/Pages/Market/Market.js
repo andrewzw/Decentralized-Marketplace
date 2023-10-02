@@ -40,18 +40,27 @@ const Market = () => {
   const [tabsData, setTabs] = useState([]);
   const [user, setUser] = useState([]);
   const userId = localStorage.getItem("userId");
-  // Find the current user based on the userId from localStorage
-  const currentUser = user.find(u => u.user_id === parseInt(userId, 10));
+  const currentUser = user.find(u => u.user_id === parseInt(userId, 10));  // Find the current user based on the userId from localStorage
   const navigate = useNavigate(); //navigate within page
 
   //Error handling
   const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false);
   const [errorMessages, setErrorMessages] = useState([]);
+  //Error Snackbar
   const handleErrorSnackbarClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
     }
     setErrorSnackbarOpen(false);
+  };
+
+  //Payment notification
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
   };
 
   //Function to Fetch data from backend and handle errors
@@ -184,14 +193,7 @@ const Market = () => {
     }
   };
 
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpen(false);
-  };
-
+  //Calculate total price
   const total = selectedItems
     .reduce((acc, currentItem) => {
       const quantity = itemQuantities[currentItem.name] || 1;
