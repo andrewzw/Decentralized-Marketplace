@@ -271,6 +271,7 @@ def get_userBalance():
     except mysql.connector.Error as err:
         return {"error": f"Error: {err}"}
 
+#Smart Contract ---------------------------------------------------------------
 @app.get("/deployContract")
 async def funcTest1():
     #Configure Ganache

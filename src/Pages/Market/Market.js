@@ -90,28 +90,28 @@ const Market = () => {
       const userError = await fetchApiData(
         'http://127.0.0.1:8000/getUser/', //url
         setUser, //setData
-        'Error fetching user\'s info. ' //errorMessage
+        'Sorry, we are encountering an error fetching user\'s info. ' //errorMessage
       );
       if (userError) allErrorMessages.push(userError)
 
       const featuredItemsError = await fetchApiData(
         'http://127.0.0.1:8000/getFeaturedItems/', //url
         setFeaturedItems, //setData
-        'Error fetching featured items. ' //errorMessage
+        'Sorry, we are encountering an error fetching featured items. ' //errorMessage
       );
       if (featuredItemsError) allErrorMessages.push(featuredItemsError);
 
       const tabsDataError = await fetchApiData(
         'http://127.0.0.1:8000/tabsData',
         setTabs,
-        'Error fetching tabs data. '
+        'Sorry, we are encountering an error fetching tabs data. '
       );
       if (tabsDataError) allErrorMessages.push(tabsDataError);
 
       const listedItemsError = await fetchApiData(
         'http://127.0.0.1:8000/getListedItems/',
         setListedItems,
-        'Error fetching listed items. '
+        'Sorry, we are encountering an error fetching listed items. '
       );
       if (listedItemsError) allErrorMessages.push(listedItemsError);
 
@@ -129,6 +129,7 @@ const Market = () => {
     };
 
     fetchData(); //call function
+
   }, []);
 
 
@@ -208,7 +209,7 @@ const Market = () => {
       >
         {/* Display all error messages */}
         <Alert onClose={handleErrorSnackbarClose} severity="error">
-          {errorMessages.map((message, index) => (
+          {Array.isArray(errorMessages) && errorMessages.map((message, index) => (
             <div key={index}>{message}</div>
           ))}
         </Alert>

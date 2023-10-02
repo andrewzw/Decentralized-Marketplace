@@ -13,7 +13,7 @@ import axios from "axios";
 import Button from "@mui/material/Button";
 import { mockHistoryData } from "../../Assets/database.js";
 import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
+import MuiAlert from "@mui/material/Alert";
 import {
   Chart as ChartJS,
   BarElement,
@@ -23,6 +23,11 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 const chartData = {
   labels: [
@@ -165,14 +170,14 @@ const Dashboard = () => {
       const userError = await fetchApiData(
         'http://127.0.0.1:8000/getUser/', //url
         setUsers, //setData
-        'Error fetching user\'s info. ' //errorMessage
+        'Sorry, we are encountering an error fetching user\'s info. ' //errorMessage
       );
       if (userError) allErrorMessages.push(userError)
 
       const assetItemsError = await fetchApiData(
         `http://127.0.0.1:8000/getItemsForUser/${userId}`, //url
         setAssetItem, //setData
-        'Error fetching asset items. ' //errorMessage
+        'Sorry, we are encountering an error fetching asset items. ' //errorMessage
       );
       if (assetItemsError) allErrorMessages.push(assetItemsError);
 
@@ -209,7 +214,7 @@ const Dashboard = () => {
       >
         {/* Display all error messages */}
         <Alert onClose={handleErrorSnackbarClose} severity="error">
-          {errorMessages.map((message, index) => (
+          {Array.isArray(errorMessages) && errorMessages.map((message, index) => (
             <div key={index}>{message}</div>
           ))}
         </Alert>

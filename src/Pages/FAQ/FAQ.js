@@ -1,6 +1,6 @@
 /* Name: Yong Yuan Chong */
 /* ID: 101224021 */
-
+import * as React from "react";
 import { grey } from "@mui/material/colors"; //Make the divider white
 import Grid from "@mui/material/Grid";
 
@@ -18,7 +18,11 @@ import "./faq.css";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
+import MuiAlert from "@mui/material/Alert";
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const FAQ = () => {
   const [mainQuestion, setMainQuestion] = useState([]);
@@ -29,7 +33,7 @@ const FAQ = () => {
   const [errorMessages, setErrorMessages] = useState([]);
   const handleErrorSnackbarClose = (event, reason) => {
     if (reason === 'clickaway') {
-    return;
+      return;
     }
     setErrorSnackbarOpen(false);
   };
@@ -40,23 +44,23 @@ const FAQ = () => {
     let errorLogged = false;
 
     try {
-    const response = await axios.get(url); //fetch data from url
-    if ('error' in response.data) {
-      if (!errorLogged) {
-        tempErrorMessage += errorMessage; //append error message - RESPOND error
-        errorLogged = true; //only log error once
+      const response = await axios.get(url); //fetch data from url
+      if ('error' in response.data) {
+        if (!errorLogged) {
+          tempErrorMessage += errorMessage; //append error message - RESPOND error
+          errorLogged = true; //only log error once
+        }
+        console.log(response.data.error);
+      } else if (Array.isArray(response.data) && response.data.length === 0) { //add error message if no data
+        tempErrorMessage += 'No items available. ';
+      } else {
+        setData(response.data); //set data if no error
       }
-      console.log(response.data.error);
-    } else if (Array.isArray(response.data) && response.data.length === 0) { //add error message if no data
-      tempErrorMessage += 'No items available. ';
-    } else {
-      setData(response.data); //set data if no error
-    }
     } catch (error) {
-    if (!errorLogged) {
-      tempErrorMessage += errorMessage; //append error message - FECTHING error
-      errorLogged = true;
-    }
+      if (!errorLogged) {
+        tempErrorMessage += errorMessage; //append error message - FECTHING error
+        errorLogged = true;
+      }
     }
 
     return tempErrorMessage;
@@ -65,40 +69,40 @@ const FAQ = () => {
   //Call to backend to fetch data
   useEffect(() => {
     const fetchData = async () => {
-    let allErrorMessages = [];
+      let allErrorMessages = [];
 
-    const mainQuestionError = await fetchApiData(
-      'http://127.0.0.1:8000/getMainQuestion/',
-      setMainQuestion,
-      'Error fetching main frequently asked question.'
-    );
-    if (mainQuestionError) allErrorMessages.push(mainQuestionError);
+      const mainQuestionError = await fetchApiData(
+        'http://127.0.0.1:8000/getMainQuestion/',
+        setMainQuestion,
+        'Sorry, we are encountering an error fetching main frequently asked question.'
+      );
+      if (mainQuestionError) allErrorMessages.push(mainQuestionError);
 
-    const subQuestionError = await fetchApiData(
-      'http://127.0.0.1:8000/getSubQuestion/',
-      setSubQuestion,
-      'Error fetching sub frequently asked question.'
-    );
-    if (subQuestionError) allErrorMessages.push(subQuestionError);
+      const subQuestionError = await fetchApiData(
+        'http://127.0.0.1:8000/getSubQuestion/',
+        setSubQuestion,
+        'Sorry, we are encountering an error fetching sub frequently asked question.'
+      );
+      if (subQuestionError) allErrorMessages.push(subQuestionError);
 
-    if (allErrorMessages.length > 0) {
-      setErrorMessages((prevMessages) => [...prevMessages, ...allErrorMessages]);
-      setErrorSnackbarOpen(true);
-    }
+      if (allErrorMessages.length > 0) {
+        setErrorMessages((prevMessages) => [...prevMessages, ...allErrorMessages]);
+        setErrorSnackbarOpen(true);
+      }
 
-    if (allErrorMessages.length > 0) {
-      setErrorMessages(allErrorMessages); // set new error messages
-      setErrorSnackbarOpen(true); // open snackbar
-    } else {
-      setErrorMessages([]); // clear any existing error messages
-    }
+      if (allErrorMessages.length > 0) {
+        setErrorMessages(allErrorMessages); // set new error messages
+        setErrorSnackbarOpen(true); // open snackbar
+      } else {
+        setErrorMessages([]); // clear any existing error messages
+      }
     };
 
     fetchData(); //call function
   }, []);
 
   //adapt array into a format readable for Accordion
-  var adaptedArray = [{main_question: "General"},{main_question: "Transaction"},{main_question: "Security"},{main_question: "Issues"},{main_question: "Popular Questions"},{main_question: "Other Resources"}]
+  var adaptedArray = [{ main_question: "General" }, { main_question: "Transaction" }, { main_question: "Security" }, { main_question: "Issues" }, { main_question: "Popular Questions" }, { main_question: "Other Resources" }]
   var i = 0; //array element
   var j = 0; //nested array element
 
@@ -108,8 +112,8 @@ const FAQ = () => {
     }
 
     subQuestion.map((items2, index) => { //mapping array from
-      if (items2.main_id == i+1) { //if the sub question and answer is within the main question
-        adaptedArray[i].sub_question[j] = {contentMain: items2.sub_question, contentSub: items2.answer};
+      if (items2.main_id == i + 1) { //if the sub question and answer is within the main question
+        adaptedArray[i].sub_question[j] = { contentMain: items2.sub_question, contentSub: items2.answer };
         j++; //next nested array element
       }
     })
@@ -122,7 +126,7 @@ const FAQ = () => {
 
   // State for filtered FAQ list
   const [filteredFaq, setFilteredFaq] = useState(adaptedArray);
-  
+
   // Handle search input change
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -158,9 +162,9 @@ const FAQ = () => {
       >
         {/* Display all error messages */}
         <Alert onClose={handleErrorSnackbarClose} severity="error">
-        {errorMessages.map((message, index) => (
+          {Array.isArray(errorMessages) && errorMessages.map((message, index) => (
             <div key={index}>{message}</div>
-        ))}
+          ))}
         </Alert>
       </Snackbar>
 
