@@ -242,7 +242,12 @@ const Market = () => {
           console.log("Server Response:", error.response.data);
         }
       }
-
+      // After successful API call, re-fetch user data
+      const userError = await fetchApiData(
+        'http://127.0.0.1:8000/getUser/',
+        setUser,
+        'Sorry, we are encountering an error fetching user\'s info. '
+      );
 
       // Open Snackbar based on purchase results
       if (purchaseResults.every(result => result.status === 'success')) {
