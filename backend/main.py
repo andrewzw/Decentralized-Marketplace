@@ -279,8 +279,8 @@ async def funcTest1():
     #Default is 1337 for Ganache
     chain_id = 1337
     #Found in account REQUIRED
-    my_address = "0x2b53E3D811Db52F45e568e41B3E96c16Fb461Fb8"
-    private_key = "0x6cfb3810b880e4412560c9974593d00dc22c5c7715e810d697650c681b0f310f"
+    my_address = "0xBb952Df9b38a2d74455741FDe88e8e3407B74d06"
+    private_key = "0x0fd3bdbe2ae732e7e768806030d7c32fabf3b063f524a58afe16e5b2fee5bd69"
 
     with open("./SmartContract.sol", "r") as file:
         smart_contract_file = file.read()
@@ -299,6 +299,7 @@ async def funcTest1():
         solc_version="0.6.0",
     )
 
+    # Store bytecode and abi in json file
     with open("compiled_code.json", "w") as file:
         json.dump(compiled_sol, file)
 
@@ -308,25 +309,32 @@ async def funcTest1():
     # get abi
     abi = compiled_sol["contracts"]["SmartContract.sol"]["SmartContract"]["abi"]
 
-    # Deploy the contract
-    SmartContract = w3.eth.contract(abi=abi, bytecode=bytecode)
-    nonce = w3.eth.get_transaction_count(my_address)
-    transaction = SmartContract.constructor().build_transaction(
-        {
-            "chainId": chain_id,
-            "gasPrice": w3.eth.gas_price,
-            "from": my_address,
-            "nonce": nonce,
-        }
-    )
-    transaction.pop('to')
+    try: 
+        # Deploy the contract
+        SmartContract = w3.eth.contract(abi=abi, bytecode=bytecode)
+        nonce = w3.eth.get_transaction_count(my_address)
+        transaction = SmartContract.constructor().build_transaction(
+            {
+                "chainId": chain_id,
+                "gasPrice": w3.eth.gas_price,
+                "from": my_address,
+                "nonce": nonce,
+            }
+        )
+        transaction.pop('to')
 
-    signed_txn = w3.eth.account.sign_transaction(transaction, private_key=private_key)
-    tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
-    tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
-    deployed_contract_address = tx_receipt.contractAddress
-    return {"Smart Contract deployed": deployed_contract_address}
+        signed_txn = w3.eth.account.sign_transaction(transaction, private_key=private_key)
+        tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+        tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
+        global deployed_contract_address  # Declare it globally
+        deployed_contract_address = tx_receipt.contractAddress
 
+        logging.info(f"Smart Contract deployed at address: {deployed_contract_address}")
+        return {"Smart Contract deployed": deployed_contract_address}
+    except Exception as e:
+        logging.error(f"Blockchain operation failed: {e}")
+        raise HTTPException(status_code=500, detail="Smart Contract deployment failed: Blockchain operation error")
+    
 @app.get("/getItemDetails/{item_id}")
 async def get_item_details(item_id: int):
     w3 = Web3(Web3.HTTPProvider("HTTP://127.0.0.1:7545"))
@@ -336,7 +344,7 @@ async def get_item_details(item_id: int):
         compiled_sol = json.load(file)
     abi = compiled_sol["contracts"]["SmartContract.sol"]["SmartContract"]["abi"]
 
-    # Replace with your contract address REQUIRED
+    # Contract address
     contract_address = deployed_contract_address  
     smart_contract = w3.eth.contract(address=contract_address, abi=abi)
 
@@ -355,6 +363,10 @@ async def get_item_details(item_id: int):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+class CartItem(BaseModel):
+    token_id: int
+    price: float
+
 @app.post("/buyItem")
 async def buy_item(token_id: int, price: float):
     #Debug
@@ -365,38 +377,76 @@ async def buy_item(token_id: int, price: float):
     #Default is 1337 for Ganache
     chain_id = 1337
     #Found in account REQUIRED
-    my_address = "0x03db7fE88Bf4a8bc3Ba191883D26F8344D7B3bdB"
-    private_key = "0xc90671f46e9ee7dfeb8c1985be2d568cce861b1a49946b6e90b1573278cdfe89"
+    my_address = "0xBb952Df9b38a2d74455741FDe88e8e3407B74d06"
+    private_key = "0x0fd3bdbe2ae732e7e768806030d7c32fabf3b063f524a58afe16e5b2fee5bd69"
 
 
     # Assuming you have the ABI and contract address stored
     with open("compiled_code.json", "r") as file:
         compiled_sol = json.load(file)
     abi = compiled_sol["contracts"]["SmartContract.sol"]["SmartContract"]["abi"]
-    # Replace with your contract address REQUIRED
-    contract_address = "0x6eeb357ABF9F99e402207715DbBC65BF6880F9E3"  
-
+    # Contract Address
+    contract_address = deployed_contract_address 
     smart_contract = w3.eth.contract(address=contract_address, abi=abi)
+    
+    receipts = []
+    for item in cart:
+        try:
+            # Build and send the transaction to buy an item
+            nonce = w3.eth.get_transaction_count(my_address)
+            amount_in_wei = w3.toWei(price, 'ether')
 
-    # Build and send the transaction to buy an item
-    nonce = w3.eth.get_transaction_count(my_address)
-    amount_in_wei = w3.toWei(price, 'ether')
+            transaction = smart_contract.functions.buyItem(token_id).build_transaction(
+                {
+                    "chainId": chain_id,
+                    "gasPrice": w3.eth.gas_price,
+                    "from": my_address,
+                    "nonce": nonce,
+                    "value": amount_in_wei
+                }
+            )
 
-    transaction = smart_contract.functions.buyItem(token_id).build_transaction(
-        {
-            "chainId": chain_id,
-            "gasPrice": w3.eth.gas_price,
-            "from": my_address,
-            "nonce": nonce,
-            "value": amount_in_wei
-        }
-    )
+            signed_txn = w3.eth.account.sign_transaction(transaction, private_key=private_key)
+            tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction) #Transaction hash
+            tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash) #Ge transaction receipt using tx hash
 
-    signed_txn = w3.eth.account.sign_transaction(transaction, private_key=private_key)
-    tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
-    tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
+            # Log the transaction details
+            logging.info(f"Transaction built with nonce: {nonce}")
+            logging.info(f"Transaction hash: {tx_hash}")
+            logging.info(f"Transaction receipt: {tx_receipt}")
+            receipts.append({"status": "Item purchased", "transaction_receipt": tx_receipt})
+        
+        except Exception as e:
+            logging.error(f"Blockchain operation failed for token_id {item.token_id}: {e}")
+            receipts.append({"status": "Failed", "error": str(e)})
+    return {"results": receipts}
 
-    return {"status": "Item purchased", "transaction_receipt": tx_receipt}
+@app.post("/updateUserBalance")
+async def update_user_balance(user_id: int, new_balance: float):
+    try:
+        # Establish a database connection
+        connection = mysql.connector.connect(**db_config)
+
+        # Create a cursor to execute SQL queries
+        cursor = connection.cursor()
+
+        # Define the SQL query to update the user's balance
+        query = "UPDATE users SET balance = %s WHERE user_id = %s"
+
+        # Execute the SQL query
+        cursor.execute(query, (new_balance, user_id))
+
+        # Commit the changes to the database
+        connection.commit()
+
+        # Close the cursor and the database connection
+        cursor.close()
+        connection.close()
+
+        return {"status": "success", "message": "User balance updated successfully"}
+
+    except mysql.connector.Error as err:
+        return {"status": "error", "message": f"Error: {err}"}
 
 @app.post("/login")
 async def login(request:LoginRequest):

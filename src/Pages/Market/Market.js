@@ -155,6 +155,8 @@ const Market = () => {
     } else if (action === "toggle") {
       setSelectedItems((prevItems) => [...prevItems, item]);
     }
+
+    console.log("Selected Items:", selectedItems)
   };
 
   //change quantity of item in cart
@@ -174,7 +176,7 @@ const Market = () => {
   const [open, setOpen] = useState(false);
 
   //On click of buy button
-  const handleClick = () => {
+  const handleClick = async () => {
     // Check if the user is logged in
     if (!localStorage.getItem("isLoggedIn")) {
       // Redirect to login page 
@@ -184,9 +186,73 @@ const Market = () => {
       // Check if the user has sufficient balance
       if (parseFloat(currentUser.balance) >= parseFloat(total)) {
         // Proceed payment
-        setOpen(true); // Open Snackbar
+
+        // Initialize an array to store the results of each purchase
+        const purchaseResults = [];
+
+        // Update the user's balance
+        const newBalance = parseFloat(currentUser.balance) - parseFloat(total);
+
+        // Loop through each selected item to make the purchase
+        for (const item of selectedItems) {
+          const { item_id, price } = item; // Destructure item_id and price from the item object
+
+          try {
+            // Make API call to backend to execute purchase
+            const response = await axios.post('http://localhost:8000/buyItem', {
+              token_id: item_id,
+              price: price
+            });
+
+            if (response.data.status === "Item purchased") {
+              // Handle successful purchase
+              purchaseResults.push({ item_id, status: 'success' });
+              // After successful purchase
+              try {
+                const response = await axios.post('http://localhost:8000/updateUserBalance', {
+                  user_id: currentUser.user_id,
+                  new_balance: newBalance
+                });
+
+                if (response.data.status === "success") {
+                  // Update the balance in the frontend as well
+                  // No need for setCurrentUser, you're already updating it below
+                }
+              } catch (error) {
+                console.error("Failed to update user balance:", error);
+              }
+
+            } else {
+              // Handle failed purchase
+              purchaseResults.push({ item_id, status: 'failed' });
+            }
+          } catch (error) {
+            // Handle error
+            purchaseResults.push({ item_id, status: 'error' });
+          }
+        }
+
+        // Find the index of the current user in the user state array
+        const userIndex = user.findIndex(u => u.user_id === currentUser.user_id);
+
+        // Create a copy of the user state array
+        const updatedUsers = [...user];
+
+        // Update the balance of the current user in the copied array
+        updatedUsers[userIndex].balance = newBalance;
+
+        // Update the user state with the new user array
+        setUser(updatedUsers);
+
+        // Open Snackbar based on purchase results
+        if (purchaseResults.every(result => result.status === 'success')) {
+          setOpen(true); // Open Snackbar for successful purchase
+        } else {
+          setErrorSnackbarOpen(true);
+          setErrorMessages(["Some items could not be purchased. Please try again."]);
+        }
       } else {
-        // alert if the balance is insufficient
+        // Alert if the balance is insufficient
         setErrorSnackbarOpen(true);
         setErrorMessages(["Insufficient balance. Please add more funds."]);
       }
