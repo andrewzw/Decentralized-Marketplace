@@ -421,8 +421,14 @@ async def buy_item(token_id: int, price: float):
             receipts.append({"status": "Failed", "error": str(e)})
     return {"results": receipts}
 
+class UpdateBalanceRequest(BaseModel):
+    user_id: int
+    new_balance: float
 @app.post("/updateUserBalance")
-async def update_user_balance(user_id: int, new_balance: float):
+async def update_user_balance(request: UpdateBalanceRequest):
+    user_id = request.user_id
+    new_balance = request.new_balance
+    print(f"Received user_id: {user_id}, new_balance: {new_balance}")
     try:
         # Establish a database connection
         connection = mysql.connector.connect(**db_config)
