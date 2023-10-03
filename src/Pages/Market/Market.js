@@ -182,14 +182,32 @@ const Market = () => {
       navigate("/Login");
       return;
     }
-
     // Check if the user and balance are defined
     if (currentUser && typeof currentUser.balance !== 'undefined') {
+      // Check if the user has sufficient balance
       if (parseFloat(currentUser.balance) >= parseFloat(total)) {
         const purchaseResults = [];
         const newBalance = parseFloat(currentUser.balance) - parseFloat(total);
 
-        // ... (rest of your code remains the same)
+        // Loop through each selected item to make the purchase
+        for (const item of selectedItems) {
+          const { item_id, price } = item;
+          try {
+            const response = await axios.post('http://localhost:8000/buyItem', {
+              token_id: item_id,
+              price: price
+            });
+
+            if (response.data.status === "Item purchased") {
+              purchaseResults.push({ item_id, status: 'success' });
+            } else {
+              purchaseResults.push({ item_id, status: 'failed' });
+            }
+          } catch (error) {
+            console.error("Purchase Error:", error);
+            purchaseResults.push({ item_id, status: 'error', error: error.message });
+          }
+        }
 
         // Update the user's balance
         try {
@@ -200,9 +218,14 @@ const Market = () => {
             headers: {
               'Content-Type': 'application/json'
             }
-          });
+          }).then(response => {
+            console.log('Server Response:', response);
+          })
+            .catch(error => {
+              console.log('Error:', error);
+            });
 
-          // Check if response and data are defined
+
           if (response && response.data && response.data.status === "success") {
             const userIndex = user.findIndex(u => u.user_id === currentUser.user_id);
             const updatedUsers = [...user];
@@ -210,22 +233,39 @@ const Market = () => {
             setUser(updatedUsers);
           }
         } catch (error) {
+          console.log("Payload for updateUserBalance:", {
+            user_id: currentUser.user_id,
+            new_balance: newBalance
+          });
+
           console.error("Failed to update user balance:", error);
           if (error.response) {
             console.log("Server Response:", error.response.data);
           }
         }
+        // After successful API call, re-fetch user data
+        const userError = await fetchApiData(
+          'http://127.0.0.1:8000/getUser/',
+          setUser,
+          'Sorry, we are encountering an error fetching user\'s info. '
+        );
 
-        // ... (rest of your code remains the same)
+        // Open Snackbar based on purchase results
+        if (purchaseResults.every(result => result.status === 'success')) {
+          setOpen(true);
+        } else {
+          setErrorSnackbarOpen(true);
+          setErrorMessages(["Some items could not be purchased. Please try again."]);
+        }
       } else {
         setErrorSnackbarOpen(true);
         setErrorMessages(["Insufficient balance. Please add more funds."]);
       }
-    } else {
-      setErrorSnackbarOpen(true);
-      setErrorMessages(["User information is not available. Please log in again."]);
     }
+
+    console.log("Selected Items:", selectedItems);
   };
+
 
   //Calculate total price
   const total = selectedItems
@@ -394,8 +434,8 @@ const Market = () => {
             <Grid container spacing={1} rowSpacing={1}>
               <Grid item xs={12}>
                 {selectedItems.length > 0 ? (
-                  selectedItems.map((selectedItem) => (
-                    <Paper className="section3-paper">
+                  selectedItems.map((selectedItem, index) => (
+                    <Paper className="section3-paper" key={index}>
                       <Grid container>
                         {/* LEFT */}
                         <Grid item xs={6}>
