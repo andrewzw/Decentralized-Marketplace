@@ -183,87 +183,49 @@ const Market = () => {
       return;
     }
 
-    // Check if the user has sufficient balance
-    if (parseFloat(currentUser.balance) >= parseFloat(total)) {
-      const purchaseResults = [];
-      const newBalance = parseFloat(currentUser.balance) - parseFloat(total);
+    // Check if the user and balance are defined
+    if (currentUser && typeof currentUser.balance !== 'undefined') {
+      if (parseFloat(currentUser.balance) >= parseFloat(total)) {
+        const purchaseResults = [];
+        const newBalance = parseFloat(currentUser.balance) - parseFloat(total);
 
-      // Loop through each selected item to make the purchase
-      for (const item of selectedItems) {
-        const { item_id, price } = item;
+        // ... (rest of your code remains the same)
+
+        // Update the user's balance
         try {
-          const response = await axios.post('http://localhost:8000/buyItem', {
-            token_id: item_id,
-            price: price
+          const response = await axios.post('http://localhost:8000/updateUserBalance', JSON.stringify({
+            user_id: currentUser.user_id,
+            new_balance: newBalance
+          }), {
+            headers: {
+              'Content-Type': 'application/json'
+            }
           });
 
-          if (response.data.status === "Item purchased") {
-            purchaseResults.push({ item_id, status: 'success' });
-          } else {
-            purchaseResults.push({ item_id, status: 'failed' });
+          // Check if response and data are defined
+          if (response && response.data && response.data.status === "success") {
+            const userIndex = user.findIndex(u => u.user_id === currentUser.user_id);
+            const updatedUsers = [...user];
+            updatedUsers[userIndex].balance = newBalance;
+            setUser(updatedUsers);
           }
         } catch (error) {
-          console.error("Purchase Error:", error);
-          purchaseResults.push({ item_id, status: 'error', error: error.message });
-        }
-      }
-
-      // Update the user's balance
-      try {
-        const response = await axios.post('http://localhost:8000/updateUserBalance', JSON.stringify({
-          user_id: currentUser.user_id,
-          new_balance: newBalance
-        }), {
-          headers: {
-            'Content-Type': 'application/json'
+          console.error("Failed to update user balance:", error);
+          if (error.response) {
+            console.log("Server Response:", error.response.data);
           }
-        }).then(response => {
-          console.log('Server Response:', response);
-        })
-          .catch(error => {
-            console.log('Error:', error);
-          });
-
-
-        if (response.data.status === "success") {
-          const userIndex = user.findIndex(u => u.user_id === currentUser.user_id);
-          const updatedUsers = [...user];
-          updatedUsers[userIndex].balance = newBalance;
-          setUser(updatedUsers);
         }
-      } catch (error) {
-        console.log("Payload for updateUserBalance:", {
-          user_id: currentUser.user_id,
-          new_balance: newBalance
-        });
 
-        console.error("Failed to update user balance:", error);
-        if (error.response) {
-          console.log("Server Response:", error.response.data);
-        }
-      }
-      // After successful API call, re-fetch user data
-      const userError = await fetchApiData(
-        'http://127.0.0.1:8000/getUser/',
-        setUser,
-        'Sorry, we are encountering an error fetching user\'s info. '
-      );
-
-      // Open Snackbar based on purchase results
-      if (purchaseResults.every(result => result.status === 'success')) {
-        setOpen(true);
+        // ... (rest of your code remains the same)
       } else {
         setErrorSnackbarOpen(true);
-        setErrorMessages(["Some items could not be purchased. Please try again."]);
+        setErrorMessages(["Insufficient balance. Please add more funds."]);
       }
     } else {
       setErrorSnackbarOpen(true);
-      setErrorMessages(["Insufficient balance. Please add more funds."]);
+      setErrorMessages(["User information is not available. Please log in again."]);
     }
-
-    console.log("Selected Items:", selectedItems);
   };
-
 
   //Calculate total price
   const total = selectedItems
