@@ -8,7 +8,7 @@ CREATE TABLE listedItems(
     name VARCHAR(50) NOT NULL, 
     description VARCHAR(30) NOT NULL, 
     image VARCHAR(300) NOT NULL, 
-    cat VARCHAR(50) NOT NULL, 
+    cat ENUM ("Tech", "Art", "Fashion") NOT NULL, 
     price DECIMAL(10,10) NOT NULL, 
     seller VARCHAR(50) NOT NULL,
     featured BIT(1) NOT NULL,
