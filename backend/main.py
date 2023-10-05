@@ -10,31 +10,34 @@ from typing import List
 import logging
 
 logging.basicConfig(level=logging.INFO)
-#configure login class:
+# configure login class:
+
+
 class LoginRequest(BaseModel):
-    username:str
-    password:str
+    username: str
+    password: str
 
 # MySQL database connection configuration
 # If you get an error, change your password encryption on mysql to legacy mode
 # ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password'
 
-#STEP 1: Connect the MySQL in the terminal:
-#mysql -u <username> -p
-#or
-#/usr/local/mysql/bin/mysql -u root -p (for Mac)
+# STEP 1: Connect the MySQL in the terminal:
+# mysql -u <username> -p
+# or
+# /usr/local/mysql/bin/mysql -u root -p (for Mac)
 
-#use script
-#sudo mysql -u root -p < safespace_script.sql 
-#/usr/local/mysql/bin/mysql -u root -p < safespace_script.sql  (for Mac)
+# use script
+# sudo mysql -u root -p < safespace_script.sql
+# /usr/local/mysql/bin/mysql -u root -p < safespace_script.sql  (for Mac)
+
 
 app = FastAPI()
 db_config = {
-"host": "localhost",
-"user": "root",
-"password": "password",
-"database": "SafeSpace"
-} 
+    "host": "localhost",
+    "user": "root",
+    "password": "password",
+    "database": "SafeSpace"
+}
 
 app.add_middleware(
     CORSMiddleware,
@@ -44,17 +47,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/")
 async def funcTest1():
     return "Hello, this is fastAPI data"
 
+
 @app.get("/tabsData")
 async def funcTest():
     jsonResult = [
-        { "value": "All", "label": "All" },
-        { "value": "Tech", "label": "Tech" },
-        { "value": "Art", "label": "Art" },
-        { "value": "Fashion", "label": "Fashion" }
+        {"value": "All", "label": "All"},
+        {"value": "Tech", "label": "Tech"},
+        {"value": "Art", "label": "Art"},
+        {"value": "Fashion", "label": "Fashion"}
     ]
     return jsonResult
 
@@ -64,6 +69,7 @@ class Item(BaseModel):
     description: str = None
     price: float
     tax: float = None
+
 
 @app.get("/getFeaturedItems")
 def get_featuredItems():
@@ -95,6 +101,7 @@ def get_featuredItems():
     except mysql.connector.Error as err:
         return {"error": f"Error: {err}"}
 
+
 @app.get("/getListedItems")
 def get_listedItems():
     try:
@@ -124,7 +131,8 @@ def get_listedItems():
 
     except mysql.connector.Error as err:
         return {"error": f"Error: {err}"}
-    
+
+
 @app.get("/getGoalImages")
 def get_goalImages():
     try:
@@ -153,7 +161,8 @@ def get_goalImages():
         return goalImages
     except mysql.connector.Error as err:
         return {"error": f"Error: {err}"}
-    
+
+
 @app.get("/getMemberImages")
 def get_memberImages():
     try:
@@ -182,7 +191,8 @@ def get_memberImages():
         return memberImages
     except mysql.connector.Error as err:
         return {"error": f"Error: {err}"}
-    
+
+
 @app.get("/getMainQuestion")
 def get_MainQuestion():
     try:
@@ -211,7 +221,8 @@ def get_MainQuestion():
         return mainQuestion
     except mysql.connector.Error as err:
         return {"error": f"Error: {err}"}
-      
+
+
 @app.get("/getSubQuestion")
 def get_SubQuestion():
     try:
@@ -240,6 +251,7 @@ def get_SubQuestion():
         return subQuestion
     except mysql.connector.Error as err:
         return {"error": f"Error: {err}"}
+
 
 @app.get("/getUser")
 def get_userBalance():
@@ -271,20 +283,22 @@ def get_userBalance():
     except mysql.connector.Error as err:
         return {"error": f"Error: {err}"}
 
-#Smart Contract ---------------------------------------------------------------
+# Smart Contract ---------------------------------------------------------------
+
+
 @app.get("/deployContract")
 async def funcTest1():
-    #Configure Ganache
+    # Configure Ganache
     w3 = Web3(Web3.HTTPProvider("HTTP://127.0.0.1:7545"))
-    #Default is 1337 for Ganache
+    # Default is 1337 for Ganache
     chain_id = 1337
-    #Found in account REQUIRED
-    my_address = "0x2b53E3D811Db52F45e568e41B3E96c16Fb461Fb8"
-    private_key = "0x6cfb3810b880e4412560c9974593d00dc22c5c7715e810d697650c681b0f310f"
+    # Found in account REQUIRED
+    my_address = "0x192865D77ED4B663a48A066Cae4480DCecFb3696"
+    private_key = "0xab464e8db134c6cc601bffd258ad1d852ad9d90463aedcb4b42652a51841bcbe"
 
     with open("./SmartContract.sol", "r") as file:
         smart_contract_file = file.read()
-        
+
     install_solc("0.6.0")
     compiled_sol = compile_standard(
         {
@@ -299,6 +313,7 @@ async def funcTest1():
         solc_version="0.6.0",
     )
 
+    # Store bytecode and abi in json file
     with open("compiled_code.json", "w") as file:
         json.dump(compiled_sol, file)
 
@@ -308,24 +323,35 @@ async def funcTest1():
     # get abi
     abi = compiled_sol["contracts"]["SmartContract.sol"]["SmartContract"]["abi"]
 
-    # Deploy the contract
-    SmartContract = w3.eth.contract(abi=abi, bytecode=bytecode)
-    nonce = w3.eth.get_transaction_count(my_address)
-    transaction = SmartContract.constructor().build_transaction(
-        {
-            "chainId": chain_id,
-            "gasPrice": w3.eth.gas_price,
-            "from": my_address,
-            "nonce": nonce,
-        }
-    )
-    transaction.pop('to')
+    try:
+        # Deploy the contract
+        SmartContract = w3.eth.contract(abi=abi, bytecode=bytecode)
+        nonce = w3.eth.get_transaction_count(my_address)
+        transaction = SmartContract.constructor().build_transaction(
+            {
+                "chainId": chain_id,
+                "gasPrice": w3.eth.gas_price,
+                "from": my_address,
+                "nonce": nonce,
+            }
+        )
+        transaction.pop('to')
 
-    signed_txn = w3.eth.account.sign_transaction(transaction, private_key=private_key)
-    tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
-    tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
-    deployed_contract_address = tx_receipt.contractAddress
-    return {"Smart Contract deployed": deployed_contract_address}
+        signed_txn = w3.eth.account.sign_transaction(
+            transaction, private_key=private_key)
+        tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+        tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
+        global deployed_contract_address  # Declare it globally
+        deployed_contract_address = tx_receipt.contractAddress
+
+        logging.info(
+            f"Smart Contract deployed at address: {deployed_contract_address}")
+        return {"Smart Contract deployed": deployed_contract_address}
+    except Exception as e:
+        logging.error(f"Blockchain operation failed: {e}")
+        raise HTTPException(
+            status_code=500, detail="Smart Contract deployment failed: Blockchain operation error")
+
 
 @app.get("/getItemDetails/{item_id}")
 async def get_item_details(item_id: int):
@@ -336,8 +362,8 @@ async def get_item_details(item_id: int):
         compiled_sol = json.load(file)
     abi = compiled_sol["contracts"]["SmartContract.sol"]["SmartContract"]["abi"]
 
-    # Replace with your contract address REQUIRED
-    contract_address = deployed_contract_address  
+    # Contract address
+    contract_address = deployed_contract_address
     smart_contract = w3.eth.contract(address=contract_address, abi=abi)
 
     # Call the smart contract to get item details
@@ -348,75 +374,134 @@ async def get_item_details(item_id: int):
             "description": item[1],
             "image": item[2],
             "category": item[3],
-            "price" : item[4],
+            "price": item[4],
             "seller": item[5]
         }
         return item_details
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+
+class CartItem(BaseModel):
+    token_id: int
+    price: float
+
+
 @app.post("/buyItem")
 async def buy_item(token_id: int, price: float):
-    #Debug
+    # Debug
     print("Token ID:", token_id)
     print("Price:", price)
-    #Configure Ganache
+    # Configure Ganache
     w3 = Web3(Web3.HTTPProvider("HTTP://127.0.0.1:7545"))
-    #Default is 1337 for Ganache
+    # Default is 1337 for Ganache
     chain_id = 1337
-    #Found in account REQUIRED
-    my_address = "0x03db7fE88Bf4a8bc3Ba191883D26F8344D7B3bdB"
-    private_key = "0xc90671f46e9ee7dfeb8c1985be2d568cce861b1a49946b6e90b1573278cdfe89"
-
+    # Found in account REQUIRED
+    my_address = "0xBb952Df9b38a2d74455741FDe88e8e3407B74d06"
+    private_key = "0x0fd3bdbe2ae732e7e768806030d7c32fabf3b063f524a58afe16e5b2fee5bd69"
 
     # Assuming you have the ABI and contract address stored
     with open("compiled_code.json", "r") as file:
         compiled_sol = json.load(file)
     abi = compiled_sol["contracts"]["SmartContract.sol"]["SmartContract"]["abi"]
-    # Replace with your contract address REQUIRED
-    contract_address = "0x6eeb357ABF9F99e402207715DbBC65BF6880F9E3"  
-
+    # Contract Address
+    contract_address = deployed_contract_address
     smart_contract = w3.eth.contract(address=contract_address, abi=abi)
 
-    # Build and send the transaction to buy an item
-    nonce = w3.eth.get_transaction_count(my_address)
-    amount_in_wei = w3.toWei(price, 'ether')
+    receipts = []
+    for item in cart:
+        try:
+            # Build and send the transaction to buy an item
+            nonce = w3.eth.get_transaction_count(my_address)
+            amount_in_wei = w3.toWei(price, 'ether')
 
-    transaction = smart_contract.functions.buyItem(token_id).build_transaction(
-        {
-            "chainId": chain_id,
-            "gasPrice": w3.eth.gas_price,
-            "from": my_address,
-            "nonce": nonce,
-            "value": amount_in_wei
-        }
-    )
+            transaction = smart_contract.functions.buyItem(token_id).build_transaction(
+                {
+                    "chainId": chain_id,
+                    "gasPrice": w3.eth.gas_price,
+                    "from": my_address,
+                    "nonce": nonce,
+                    "value": amount_in_wei
+                }
+            )
 
-    signed_txn = w3.eth.account.sign_transaction(transaction, private_key=private_key)
-    tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
-    tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
+            signed_txn = w3.eth.account.sign_transaction(
+                transaction, private_key=private_key)
+            tx_hash = w3.eth.send_raw_transaction(
+                signed_txn.rawTransaction)  # Transaction hash
+            tx_receipt = w3.eth.wait_for_transaction_receipt(
+                tx_hash)  # Ge transaction receipt using tx hash
 
-    return {"status": "Item purchased", "transaction_receipt": tx_receipt}
+            # Log the transaction details
+            logging.info(f"Transaction built with nonce: {nonce}")
+            logging.info(f"Transaction hash: {tx_hash}")
+            logging.info(f"Transaction receipt: {tx_receipt}")
+            receipts.append({"status": "Item purchased",
+                            "transaction_receipt": tx_receipt})
+
+        except Exception as e:
+            logging.error(
+                f"Blockchain operation failed for token_id {item.token_id}: {e}")
+            receipts.append({"status": "Failed", "error": str(e)})
+    return {"results": receipts}
+
+
+class UpdateBalanceRequest(BaseModel):
+    user_id: int
+    new_balance: float
+
+
+@app.post("/updateUserBalance")
+async def update_user_balance(request: UpdateBalanceRequest):
+    user_id = request.user_id
+    new_balance = request.new_balance
+    print(f"Received user_id: {user_id}, new_balance: {new_balance}")
+    try:
+        # Establish a database connection
+        connection = mysql.connector.connect(**db_config)
+
+        # Create a cursor to execute SQL queries
+        cursor = connection.cursor()
+
+        # Define the SQL query to update the user's balance
+        query = "UPDATE users SET balance = %s WHERE user_id = %s"
+
+        # Execute the SQL query
+        cursor.execute(query, (new_balance, user_id))
+
+        # Commit the changes to the database
+        connection.commit()
+
+        # Close the cursor and the database connection
+        cursor.close()
+        connection.close()
+
+        return {"status": "success", "message": "User balance updated successfully"}
+
+    except mysql.connector.Error as err:
+        return {"status": "error", "message": f"Error: {err}"}
+
 
 @app.post("/login")
-async def login(request:LoginRequest):
+async def login(request: LoginRequest):
     logging.info(f"Received login request for username: {request.username}")
     try:
         connection = mysql.connector.connect(**db_config)
         cursor = connection.cursor()
         query = "SELECT * FROM users WHERE username = %s AND pass = %s"
-        cursor.execute(query,(request.username,request.password))
+        cursor.execute(query, (request.username, request.password))
         result = cursor.fetchone()
         cursor.close()
         connection.close()
 
         if result:
             user_id = result[0]
-            return{"status":"success","message":"User verified","user_id":user_id}
+            return {"status": "success", "message": "User verified", "user_id": user_id}
         else:
             raise HTTPException(status_code=404, detail="Invalid credentials")
     except mysql.connector.Error as err:
         return {"error": f"Error:{err}"}
+
 
 @app.get("/getItemsForUser/{user_id}")
 async def get_items_for_user(user_id: int):
@@ -432,14 +517,15 @@ async def get_items_for_user(user_id: int):
 
         cursor.execute(query, (user_id,))
         result = cursor.fetchall()
-        #convert result to list of dict
+        # convert result to list of dict
         items = [dict(zip(cursor.column_names, row)) for row in result]
 
         cursor.close()
         connection.close()
 
         if not items:
-            raise HTTPException(status_code=404, detail="No items found for this user")
+            raise HTTPException(
+                status_code=404, detail="No items found for this user")
 
         return items
     except mysql.connector.Error as err:
