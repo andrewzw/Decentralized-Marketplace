@@ -1,3 +1,16 @@
+# MySQL database connection configuration
+# If you get an error, change your password encryption on mysql to legacy mode
+# ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password'
+
+# STEP 1: Connect the MySQL in the terminal:
+# mysql -u <username> -p
+# or
+# /usr/local/mysql/bin/mysql -u root -p (for Mac)
+
+# use script
+# sudo mysql -u root -p < safespace_script.sql
+# /usr/local/mysql/bin/mysql -u root -p < safespace_script.sql  (for Mac)
+
 from fastapi import FastAPI, Depends, HTTPException
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
@@ -17,18 +30,16 @@ class LoginRequest(BaseModel):
     username: str
     password: str
 
-# MySQL database connection configuration
-# If you get an error, change your password encryption on mysql to legacy mode
-# ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password'
 
-# STEP 1: Connect the MySQL in the terminal:
-# mysql -u <username> -p
-# or
-# /usr/local/mysql/bin/mysql -u root -p (for Mac)
+class Item(BaseModel):
+    item_id: int
+    price: float
+    name: str
 
-# use script
-# sudo mysql -u root -p < safespace_script.sql
-# /usr/local/mysql/bin/mysql -u root -p < safespace_script.sql  (for Mac)
+
+class UpdateBalanceRequest(BaseModel):
+    user_id: int
+    new_balance: float
 
 
 app = FastAPI()
@@ -62,13 +73,6 @@ async def funcTest():
         {"value": "Fashion", "label": "Fashion"}
     ]
     return jsonResult
-
-
-class Item(BaseModel):
-    name: str
-    description: str = None
-    price: float
-    tax: float = None
 
 
 @app.get("/getFeaturedItems")
@@ -341,7 +345,7 @@ async def funcTest1():
             transaction, private_key=private_key)
         tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
         tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
-        global deployed_contract_address  # Declare it globally
+        global deployed_contract_address
         deployed_contract_address = tx_receipt.contractAddress
 
         logging.info(
@@ -362,7 +366,7 @@ async def get_item_details(item_id: int):
         compiled_sol = json.load(file)
     abi = compiled_sol["contracts"]["SmartContract.sol"]["SmartContract"]["abi"]
 
-    # Contract address
+    # Contract address REQUIRED
     contract_address = deployed_contract_address
     smart_contract = w3.eth.contract(address=contract_address, abi=abi)
 
@@ -382,13 +386,9 @@ async def get_item_details(item_id: int):
         raise HTTPException(status_code=400, detail=str(e))
 
 
-class CartItem(BaseModel):
-    item_id: int
-    price: float
-
-
 @app.post("/buyItem")
 async def buy_item(items: List[Item]):
+
     receipts = []
     for item in items:
         # Configure Ganache
@@ -403,15 +403,18 @@ async def buy_item(items: List[Item]):
         with open("compiled_code.json", "r") as file:
             compiled_sol = json.load(file)
         abi = compiled_sol["contracts"]["SmartContract.sol"]["SmartContract"]["abi"]
-        # Contract Address
-        contract_address = deployed_contract_address
+        # Contract address REQUIRED
+        contract_address = "0xCf052A2cC78854Fbd2D15B00B2d573FFCbD7B4e7"
         smart_contract = w3.eth.contract(address=contract_address, abi=abi)
         try:
             # Build and send the transaction to buy an item
             nonce = w3.eth.get_transaction_count(my_address)
-            amount_in_wei = w3.toWei(item.price, 'ether')
+            amount_in_wei = int(item.price * (10 ** 18))
 
-            transaction = smart_contract.functions.buyItem(item.item_id).build_transaction(
+            # Debugging
+            print(f" Sending Amount: {amount_in_wei} WEI / {item.price} ETH")
+
+            store_transaction = smart_contract.functions.buyItem(item.item_id).build_transaction(
                 {
                     "chainId": chain_id,
                     "gasPrice": w3.eth.gas_price,
@@ -421,30 +424,40 @@ async def buy_item(items: List[Item]):
                 }
             )
 
-            signed_txn = w3.eth.account.sign_transaction(
-                transaction, private_key=private_key)
-            tx_hash = w3.eth.send_raw_transaction(
-                signed_txn.rawTransaction)  # Transaction hash
+            signed_store_txn = w3.eth.account.sign_transaction(
+                store_transaction, private_key=private_key)
+            send_store_tx_hash = w3.eth.send_raw_transaction(
+                signed_store_txn.rawTransaction)
             tx_receipt = w3.eth.wait_for_transaction_receipt(
-                tx_hash)  # Ge transaction receipt using tx hash
-
+                send_store_tx_hash)
+            tx_receipt_serializable = {
+                "transactionHash": tx_receipt['transactionHash'].hex(),
+                "transactionIndex": tx_receipt['transactionIndex'],
+                "blockNumber": tx_receipt['blockNumber'],
+                "blockHash": tx_receipt['blockHash'].hex(),
+                "from": tx_receipt['from'],
+                "to": tx_receipt['to'],
+                "cumulativeGasUsed": tx_receipt['cumulativeGasUsed'],
+                "gasUsed": tx_receipt['gasUsed'],
+                "status": tx_receipt['status']
+            }
             # Log the transaction details
             logging.info(f"Transaction built with nonce: {nonce}")
-            logging.info(f"Transaction hash: {tx_hash}")
-            logging.info(f"Transaction receipt: {tx_receipt}")
-            receipts.append({"status": "Item purchased",
-                            "transaction_receipt": tx_receipt})
+            logging.info(f"Transaction hash: {send_store_tx_hash.hex()}")
+            logging.info(f"Transaction receipt: {tx_receipt_serializable}")
+
+            receipts.append({
+                "status": "Item purchased",
+                "transaction_receipt": tx_receipt_serializable,
+                "transaction_hash": send_store_tx_hash.hex()
+            })
 
         except Exception as e:
+            print(f"Full exception details: {e}")
             logging.error(
                 f"Blockchain operation failed for item_id {item.item_id}: {e}")
             receipts.append({"status": "Failed", "error": str(e)})
     return {"results": receipts}
-
-
-class UpdateBalanceRequest(BaseModel):
-    user_id: int
-    new_balance: float
 
 
 @app.post("/updateUserBalance")

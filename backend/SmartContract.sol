@@ -46,7 +46,7 @@ contract SmartContract {
             "Item 1 Description",
             "https://i.ibb.co/r58jQcq/tech1.jpg",
             "Tech",
-            123456789,
+            123456789000000000,
             "Andrew"
         );
         items[2] = Item(
@@ -54,7 +54,7 @@ contract SmartContract {
             "Item 2 Description",
             "https://i.ibb.co/kJ23Wbb/tech2.jpg",
             "Tech",
-            123456789,
+            123456789000000000,
             "Andrew"
         );
         items[3] = Item(
@@ -62,7 +62,7 @@ contract SmartContract {
             "Item 3 Description",
             "https://i.ibb.co/zsmJY80/tech3.jpg",
             "Tech",
-            123456789,
+            123456789000000000,
             "Andrew"
         );
         items[4] = Item(
@@ -70,7 +70,7 @@ contract SmartContract {
             "Item 4 Description",
             "https://i.ibb.co/XyFRTBY/tech4.jpg",
             "Tech",
-            123456789,
+            123456789000000000,
             "Andrew"
         );
         items[5] = Item(
@@ -78,7 +78,7 @@ contract SmartContract {
             "Item 5 Description",
             "https://i.ibb.co/ChYQdQC/art1.png",
             "Art",
-            123456789,
+            123456789000000000,
             "Yuan"
         );
         items[6] = Item(
@@ -86,7 +86,7 @@ contract SmartContract {
             "Item 6 Description",
             "https://i.ibb.co/842cvSM/art2.png",
             "Art",
-            123456789,
+            123456789000000000,
             "Yuan"
         );
         items[7] = Item(
@@ -94,7 +94,7 @@ contract SmartContract {
             "Item 7 Description",
             "https://i.ibb.co/YDnrM2r/art3.png",
             "Art",
-            123456789,
+            123456789000000000,
             "Yuan"
         );
         items[8] = Item(
@@ -102,7 +102,7 @@ contract SmartContract {
             "Item 8 Description",
             "https://i.ibb.co/Jv5f5Jd/art4.png",
             "Art",
-            123456789,
+            123456789000000000,
             "Yuan"
         );
         items[9] = Item(
@@ -110,7 +110,7 @@ contract SmartContract {
             "Item 9 Description",
             "https://i.ibb.co/cwyXfzy/fashion1.png",
             "Fashion",
-            123456789,
+            123456789000000000,
             "Tom"
         );
         items[10] = Item(
@@ -118,7 +118,7 @@ contract SmartContract {
             "Item 10 Description",
             "https://i.ibb.co/xX3MX8C/fashion2.png",
             "Fashion",
-            123456789,
+            123456789000000000,
             "Tom"
         );
         items[11] = Item(
@@ -126,7 +126,7 @@ contract SmartContract {
             "Item 11 Description",
             "https://i.ibb.co/RhwgT9P/fashion3.jpg",
             "Fashion",
-            123456789,
+            123456789000000000,
             "Tom"
         );
         items[12] = Item(
@@ -134,7 +134,7 @@ contract SmartContract {
             "Item 12 Description",
             "https://i.ibb.co/YZtrQ36/fashion4.jpg",
             "Fashion",
-            123456789,
+            123456789000000000,
             "Tom"
         );
     }

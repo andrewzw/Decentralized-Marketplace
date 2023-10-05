@@ -190,17 +190,18 @@ const Market = () => {
 
         // Prepare the payload for all selected items
         const payload = selectedItems.map(item => ({
-          token_id: item.item_id,
+          item_id: item.item_id,
           price: item.price,
           name: item.name
         }));
 
         try {
           //API call to purchase all selected items
-          const response = await axios.post('http://localhost:8000/buyItem', payload, { withCredentials: false });
-
+          const response = await axios.post('http://localhost:8000/buyItem', payload);
+          console.log("Purchasing item:", payload);
+          console.log("Purchase response:", response.data.results[0].status);
           // Handle the response
-          if (response.data.status === "Item purchased") {
+          if (response.data.results[0].status === "Item purchased") {
             // Handle successful purchase
             setOpen(true);
           } else {
