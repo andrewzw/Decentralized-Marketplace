@@ -559,9 +559,19 @@ const Market = () => {
 
 
                   <Stack spacing={2} sx={{ width: "100%" }}>
-                    <Button variant="outlined" onClick={handleClick}>
-                      Buy
-                    </Button>
+                    {selectedItems.length === 0 ?
+
+                      <Button variant="contained" color="secondary">
+                        Add Items to cart first
+                      </Button>
+                      :
+
+                      <Button variant="outlined" onClick={handleClick} >
+                        Buy
+                      </Button>
+
+                    }
+
 
                     {/* Snackbar - payment notification*/}
                     <Snackbar
