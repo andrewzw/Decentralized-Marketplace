@@ -383,39 +383,35 @@ async def get_item_details(item_id: int):
 
 
 class CartItem(BaseModel):
-    token_id: int
+    item_id: int
     price: float
 
 
 @app.post("/buyItem")
-async def buy_item(token_id: int, price: float):
-    # Debug
-    print("Token ID:", token_id)
-    print("Price:", price)
-    # Configure Ganache
-    w3 = Web3(Web3.HTTPProvider("HTTP://127.0.0.1:7545"))
-    # Default is 1337 for Ganache
-    chain_id = 1337
-    # Found in account REQUIRED
-    my_address = "0xBb952Df9b38a2d74455741FDe88e8e3407B74d06"
-    private_key = "0x0fd3bdbe2ae732e7e768806030d7c32fabf3b063f524a58afe16e5b2fee5bd69"
-
-    # Assuming you have the ABI and contract address stored
-    with open("compiled_code.json", "r") as file:
-        compiled_sol = json.load(file)
-    abi = compiled_sol["contracts"]["SmartContract.sol"]["SmartContract"]["abi"]
-    # Contract Address
-    contract_address = deployed_contract_address
-    smart_contract = w3.eth.contract(address=contract_address, abi=abi)
-
+async def buy_item(items: List[Item]):
     receipts = []
-    for item in cart:
+    for item in items:
+        # Configure Ganache
+        w3 = Web3(Web3.HTTPProvider("HTTP://127.0.0.1:7545"))
+        # Default is 1337 for Ganache
+        chain_id = 1337
+        # Found in account REQUIRED
+        my_address = "0x192865D77ED4B663a48A066Cae4480DCecFb3696"
+        private_key = "0xab464e8db134c6cc601bffd258ad1d852ad9d90463aedcb4b42652a51841bcbe"
+
+        # Assuming you have the ABI and contract address stored
+        with open("compiled_code.json", "r") as file:
+            compiled_sol = json.load(file)
+        abi = compiled_sol["contracts"]["SmartContract.sol"]["SmartContract"]["abi"]
+        # Contract Address
+        contract_address = deployed_contract_address
+        smart_contract = w3.eth.contract(address=contract_address, abi=abi)
         try:
             # Build and send the transaction to buy an item
             nonce = w3.eth.get_transaction_count(my_address)
-            amount_in_wei = w3.toWei(price, 'ether')
+            amount_in_wei = w3.toWei(item.price, 'ether')
 
-            transaction = smart_contract.functions.buyItem(token_id).build_transaction(
+            transaction = smart_contract.functions.buyItem(item.item_id).build_transaction(
                 {
                     "chainId": chain_id,
                     "gasPrice": w3.eth.gas_price,
@@ -441,7 +437,7 @@ async def buy_item(token_id: int, price: float):
 
         except Exception as e:
             logging.error(
-                f"Blockchain operation failed for token_id {item.token_id}: {e}")
+                f"Blockchain operation failed for item_id {item.item_id}: {e}")
             receipts.append({"status": "Failed", "error": str(e)})
     return {"results": receipts}
 

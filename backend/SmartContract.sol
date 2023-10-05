@@ -25,7 +25,7 @@ contract SmartContract {
     uint256 public transactionCount = 0;
 
     event ItemPurchased(
-        uint256 indexed tokenId,
+        uint256 indexed itemId,
         address buyer,
         uint256 price,
         uint256 time
@@ -139,30 +139,30 @@ contract SmartContract {
         );
     }
 
-    function buyItem(uint256 _tokenId) public payable {
-        require(items[_tokenId].price > 0, "Item does not exist");
-        require(msg.value == items[_tokenId].price, "Incorrect ETH value sent");
+    function buyItem(uint256 _itemId) public payable {
+        require(items[_itemId].price > 0, "Item does not exist");
+        require(msg.value == items[_itemId].price, "Incorrect ETH value sent");
 
         // Add transaction
         transactions[transactionCount] = Transaction(
             owner,
             msg.sender,
-            items[_tokenId].price,
-            _tokenId
+            items[_itemId].price,
+            _itemId
         );
         emit TransactionAdded(
             transactionCount,
             owner,
             msg.sender,
-            items[_tokenId].price,
-            _tokenId
+            items[_itemId].price,
+            _itemId
         );
         transactionCount++;
 
         emit ItemPurchased(
-            _tokenId,
+            _itemId,
             msg.sender,
-            items[_tokenId].price,
+            items[_itemId].price,
             block.timestamp
         );
     }

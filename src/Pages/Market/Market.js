@@ -186,27 +186,33 @@ const Market = () => {
     if (currentUser && typeof currentUser.balance !== 'undefined') {
       // Check if the user has sufficient balance
       if (parseFloat(currentUser.balance) >= parseFloat(total)) {
-        const purchaseResults = [];
         const newBalance = parseFloat(currentUser.balance) - parseFloat(total);
 
-        // Loop through each selected item to make the purchase
-        for (const item of selectedItems) {
-          const { item_id, price } = item;
-          try {
-            const response = await axios.post('http://localhost:8000/buyItem', {
-              token_id: item_id,
-              price: price
-            });
+        // Prepare the payload for all selected items
+        const payload = selectedItems.map(item => ({
+          token_id: item.item_id,
+          price: item.price,
+          name: item.name
+        }));
 
-            if (response.data.status === "Item purchased") {
-              purchaseResults.push({ item_id, status: 'success' });
-            } else {
-              purchaseResults.push({ item_id, status: 'failed' });
-            }
-          } catch (error) {
-            console.error("Purchase Error:", error);
-            purchaseResults.push({ item_id, status: 'error', error: error.message });
+        try {
+          //API call to purchase all selected items
+          const response = await axios.post('http://localhost:8000/buyItem', payload, { withCredentials: false });
+
+          // Handle the response
+          if (response.data.status === "Item purchased") {
+            // Handle successful purchase
+            setOpen(true);
+          } else {
+            // Handle failed purchase
+            setErrorSnackbarOpen(true);
+            setErrorMessages(["Some items could not be purchased. Please try again."]);
           }
+        } catch (error) {
+          // Handle errors
+          console.error("Purchase Error:", error);
+          setErrorSnackbarOpen(true);
+          setErrorMessages(["An error occurred while making the purchase. Please try again."]);
         }
 
         // Update the user's balance
@@ -218,13 +224,7 @@ const Market = () => {
             headers: {
               'Content-Type': 'application/json'
             }
-          }).then(response => {
-            console.log('Server Response:', response);
-          })
-            .catch(error => {
-              console.log('Error:', error);
-            });
-
+          });
 
           if (response && response.data && response.data.status === "success") {
             const userIndex = user.findIndex(u => u.user_id === currentUser.user_id);
@@ -233,38 +233,22 @@ const Market = () => {
             setUser(updatedUsers);
           }
         } catch (error) {
-          console.log("Payload for updateUserBalance:", {
-            user_id: currentUser.user_id,
-            new_balance: newBalance
-          });
-
           console.error("Failed to update user balance:", error);
-          if (error.response) {
-            console.log("Server Response:", error.response.data);
-          }
         }
+
         // After successful API call, re-fetch user data
-        const userError = await fetchApiData(
+        await fetchApiData(
           'http://127.0.0.1:8000/getUser/',
           setUser,
           'Sorry, we are encountering an error fetching user\'s info. '
         );
-
-        // Open Snackbar based on purchase results
-        if (purchaseResults.every(result => result.status === 'success')) {
-          setOpen(true);
-        } else {
-          setErrorSnackbarOpen(true);
-          setErrorMessages(["Some items could not be purchased. Please try again."]);
-        }
       } else {
         setErrorSnackbarOpen(true);
         setErrorMessages(["Insufficient balance. Please add more funds."]);
       }
     }
-
-    console.log("Selected Items:", selectedItems);
   };
+
 
 
   //Calculate total price
