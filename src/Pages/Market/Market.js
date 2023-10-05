@@ -1,6 +1,6 @@
 /* Name: Zhe Wei Yap */
 /* ID: 103508895 */
-
+import Web3 from 'web3';
 import * as React from "react";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
@@ -29,6 +29,58 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 });
 
 const Market = () => {
+  useEffect(() => {
+    async function fetchAndListenForEvents() {
+        const web3 = new Web3(Web3.givenProvider || "HTTP://127.0.0.1:7545");
+
+        const contractAddress = "0xbEE6a03BAeC7005eE7e875dB74634e83372ea70C";
+        const abi = [
+          {
+              "anonymous": false,
+              "inputs": [
+                  {"indexed": false, "internalType": "string", "name": "message", "type": "string"},
+                  {"indexed": true, "internalType": "address", "name": "sender", "type": "address"}
+              ],
+              "name": "SimpleEvent",
+              "type": "event"
+          },
+          {
+              "inputs": [{"internalType": "string", "name": "_message", "type": "string"}],
+              "name": "triggerEvent",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+          }
+      ];
+        
+        const contract = new web3.eth.Contract(abi, contractAddress);
+
+        // Request access to accounts
+        let accounts = [];
+        
+        accounts = await web3.eth.getAccounts().then(console.log).catch(console.error);
+        
+
+        const defaultAccount = "0xc680116fC223332E9208adc9D17212d02ae33607";
+        console.log('Default Account:', defaultAccount);
+
+        // Listening for events
+        contract.events.SimpleEvent({
+            filter: { sender: defaultAccount }, 
+            fromBlock: 0
+        })
+        .on('data', function(event) {
+            console.log(event); 
+        })
+        
+        
+    }
+
+    fetchAndListenForEvents();
+}, []);
+
+
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [value, setValue] = useState("All");
@@ -93,6 +145,7 @@ const Market = () => {
 
   //Call to backend to fetch data
   useEffect(() => {
+
     const fetchData = async () => {
       let allErrorMessages = [];
 

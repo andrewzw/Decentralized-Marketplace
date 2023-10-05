@@ -272,15 +272,23 @@ def get_userBalance():
         return {"error": f"Error: {err}"}
 
 #Smart Contract ---------------------------------------------------------------
+deployed_contract_address = None
+abi = None
+SmartContract = None
+chain_id = 1337
 @app.get("/deployContract")
 async def funcTest1():
+    global deployed_contract_address 
+    global abi 
+    global SmartContract 
+    global chain_id
     #Configure Ganache
     w3 = Web3(Web3.HTTPProvider("HTTP://127.0.0.1:7545"))
     #Default is 1337 for Ganache
     chain_id = 1337
     #Found in account REQUIRED
-    my_address = "0x2b53E3D811Db52F45e568e41B3E96c16Fb461Fb8"
-    private_key = "0x6cfb3810b880e4412560c9974593d00dc22c5c7715e810d697650c681b0f310f"
+    my_address = "0xc680116fC223332E9208adc9D17212d02ae33607"
+    private_key = "0xee24380933650bae456ea1cef565fba1651e38af1a92b2bc2424ebb3f9b9f39c"
 
     with open("./SmartContract.sol", "r") as file:
         smart_contract_file = file.read()
@@ -325,7 +333,47 @@ async def funcTest1():
     tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
     tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
     deployed_contract_address = tx_receipt.contractAddress
-    return {"Smart Contract deployed": deployed_contract_address}
+    return {"Smart Contract deployed": deployed_contract_address,
+            "abi": abi}
+
+@app.get("/callFunction")
+async def callFunction(message: str):
+    global deployed_contract_address
+    global abi
+    # Check if the contract address is available
+    if not deployed_contract_address:
+        return {"error": "Smart Contract not deployed yet."}
+
+    w3 = Web3(Web3.HTTPProvider("HTTP://127.0.0.1:7545"))
+
+    
+
+    # Access the contract
+    contract = w3.eth.contract(address=deployed_contract_address, abi=abi)
+
+    # Print ABI and contract address
+   
+    
+    # The account that will trigger the event
+    my_address = "0xc680116fC223332E9208adc9D17212d02ae33607"
+    private_key = "0xee24380933650bae456ea1cef565fba1651e38af1a92b2bc2424ebb3f9b9f39c"
+    nonce = w3.eth.get_transaction_count(my_address)
+    
+   # Call the triggerEvent function
+    txn = contract.functions.triggerEvent(message).build_transaction({
+        'chainId': chain_id,
+        'gas': 2000000,  # Adjust the gas limit as needed
+        'gasPrice': w3.eth.gas_price,
+        'nonce': w3.eth.get_transaction_count(my_address),
+    })
+
+    # Sign and send the transaction
+    signed_txn = w3.eth.account.sign_transaction(txn, private_key=private_key)
+    tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+    tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
+
+    return {"function deployed"}
+    
 
 @app.get("/getItemDetails/{item_id}")
 async def get_item_details(item_id: int):
