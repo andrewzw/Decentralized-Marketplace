@@ -8,40 +8,13 @@ CREATE TABLE listedItems(
     name VARCHAR(50) NOT NULL, 
     description VARCHAR(30) NOT NULL, 
     image VARCHAR(300) NOT NULL, 
-    cat VARCHAR(50) NOT NULL, 
+    cat ENUM ("Tech", "Art", "Fashion") NOT NULL, 
     price DECIMAL(10,10) NOT NULL, 
     seller VARCHAR(50) NOT NULL,
-    featured BIT(1) NOT NULL
-);
-    
--- About Page
-
-CREATE TABLE goalImages(
-    image VARCHAR(300) NOT NULL,
-    alt VARCHAR(30) NOT NULL,
-    description VARCHAR(30) NOT NULL
+    featured BIT(1) NOT NULL,
+    INDEX featured (featured)
 );
 
-CREATE TABLE memberImages(
-    image VARCHAR(300) NOT NULL,
-    alt VARCHAR(30) NOT NULL
-);
-
--- FAQ Page
-CREATE TABLE mainQuestion(
-    main_id INT AUTO_INCREMENT PRIMARY KEY,
-    main_question VARCHAR(300) NOT NULL
-);
-
-CREATE TABLE subQuestion(
-    main_id INT,
-    sub_question VARCHAR(300) NOT NULL,
-    answer VARCHAR(300) NOT NULL,
-    FOREIGN KEY (main_id) REFERENCES mainQuestion(main_id)
-);
-
-
--- Market Page
 INSERT INTO listedItems(name, description, image, cat, price, seller, featured) VALUE ("Item 1", "Item 1 Description", "https://i.ibb.co/r58jQcq/tech1.jpg", "Tech", "0.123456789", "Andrew", 0);
 INSERT INTO listedItems(name, description, image, cat, price, seller, featured) VALUE ("Item 2", "Item 2 Description", "https://i.ibb.co/kJ23Wbb/tech2.jpg", "Tech", "0.123456789", "Andrew", 1);
 INSERT INTO listedItems(name, description, image, cat, price, seller, featured) VALUE ("Item 3", "Item 3 Description", "https://i.ibb.co/zsmJY80/tech3.jpg", "Tech", "0.123456789", "Andrew", 0);
@@ -54,9 +27,20 @@ INSERT INTO listedItems(name, description, image, cat, price, seller, featured) 
 INSERT INTO listedItems(name, description, image, cat, price, seller, featured) VALUE ("Item 10", "Item 10 Description", "https://i.ibb.co/xX3MX8C/fashion2.png", "Fashion", "0.123456789", "Tom", 0);
 INSERT INTO listedItems(name, description, image, cat, price, seller, featured) VALUE ("Item 11", "Item 11 Description", "https://i.ibb.co/RhwgT9P/fashion3.jpg", "Fashion", "0.123456789", "Tom", 0);
 INSERT INTO listedItems(name, description, image, cat, price, seller, featured) VALUE ("Item 12", "Item 12 Description", "https://i.ibb.co/YZtrQ36/fashion4.jpg", "Fashion", "0.123456789", "Tom", 0);
+    
+-- About Page Tables -----------------------------------------------------------------------------------------------------------------------------------
 
+CREATE TABLE goalImages(
+    image VARCHAR(300) NOT NULL,
+    alt VARCHAR(30) NOT NULL,
+    description VARCHAR(30) NOT NULL
+);
 
--- About Page
+CREATE TABLE memberImages(
+    image VARCHAR(300) NOT NULL,
+    alt VARCHAR(30) NOT NULL
+);
+
 INSERT INTO goalImages(image, alt, description) VALUE ("https://i.ibb.co/PQxFkMV/trend.png", "trend", "See the rise of your NFT");
 INSERT INTO goalImages(image, alt, description) VALUE ("https://i.ibb.co/5vVP1yn/support.png", "tag", "Create and Sell your NFT");
 INSERT INTO goalImages(image, alt, description) VALUE ("https://i.ibb.co/m0qyQr3/tag.png", "palette", "Browse our various NFTs");
@@ -66,8 +50,20 @@ INSERT INTO memberImages(image, alt) VALUE ("https://i.ibb.co/KLcTHw2/Tom.jpg", 
 INSERT INTO memberImages(image, alt) VALUE ("https://i.ibb.co/M6NcG4c/Andrew.jpg", "Andrew");
 INSERT INTO memberImages(image, alt) VALUE ("https://i.ibb.co/rf6XcSF/Yuan.jpg", "Yuan");
 
+-- FAQ Page Tables -----------------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE mainQuestion(
+    main_id INT AUTO_INCREMENT PRIMARY KEY,
+    main_question VARCHAR(300) NOT NULL
+);
 
--- FAQ Page
+CREATE TABLE subQuestion(
+    main_id INT,
+    sub_question VARCHAR(300) NOT NULL,
+    answer VARCHAR(300) NOT NULL,
+    INDEX main_id (main_id),
+    FOREIGN KEY (main_id) REFERENCES mainQuestion(main_id)
+);
+
 INSERT INTO mainQuestion(main_question) VALUE ("General");
 INSERT INTO mainQuestion(main_question) VALUE ("Transaction");
 INSERT INTO mainQuestion(main_question) VALUE ("Security");
@@ -103,13 +99,13 @@ INSERT INTO subQuestion(main_id, sub_question, answer) VALUE ("5", "How do I acc
 INSERT INTO subQuestion(main_id, sub_question, answer) VALUE ("6", "Educational Resources", "https://www.nft-helper.com");
 INSERT INTO subQuestion(main_id, sub_question, answer) VALUE ("6", "Social Media Links", "https://www.twitter.com/safespace");
 
+-- Login/Dashboard Tables -----------------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(255) NOT NULL,
     pass VARCHAR(255) NOT NULL,
     balance DECIMAL(10, 2) NOT NULL,
     UNIQUE (username));
-
 
 INSERT INTO users (username, pass,balance) VALUES ('user1','pass1', 100.00);
 INSERT INTO users (username, pass, balance) VALUES ('user2','pass2', 50.00);
@@ -129,11 +125,12 @@ INSERT INTO bought (user_id, item_id) VALUES (1, 1); -- us1 bought Item 1
 INSERT INTO bought (user_id, item_id) VALUES (1, 2); -- us1 bought Item 2
 INSERT INTO bought (user_id, item_id) VALUES (2, 3); -- us3 bought Item 3
 
+
+-- listedItems
 -- https://i.ibb.co/ChYQdQC/art1.png
 -- https://i.ibb.co/842cvSM/art2.png
 -- https://i.ibb.co/YDnrM2r/art3.png
 -- https://i.ibb.co/Jv5f5Jd/art4.png
-
 
 -- https://i.ibb.co/cwyXfzy/fashion1.png
 -- https://i.ibb.co/xX3MX8C/fashion2.png
@@ -145,13 +142,15 @@ INSERT INTO bought (user_id, item_id) VALUES (2, 3); -- us3 bought Item 3
 -- https://i.ibb.co/zsmJY80/tech3.jpg
 -- https://i.ibb.co/XyFRTBY/tech4.jpg
 
--- goals
+
+-- goalImages
 -- https://i.ibb.co/PQxFkMV/trend.png
 -- https://i.ibb.co/5vVP1yn/support.png
 -- https://i.ibb.co/m0qyQr3/tag.png
 -- https://i.ibb.co/Xt1dCNZ/palette.png
 
--- members
+
+-- memberImages
 -- https://i.ibb.co/KLcTHw2/Tom.jpg
 -- https://i.ibb.co/M6NcG4c/Andrew.jpg
 -- https://i.ibb.co/rf6XcSF/Yuan.jpg
