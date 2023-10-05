@@ -35,6 +35,7 @@ class Item(BaseModel):
     item_id: int
     price: float
     name: str
+    quantity: int
 
 
 class UpdateBalanceRequest(BaseModel):
@@ -391,72 +392,74 @@ async def buy_item(items: List[Item]):
 
     receipts = []
     for item in items:
-        # Configure Ganache
-        w3 = Web3(Web3.HTTPProvider("HTTP://127.0.0.1:7545"))
-        # Default is 1337 for Ganache
-        chain_id = 1337
-        # Found in account REQUIRED
-        my_address = "0x192865D77ED4B663a48A066Cae4480DCecFb3696"
-        private_key = "0xab464e8db134c6cc601bffd258ad1d852ad9d90463aedcb4b42652a51841bcbe"
+        for _ in range(item.quantity):
+            # Configure Ganache
+            w3 = Web3(Web3.HTTPProvider("HTTP://127.0.0.1:7545"))
+            # Default is 1337 for Ganache
+            chain_id = 1337
+            # Found in account REQUIRED
+            my_address = "0x192865D77ED4B663a48A066Cae4480DCecFb3696"
+            private_key = "0xab464e8db134c6cc601bffd258ad1d852ad9d90463aedcb4b42652a51841bcbe"
 
-        # Assuming you have the ABI and contract address stored
-        with open("compiled_code.json", "r") as file:
-            compiled_sol = json.load(file)
-        abi = compiled_sol["contracts"]["SmartContract.sol"]["SmartContract"]["abi"]
-        # Contract address REQUIRED
-        contract_address = "0xCf052A2cC78854Fbd2D15B00B2d573FFCbD7B4e7"
-        smart_contract = w3.eth.contract(address=contract_address, abi=abi)
-        try:
-            # Build and send the transaction to buy an item
-            nonce = w3.eth.get_transaction_count(my_address)
-            amount_in_wei = int(item.price * (10 ** 18))
+            # Assuming you have the ABI and contract address stored
+            with open("compiled_code.json", "r") as file:
+                compiled_sol = json.load(file)
+            abi = compiled_sol["contracts"]["SmartContract.sol"]["SmartContract"]["abi"]
+            # Contract address REQUIRED
+            contract_address = "0xCf052A2cC78854Fbd2D15B00B2d573FFCbD7B4e7"
+            smart_contract = w3.eth.contract(address=contract_address, abi=abi)
+            try:
+                # Build and send the transaction to buy an item
+                nonce = w3.eth.get_transaction_count(my_address)
+                amount_in_wei = int(item.price * (10 ** 18))
 
-            # Debugging
-            print(f" Sending Amount: {amount_in_wei} WEI / {item.price} ETH")
+                # Debugging
+                print(
+                    f" Sending Amount: {amount_in_wei} WEI / {item.price} ETH")
 
-            store_transaction = smart_contract.functions.buyItem(item.item_id).build_transaction(
-                {
-                    "chainId": chain_id,
-                    "gasPrice": w3.eth.gas_price,
-                    "from": my_address,
-                    "nonce": nonce,
-                    "value": amount_in_wei
+                store_transaction = smart_contract.functions.buyItem(item.item_id).build_transaction(
+                    {
+                        "chainId": chain_id,
+                        "gasPrice": w3.eth.gas_price,
+                        "from": my_address,
+                        "nonce": nonce,
+                        "value": amount_in_wei
+                    }
+                )
+
+                signed_store_txn = w3.eth.account.sign_transaction(
+                    store_transaction, private_key=private_key)
+                send_store_tx_hash = w3.eth.send_raw_transaction(
+                    signed_store_txn.rawTransaction)
+                tx_receipt = w3.eth.wait_for_transaction_receipt(
+                    send_store_tx_hash)
+                tx_receipt_serializable = {
+                    "transactionHash": tx_receipt['transactionHash'].hex(),
+                    "transactionIndex": tx_receipt['transactionIndex'],
+                    "blockNumber": tx_receipt['blockNumber'],
+                    "blockHash": tx_receipt['blockHash'].hex(),
+                    "from": tx_receipt['from'],
+                    "to": tx_receipt['to'],
+                    "cumulativeGasUsed": tx_receipt['cumulativeGasUsed'],
+                    "gasUsed": tx_receipt['gasUsed'],
+                    "status": tx_receipt['status']
                 }
-            )
+                # Log the transaction details
+                logging.info(f"Transaction built with nonce: {nonce}")
+                logging.info(f"Transaction hash: {send_store_tx_hash.hex()}")
+                logging.info(f"Transaction receipt: {tx_receipt_serializable}")
 
-            signed_store_txn = w3.eth.account.sign_transaction(
-                store_transaction, private_key=private_key)
-            send_store_tx_hash = w3.eth.send_raw_transaction(
-                signed_store_txn.rawTransaction)
-            tx_receipt = w3.eth.wait_for_transaction_receipt(
-                send_store_tx_hash)
-            tx_receipt_serializable = {
-                "transactionHash": tx_receipt['transactionHash'].hex(),
-                "transactionIndex": tx_receipt['transactionIndex'],
-                "blockNumber": tx_receipt['blockNumber'],
-                "blockHash": tx_receipt['blockHash'].hex(),
-                "from": tx_receipt['from'],
-                "to": tx_receipt['to'],
-                "cumulativeGasUsed": tx_receipt['cumulativeGasUsed'],
-                "gasUsed": tx_receipt['gasUsed'],
-                "status": tx_receipt['status']
-            }
-            # Log the transaction details
-            logging.info(f"Transaction built with nonce: {nonce}")
-            logging.info(f"Transaction hash: {send_store_tx_hash.hex()}")
-            logging.info(f"Transaction receipt: {tx_receipt_serializable}")
+                receipts.append({
+                    "status": "Item purchased",
+                    "transaction_receipt": tx_receipt_serializable,
+                    "transaction_hash": send_store_tx_hash.hex()
+                })
 
-            receipts.append({
-                "status": "Item purchased",
-                "transaction_receipt": tx_receipt_serializable,
-                "transaction_hash": send_store_tx_hash.hex()
-            })
-
-        except Exception as e:
-            print(f"Full exception details: {e}")
-            logging.error(
-                f"Blockchain operation failed for item_id {item.item_id}: {e}")
-            receipts.append({"status": "Failed", "error": str(e)})
+            except Exception as e:
+                print(f"Full exception details: {e}")
+                logging.error(
+                    f"Blockchain operation failed for item_id {item.item_id}: {e}")
+                receipts.append({"status": "Failed", "error": str(e)})
     return {"results": receipts}
 
 

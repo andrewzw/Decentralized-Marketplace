@@ -192,7 +192,8 @@ const Market = () => {
         const payload = selectedItems.map(item => ({
           item_id: item.item_id,
           price: item.price,
-          name: item.name
+          name: item.name,
+          quantity: itemQuantities[item.name] || 1
         }));
 
         try {
