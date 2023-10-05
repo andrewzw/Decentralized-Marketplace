@@ -201,6 +201,7 @@ const Market = () => {
           const response = await axios.post('http://localhost:8000/buyItem', payload);
           console.log("Purchasing item:", payload);
           console.log("Purchase response:", response.data.results[0].status);
+          console.log("Receipts:", response.data.results);
           // Handle the response
           if (response.data.results[0].status === "Item purchased") {
             // Handle successful purchase
