@@ -294,6 +294,49 @@ def get_userBalance():
     except mysql.connector.Error as err:
         return {"error": f"Error: {err}"}
 
+# get graph data
+
+
+@app.get("/api/user/{user_id}/purchases_by_category")
+def get_purchases_by_category(user_id: int):
+    try:
+        # Establish a database connection
+        connection = mysql.connector.connect(**db_config)
+
+        # Create a cursor to execute SQL queries
+        cursor = connection.cursor(dictionary=True)
+
+        # Define the SQL query to retrieve the number of items bought by category for a specific user
+        query = """
+        SELECT listedItems.cat, SUM(bought.quantity) as count
+        FROM listedItems
+        JOIN bought ON listedItems.item_id = bought.item_id
+        WHERE bought.user_id = %s
+        GROUP BY listedItems.cat
+        """
+
+        # Execute the SQL query
+        cursor.execute(query, (user_id,))
+
+        # Fetch all the rows
+        result = cursor.fetchall()
+
+        # Initialize the response with zeros
+        data = {"Tech": 0, "Art": 0, "Fashion": 0}
+
+        # Populate the response with actual data from the database
+        for row in result:
+            data[row['cat']] = row['count']
+
+        # Close the cursor and the database connection
+        cursor.close()
+        connection.close()
+
+        return data
+
+    except mysql.connector.Error as err:
+        return {"error": f"Error: {err}"}
+
 
 # Smart Contract ---------------------------------------------------------------
 deployed_contract_address = None

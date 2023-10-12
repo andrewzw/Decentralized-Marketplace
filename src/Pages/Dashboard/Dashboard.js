@@ -21,98 +21,44 @@ import {
   LinearScale,
   Tooltip,
   Legend,
+  ArcElement,
 } from "chart.js";
-import { Bar } from "react-chartjs-2";
+import { Bar, Doughnut } from "react-chartjs-2";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
+const colors = ['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF'];
 
-ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
-const chartData = {
-  labels: [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ],
-  datasets: [
-    {
-      label: "Monetary assets gain",
-      backgroundColor: [
-        "rgba(78, 85, 90, 0.7)", // Dark muted colors with transparency
-        "rgba(85, 92, 100, 0.7)",
-        "rgba(92, 100, 110, 0.7)",
-        "rgba(100, 110, 120, 0.7)",
-        "rgba(110, 120, 130, 0.7)",
-        "rgba(120, 130, 140, 0.7)",
-        "rgba(130, 140, 150, 0.7)",
-        "rgba(140, 150, 160, 0.7)",
-        "rgba(150, 160, 170, 0.7)",
-        "rgba(160, 170, 180, 0.7)",
-        "rgba(170, 180, 190, 0.7)",
-        "rgba(180, 190, 200, 0.7)",
-      ],
-      borderColor: "rgba(160, 170, 180, 1)", // A neutral color that matches the series
-      borderWidth: 1,
-      data: [6500, 5900, 800, 810, 560, 6000, 70, 800, 90, 100, 20, 3000],
-    },
-  ],
-};
-
+ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend, ArcElement);
 const chartOptions = {
-  layout: {
-    padding: {
-      left: 10,
-      right: 10,
-      top: 10,
-      bottom: 37,
+  responsive: true,
+  maintainAspectRatio: false,
+  legend: {
+    display: true,
+    position: 'right', // can be 'top', 'left', 'bottom', 'right'
+    labels: {
+      fontColor: '#333',
+      fontSize: 14,
+      boxWidth: 20,
     },
   },
-  scales: {
-    x: {
-      grid: {
-        color: "rgba(255, 255, 255, 0.1)", // Faint white grid lines
-      },
-      ticks: {
-        color: "#fff", // White color for the X-axis labels
-      },
-    },
-    y: {
-      grid: {
-        color: "rgba(255, 255, 255, 0.1)",
-      },
-      ticks: {
-        color: "#fff", // White color for the Y-axis labels
-        beginAtZero: true,
-      },
-    },
+  cutoutPercentage: 0, // this will make the chart a doughnut, for pie set it to 0
+  tooltips: {
+    backgroundColor: '#555',
+    titleFontSize: 16,
+    xPadding: 20,
+    yPadding: 40,
   },
-  plugins: {
-    legend: {
-      labels: {
-        color: "#fff", // White color for the legend labels
-      },
-    },
-    tooltip: {
-      backgroundColor: "#f0f0f0", // Light grey (this stays the same)
-      titleColor: "#000", // White color for tooltip title
-      bodyColor: "#000", // White color for tooltip body
-      borderColor: "#ccc", // Light grey border (this stays the same)
-      borderWidth: 1,
-    },
-  },
+
 };
 
 const Dashboard = () => {
+  const [chartData, setChartData] = useState({
+    labels: [],
+    datasets: [{ data: [] }]
+  });
+
   const [assetsItems, setAssetItem] = useState([])
   const navigate = useNavigate(); //navigate within page
   useEffect(() => {
@@ -180,6 +126,27 @@ const Dashboard = () => {
         'Sorry, we are encountering an error fetching asset items. ' //errorMessage
       );
       if (assetItemsError) allErrorMessages.push(assetItemsError);
+
+      // New addition for fetching user's purchased items by category...
+      const userPurchasesByCategoryError = await fetchApiData(
+        `http://127.0.0.1:8000/api/user/${userId}/purchases_by_category`,
+        data => {
+          // Transform the data into a format suitable for Chart.js
+          const labels = Object.keys(data);
+          const values = Object.values(data);
+
+          setChartData({
+            labels: labels,
+            datasets: [{
+              data: values,
+              backgroundColor: colors.slice(0, values.length),
+            }]
+          });
+        },
+        'Sorry, we are encountering an error fetching purchase data by category. '
+      );
+      if (userPurchasesByCategoryError) allErrorMessages.push(userPurchasesByCategoryError);
+      console.log("chartdata", chartData)
 
       if (allErrorMessages.length > 0) {
         setErrorMessages((prevMessages) => [...prevMessages, ...allErrorMessages]);
@@ -380,7 +347,9 @@ const Dashboard = () => {
                     justifyContent: "center",
                   }}
                 >
-                  <Bar data={chartData} options={chartOptions} />
+                  <div className="chart-container">
+                    <Doughnut data={chartData} options={chartOptions} />
+                  </div>
                 </div>
               </Card>
             </Grid>
