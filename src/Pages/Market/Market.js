@@ -206,50 +206,52 @@ const Market = () => {
           if (response.data.results[0].status === "Item purchased") {
             // Handle successful purchase
             setOpen(true);
+            // Only update the user's balance if the purchase was successful
+            await updateUserBalance(newBalance);
           } else {
-            // Handle failed purchase
             setErrorSnackbarOpen(true);
             setErrorMessages(["Some items could not be purchased. Please try again."]);
           }
         } catch (error) {
-          // Handle errors
           console.error("Purchase Error:", error);
           setErrorSnackbarOpen(true);
           setErrorMessages(["An error occurred while making the purchase. Please try again."]);
         }
-
-        // Update the user's balance
-        try {
-          const response = await axios.post('http://localhost:8000/updateUserBalance', JSON.stringify({
-            user_id: currentUser.user_id,
-            new_balance: newBalance
-          }), {
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          });
-
-          if (response && response.data && response.data.status === "success") {
-            const userIndex = user.findIndex(u => u.user_id === currentUser.user_id);
-            const updatedUsers = [...user];
-            updatedUsers[userIndex].balance = newBalance;
-            setUser(updatedUsers);
-          }
-        } catch (error) {
-          console.error("Failed to update user balance:", error);
-        }
-
-        // After successful API call, re-fetch user data
-        await fetchApiData(
-          'http://127.0.0.1:8000/getUser/',
-          setUser,
-          'Sorry, we are encountering an error fetching user\'s info. '
-        );
       } else {
         setErrorSnackbarOpen(true);
         setErrorMessages(["Insufficient balance. Please add more funds."]);
       }
     }
+  };
+
+  // Update the user's balance
+  const updateUserBalance = async (newBalance) => {
+    try {
+      const response = await axios.post('http://localhost:8000/updateUserBalance', JSON.stringify({
+        user_id: currentUser.user_id,
+        new_balance: newBalance
+      }), {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response && response.data && response.data.status === "success") {
+        const userIndex = user.findIndex(u => u.user_id === currentUser.user_id);
+        const updatedUsers = [...user];
+        updatedUsers[userIndex].balance = newBalance;
+        setUser(updatedUsers);
+      }
+    } catch (error) {
+      console.error("Failed to update user balance:", error);
+    }
+
+    // After successful API call, re-fetch user data
+    await fetchApiData(
+      'http://127.0.0.1:8000/getUser/',
+      setUser,
+      'Sorry, we are encountering an error fetching user\'s info. '
+    );
   };
 
 
