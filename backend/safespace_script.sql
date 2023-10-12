@@ -12,6 +12,7 @@ CREATE TABLE listedItems(
     price DECIMAL(10,10) NOT NULL, 
     seller VARCHAR(50) NOT NULL,
     featured BIT(1) NOT NULL,
+    INDEX cat (cat),
     INDEX featured (featured)
 );
 
@@ -105,11 +106,14 @@ CREATE TABLE users (
     username VARCHAR(255) NOT NULL,
     pass VARCHAR(255) NOT NULL,
     balance DECIMAL(10, 2) NOT NULL,
+    INDEX username (username),
+    INDEX pass (pass),
+    INDEX balance (balance),
     UNIQUE (username));
 
-INSERT INTO users (username, pass,balance) VALUES ('user1','pass1', 100.00);
+INSERT INTO users (username, pass, balance) VALUES ('user1','pass1', 100.00);
 INSERT INTO users (username, pass, balance) VALUES ('user2','pass2', 50.00);
-INSERT INTO users (username, pass, balance) VALUES ('user3','pass3',40.00);
+INSERT INTO users (username, pass, balance) VALUES ('user3','pass3', 40.00);
 
 -- Bought table--
 CREATE TABLE bought (
@@ -117,6 +121,9 @@ CREATE TABLE bought (
     item_id INT,
     purchase_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     quantity INT,
+    INDEX user_id (user_id),
+    INDEX item_id (item_id),
+    INDEX quantity (quantity),
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (item_id) REFERENCES listedItems(item_id)
 );
