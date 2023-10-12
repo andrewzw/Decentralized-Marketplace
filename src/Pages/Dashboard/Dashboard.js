@@ -53,6 +53,10 @@ const chartOptions = {
 
 };
 
+function formatDate(dateString) {
+  return dateString.replace("T", " ");
+}
+
 const Dashboard = () => {
   const [chartData, setChartData] = useState({
     labels: [],
@@ -108,6 +112,25 @@ const Dashboard = () => {
 
     return tempErrorMessage;
   };
+  //transaction list data
+  const [transactions, setTransactions] = useState([]);
+  const currentUserID = localStorage.getItem("userId");  // Replace this with wherever you're getting the current user's ID
+
+  useEffect(() => {
+      // Fetch the transaction history when the component mounts
+      const fetchTransactionHistory = async () => {
+          try {
+              const response = await axios.get(`http://localhost:8000/getTransactionHistory/${currentUserID}`);
+              setTransactions(response.data);
+          } catch (error) {
+              console.error('Failed to fetch transaction history:', error);
+          }
+      };
+
+      fetchTransactionHistory();
+  }, [currentUserID]);  // The effect will re-run if currentUserID changes
+  
+
   useEffect(() => {
     const fetchData = async () => {
       const userId = localStorage.getItem("userId");
@@ -380,8 +403,8 @@ const Dashboard = () => {
                     {/* map iterates over each item,For each transaction in the array, 
                                 a new <div> element is created.*/}
                     {(expandedSection === "overview"
-                      ? mockHistoryData.slice(0, 5)
-                      : mockHistoryData
+                      ? transactions.slice(0, 5)
+                      : transactions
                     ).map((transaction, index) => (
                       <div
                         className="transaction"
@@ -392,13 +415,13 @@ const Dashboard = () => {
                         }}
                       >
                         <div>
-                          <strong>Date:</strong> {transaction.date}
+                          <strong>Date:</strong> {formatDate(transaction.date)}
                         </div>
                         <div>
                           <strong>Description:</strong> {transaction.description}
                         </div>
                         <div>
-                          <strong>Amount:</strong> {transaction.amount}
+                          <strong>Quantity:</strong> {transaction.quantity}
                         </div>
                       </div>
                     ))}
