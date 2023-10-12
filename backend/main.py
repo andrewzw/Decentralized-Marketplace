@@ -43,6 +43,12 @@ class UpdateBalanceRequest(BaseModel):
     new_balance: float
 
 
+class UpdateBalanceAssets(BaseModel):
+    user_id: int
+    item_id: float
+    quantity: int
+
+
 app = FastAPI()
 db_config = {
     "host": "localhost",
@@ -372,8 +378,9 @@ async def get_item_details(item_id: int):
     abi = compiled_sol["contracts"]["SmartContract.sol"]["SmartContract"]["abi"]
 
     # Contract address REQUIRED
-    contract_address = deployed_contract_address
-    smart_contract = w3.eth.contract(address=contract_address, abi=abi)
+    global deployed_contract_address
+    smart_contract = w3.eth.contract(
+        address=deployed_contract_address, abi=abi)
 
     # Call the smart contract to get item details
     try:
@@ -391,78 +398,79 @@ async def get_item_details(item_id: int):
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@app.post("/buyItem")
+@app.post("/buyItems")
 async def buy_item(items: List[Item]):
-
+    item_ids = [item.item_id for item in items]
+    quantities = [item.quantity for item in items]
     receipts = []
-    for item in items:
-        for _ in range(item.quantity):
-            # Configure Ganache
-            global w3
-            global chain_id
-            global my_address
-            global private_key
-            global deployed_contract_address
 
-            # Assuming you have the ABI and contract address stored
-            with open("compiled_code.json", "r") as file:
-                compiled_sol = json.load(file)
-            abi = compiled_sol["contracts"]["SmartContract.sol"]["SmartContract"]["abi"]
-            # Contract address REQUIRED
-            contract_address = deployed_contract_address
-            smart_contract = w3.eth.contract(address=contract_address, abi=abi)
-            try:
-                # Build and send the transaction to buy an item
-                nonce = w3.eth.get_transaction_count(my_address)
-                amount_in_wei = int(item.price * (10 ** 18))
+    # Calculate total cost in Wei
+    total_amount_in_wei = sum(
+        int(item.price * (10 ** 18) * item.quantity) for item in items)
 
-                # Debugging
-                print(
-                    f" Sending Amount: {amount_in_wei} WEI / {item.price} ETH")
+    # Configure Ganache
+    global w3
+    global chain_id
+    global my_address
+    global private_key
+    global deployed_contract_address
 
-                store_transaction = smart_contract.functions.buyItem(item.item_id).build_transaction(
-                    {
-                        "chainId": chain_id,
-                        "gasPrice": w3.eth.gas_price,
-                        "from": my_address,
-                        "nonce": nonce,
-                        "value": amount_in_wei
-                    }
-                )
+    # Assuming you have the ABI and contract address stored
+    with open("compiled_code.json", "r") as file:
+        compiled_sol = json.load(file)
+    abi = compiled_sol["contracts"]["SmartContract.sol"]["SmartContract"]["abi"]
+    smart_contract = w3.eth.contract(
+        address=deployed_contract_address, abi=abi)
 
-                signed_store_txn = w3.eth.account.sign_transaction(
-                    store_transaction, private_key=private_key)
-                send_store_tx_hash = w3.eth.send_raw_transaction(
-                    signed_store_txn.rawTransaction)
-                tx_receipt = w3.eth.wait_for_transaction_receipt(
-                    send_store_tx_hash)
-                tx_receipt_serializable = {
-                    "transactionHash": tx_receipt['transactionHash'].hex(),
-                    "transactionIndex": tx_receipt['transactionIndex'],
-                    "blockNumber": tx_receipt['blockNumber'],
-                    "blockHash": tx_receipt['blockHash'].hex(),
-                    "from": tx_receipt['from'],
-                    "to": tx_receipt['to'],
-                    "cumulativeGasUsed": tx_receipt['cumulativeGasUsed'],
-                    "gasUsed": tx_receipt['gasUsed'],
-                    "status": tx_receipt['status']
-                }
-                # Log the transaction details
-                logging.info(f"Transaction built with nonce: {nonce}")
-                logging.info(f"Transaction hash: {send_store_tx_hash.hex()}")
-                logging.info(f"Transaction receipt: {tx_receipt_serializable}")
+    try:
+        # Build and send the transaction to buy an item
+        nonce = w3.eth.get_transaction_count(my_address)
 
-                receipts.append({
-                    "status": "Item purchased",
-                    "transaction_receipt": tx_receipt_serializable,
-                    "transaction_hash": send_store_tx_hash.hex()
-                })
+        # Debugging
+        print(f"Sending Amount: {total_amount_in_wei } WEI ")
 
-            except Exception as e:
-                print(f"Full exception details: {e}")
-                logging.error(
-                    f"Blockchain operation failed for item_id {item.item_id}: {e}")
-                receipts.append({"status": "Failed", "error": str(e)})
+        store_transaction = smart_contract.functions.buyItems(item_ids, quantities).build_transaction(
+            {
+                "chainId": chain_id,
+                "gasPrice": w3.eth.gas_price,
+                "from": my_address,
+                "nonce": nonce,
+                "value": total_amount_in_wei
+            }
+        )
+
+        signed_store_txn = w3.eth.account.sign_transaction(
+            store_transaction, private_key=private_key)
+        send_store_tx_hash = w3.eth.send_raw_transaction(
+            signed_store_txn.rawTransaction)
+        tx_receipt = w3.eth.wait_for_transaction_receipt(
+            send_store_tx_hash)
+        tx_receipt_serializable = {
+            "transactionHash": tx_receipt['transactionHash'].hex(),
+            "transactionIndex": tx_receipt['transactionIndex'],
+            "blockNumber": tx_receipt['blockNumber'],
+            "blockHash": tx_receipt['blockHash'].hex(),
+            "from": tx_receipt['from'],
+            "to": tx_receipt['to'],
+            "cumulativeGasUsed": tx_receipt['cumulativeGasUsed'],
+            "gasUsed": tx_receipt['gasUsed'],
+            "status": tx_receipt['status']
+        }
+        # Log the transaction details
+        logging.info(f"Transaction built with nonce: {nonce}")
+        logging.info(f"Transaction hash: {send_store_tx_hash.hex()}")
+        logging.info(f"Transaction receipt: {tx_receipt_serializable}")
+
+        receipts.append({
+            "status": "Item purchased",
+            "transaction_receipt": tx_receipt_serializable,
+            "transaction_hash": send_store_tx_hash.hex()
+        })
+
+    except Exception as e:
+        print(f"Full exception details: {e}")
+        logging.error(f"Blockchain operation failed: {e}")
+        receipts.append({"status": "Failed", "error": str(e)})
     return {"results": receipts}
 
 
@@ -492,6 +500,39 @@ async def update_user_balance(request: UpdateBalanceRequest):
         connection.close()
 
         return {"status": "success", "message": "User balance updated successfully"}
+
+    except mysql.connector.Error as err:
+        return {"status": "error", "message": f"Error: {err}"}
+
+
+@app.post("/updateUserAssets")
+async def update_user_assets(request: UpdateBalanceAssets):
+    user_id = request.user_id
+    item_id = request.item_id
+    quantity = request.quantity
+    print(
+        f"Received user_id: {user_id}, item_id: {item_id}, quantity: {quantity}")
+    try:
+        # Establish a database connection
+        connection = mysql.connector.connect(**db_config)
+
+        # Create a cursor to execute SQL queries
+        cursor = connection.cursor()
+
+        # Define the SQL query to update the user's balance
+        query = "INSERT INTO bought (user_id, item_id, quantity) VALUES (%s, %s, %s)"
+
+        # Execute the SQL query
+        cursor.execute(query, (user_id, item_id, quantity))
+
+        # Commit the changes to the database
+        connection.commit()
+
+        # Close the cursor and the database connection
+        cursor.close()
+        connection.close()
+
+        return {"status": "success", "message": "User assets updated successfully"}
 
     except mysql.connector.Error as err:
         return {"status": "error", "message": f"Error: {err}"}

@@ -139,32 +139,60 @@ contract SmartContract {
         );
     }
 
-    function buyItem(uint256 _itemId) public payable {
-        require(items[_itemId].price > 0, "Item does not exist");
-        require(msg.value == items[_itemId].price, "Incorrect ETH value sent");
+    function buyItems(
+        uint256[] memory _itemIds,
+        uint256[] memory _quantities
+    ) public payable {
+        // Check that the lengths of the _itemIds and _quantities arrays match
+        require(
+            _itemIds.length == _quantities.length,
+            "Mismatched array lengths"
+        );
 
-        // Add transaction
-        transactions[transactionCount] = Transaction(
-            owner,
-            msg.sender,
-            items[_itemId].price,
-            _itemId
-        );
-        emit TransactionAdded(
-            transactionCount,
-            owner,
-            msg.sender,
-            items[_itemId].price,
-            _itemId
-        );
-        transactionCount++;
+        uint256 totalCost = 0;
 
-        emit ItemPurchased(
-            _itemId,
-            msg.sender,
-            items[_itemId].price,
-            block.timestamp
-        );
+        // Calculate the total cost of all items
+        for (uint i = 0; i < _itemIds.length; i++) {
+            uint256 itemId = _itemIds[i];
+            uint256 quantity = _quantities[i];
+            require(items[itemId].price > 0, "Item does not exist");
+            totalCost += items[itemId].price * quantity;
+        }
+
+        // Check that the total cost matches the amount sent
+        require(msg.value == totalCost, "Incorrect ETH value sent");
+
+        // Process each item
+        for (uint i = 0; i < _itemIds.length; i++) {
+            uint256 itemId = _itemIds[i];
+            uint256 quantity = _quantities[i];
+
+            // Add transactions and emit events
+            for (uint j = 0; j < quantity; j++) {
+                transactions[transactionCount] = Transaction(
+                    owner,
+                    msg.sender,
+                    items[itemId].price,
+                    itemId
+                );
+                emit TransactionAdded(
+                    transactionCount,
+                    owner,
+                    msg.sender,
+                    items[itemId].price,
+                    itemId
+                );
+                transactionCount++;
+            }
+
+            // Emit ItemPurchased event
+            emit ItemPurchased(
+                itemId,
+                msg.sender,
+                items[itemId].price * quantity,
+                block.timestamp
+            );
+        }
     }
 
     function addTransaction(

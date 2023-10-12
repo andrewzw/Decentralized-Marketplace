@@ -198,7 +198,7 @@ const Market = () => {
 
         try {
           //API call to purchase all selected items
-          const response = await axios.post('http://localhost:8000/buyItem', payload);
+          const response = await axios.post('http://localhost:8000/buyItems', payload);
           console.log("Purchasing item:", payload);
           console.log("Purchase response:", response.data.results[0].status);
           console.log("Receipts:", response.data.results);
@@ -208,6 +208,10 @@ const Market = () => {
             setOpen(true);
             // Only update the user's balance if the purchase was successful
             await updateUserBalance(newBalance);
+            // Loop through the payload to update assets for each item
+            for (const item of payload) {
+              await updateUserAssets(item.item_id, item.quantity);
+            }
           } else {
             setErrorSnackbarOpen(true);
             setErrorMessages(["Some items could not be purchased. Please try again."]);
@@ -254,7 +258,33 @@ const Market = () => {
     );
   };
 
+  // Update the user's assets
+  const updateUserAssets = async (item_id, quantity) => {
+    try {
+      const response = await axios.post('http://localhost:8000/updateUserAssets', JSON.stringify({
+        user_id: currentUser.user_id,
+        item_id: item_id,
+        quantity: quantity
+      }), {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
 
+      if (response && response.data && response.data.status === "success") {
+        console.error("Successfully updated user assets:", response.data.results);
+      }
+    } catch (error) {
+      console.error("Failed to update user balance:", error);
+    }
+
+    // After successful API call, re-fetch user data
+    await fetchApiData(
+      'http://127.0.0.1:8000/getUser/',
+      setUser,
+      'Sorry, we are encountering an error fetching user\'s info. '
+    );
+  };
 
   //Calculate total price
   const total = selectedItems
