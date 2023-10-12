@@ -116,14 +116,15 @@ CREATE TABLE bought (
     user_id INT,
     item_id INT,
     purchase_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    quantity INT,
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (item_id) REFERENCES listedItems(item_id)
 );
 
 -- Insert some sample bought items
-INSERT INTO bought (user_id, item_id) VALUES (1, 1); -- us1 bought Item 1
-INSERT INTO bought (user_id, item_id) VALUES (1, 2); -- us1 bought Item 2
-INSERT INTO bought (user_id, item_id) VALUES (2, 3); -- us3 bought Item 3
+INSERT INTO bought (user_id, item_id, quantity) VALUES (1, 1, 1); -- us1 bought Item 1
+INSERT INTO bought (user_id, item_id, quantity) VALUES (1, 2, 4); -- us1 bought Item 2
+INSERT INTO bought (user_id, item_id, quantity) VALUES (2, 3, 1); -- us3 bought Item 3
 
 
 -- listedItems

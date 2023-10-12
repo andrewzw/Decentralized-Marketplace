@@ -43,6 +43,12 @@ class UpdateBalanceRequest(BaseModel):
     new_balance: float
 
 
+class UpdateBalanceAssets(BaseModel):
+    user_id: int
+    item_id: float
+    quantity: int
+
+
 app = FastAPI()
 db_config = {
     "host": "localhost",
@@ -494,6 +500,39 @@ async def update_user_balance(request: UpdateBalanceRequest):
         connection.close()
 
         return {"status": "success", "message": "User balance updated successfully"}
+
+    except mysql.connector.Error as err:
+        return {"status": "error", "message": f"Error: {err}"}
+
+
+@app.post("/updateUserAssets")
+async def update_user_assets(request: UpdateBalanceAssets):
+    user_id = request.user_id
+    item_id = request.item_id
+    quantity = request.quantity
+    print(
+        f"Received user_id: {user_id}, item_id: {item_id}, quantity: {quantity}")
+    try:
+        # Establish a database connection
+        connection = mysql.connector.connect(**db_config)
+
+        # Create a cursor to execute SQL queries
+        cursor = connection.cursor()
+
+        # Define the SQL query to update the user's balance
+        query = "INSERT INTO bought (user_id, item_id, quantity) VALUES (%s, %s, %s)"
+
+        # Execute the SQL query
+        cursor.execute(query, (user_id, item_id, quantity))
+
+        # Commit the changes to the database
+        connection.commit()
+
+        # Close the cursor and the database connection
+        cursor.close()
+        connection.close()
+
+        return {"status": "success", "message": "User assets updated successfully"}
 
     except mysql.connector.Error as err:
         return {"status": "error", "message": f"Error: {err}"}
