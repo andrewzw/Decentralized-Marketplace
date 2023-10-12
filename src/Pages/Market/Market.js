@@ -176,6 +176,7 @@ const Market = () => {
 
   //On click of buy button
   const handleClick = async () => {
+    const currentTime = new Date().toISOString();
     // Check if the user is logged in
     if (!localStorage.getItem("isLoggedIn")) {
       window.alert("Please log in to buy.");
@@ -193,7 +194,8 @@ const Market = () => {
           item_id: item.item_id,
           price: item.price,
           name: item.name,
-          quantity: itemQuantities[item.name] || 1
+          quantity: itemQuantities[item.name] || 1,
+          time_purchased: currentTime
         }));
 
         try {
@@ -259,12 +261,13 @@ const Market = () => {
   };
 
   // Update the user's assets
-  const updateUserAssets = async (item_id, quantity) => {
+  const updateUserAssets = async (item_id, quantity,time_purchased) => {
     try {
       const response = await axios.post('http://localhost:8000/updateUserAssets', JSON.stringify({
         user_id: currentUser.user_id,
         item_id: item_id,
-        quantity: quantity
+        quantity: quantity,
+        time_purchased: time_purchased,
       }), {
         headers: {
           'Content-Type': 'application/json'

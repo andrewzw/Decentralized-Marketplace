@@ -21,6 +21,7 @@ from solcx import compile_standard, install_solc
 import json
 from typing import List
 import logging
+from datetime import datetime
 
 logging.basicConfig(level=logging.INFO)
 # configure login class:
@@ -47,6 +48,7 @@ class UpdateBalanceAssets(BaseModel):
     user_id: int
     item_id: float
     quantity: int
+    time_purchased: str
 
 
 app = FastAPI()
@@ -342,8 +344,8 @@ def get_purchases_by_category(user_id: int):
 deployed_contract_address = None
 chain_id = 1337
 w3 = Web3(Web3.HTTPProvider("HTTP://127.0.0.1:7545"))
-my_address = "0xb15430666ccac2C843478e84C032f488CA13b0e9"
-private_key = "0xe7cb5de471e6508f90355a39ec0ac58220da22c7be25d1fd79eeff34fbc16cb2"
+my_address = "0xf0fF8EC5FC0f1f31448681b645EfBe1ad762Bd67"
+private_key = "0xbbf0d55a95bc6cc070265901de35952763d475552bf73b7ca05ce1f740fb6db9"
 
 
 @app.get("/deployContract")
@@ -488,6 +490,8 @@ async def buy_item(items: List[Item]):
             signed_store_txn.rawTransaction)
         tx_receipt = w3.eth.wait_for_transaction_receipt(
             send_store_tx_hash)
+        purchase_time = datetime.now()
+        logging.info(f"Item purchased at: {purchase_time}")
         tx_receipt_serializable = {
             "transactionHash": tx_receipt['transactionHash'].hex(),
             "transactionIndex": tx_receipt['transactionIndex'],
@@ -497,6 +501,7 @@ async def buy_item(items: List[Item]):
             "to": tx_receipt['to'],
             "cumulativeGasUsed": tx_receipt['cumulativeGasUsed'],
             "gasUsed": tx_receipt['gasUsed'],
+            "purchase_time": purchase_time.strftime('%Y-%m-%d %H:%M:%S'),
             "status": tx_receipt['status']
         }
         # Log the transaction details
@@ -553,8 +558,9 @@ async def update_user_assets(request: UpdateBalanceAssets):
     user_id = request.user_id
     item_id = request.item_id
     quantity = request.quantity
+    time_purchased = request.time_purchased
     print(
-        f"Received user_id: {user_id}, item_id: {item_id}, quantity: {quantity}")
+        f"Received user_id: {user_id}, item_id: {item_id}, quantity: {quantity}, time:{time_purchased}")
     try:
         # Establish a database connection
         connection = mysql.connector.connect(**db_config)
@@ -563,10 +569,10 @@ async def update_user_assets(request: UpdateBalanceAssets):
         cursor = connection.cursor()
 
         # Define the SQL query to update the user's balance
-        query = "INSERT INTO bought (user_id, item_id, quantity) VALUES (%s, %s, %s)"
+        query = "INSERT INTO bought (user_id, item_id, purchase_date, quantity,) VALUES (%s, %s, %s, %s)"
 
         # Execute the SQL query
-        cursor.execute(query, (user_id, item_id, quantity))
+        cursor.execute(query, (user_id, item_id, time_purchased, quantity))
 
         # Commit the changes to the database
         connection.commit()

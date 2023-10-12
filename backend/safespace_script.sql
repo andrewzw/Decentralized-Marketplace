@@ -115,16 +115,16 @@ INSERT INTO users (username, pass, balance) VALUES ('user3','pass3',40.00);
 CREATE TABLE bought (
     user_id INT,
     item_id INT,
-    purchase_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    purchase_date VARCHAR(255),
     quantity INT,
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (item_id) REFERENCES listedItems(item_id)
 );
 
 -- Insert some sample bought items
-INSERT INTO bought (user_id, item_id, quantity) VALUES (1, 1, 1); -- us1 bought Item 1
-INSERT INTO bought (user_id, item_id, quantity) VALUES (1, 2, 4); -- us1 bought Item 2
-INSERT INTO bought (user_id, item_id, quantity) VALUES (2, 3, 1); -- us3 bought Item 3
+INSERT INTO bought (user_id, item_id, quantity, purchase_date) VALUES (1, 1, 1,'2023-10-11 18:49:42'); -- us1 bought Item 1
+INSERT INTO bought (user_id, item_id, quantity, purchase_date) VALUES (1, 2, 4,'2023-10-12 18:49:42'); -- us1 bought Item 2
+INSERT INTO bought (user_id, item_id, quantity, purchase_date) VALUES (2, 3, 1,'2023-10-12 18:49:42'); -- us3 bought Item 3
 
 
 -- listedItems
