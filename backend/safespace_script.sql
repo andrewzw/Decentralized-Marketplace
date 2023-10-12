@@ -129,9 +129,9 @@ CREATE TABLE bought (
 );
 
 -- Insert some sample bought items
-INSERT INTO bought (user_id, item_id, quantity) VALUES (1, 1, 1); -- us1 bought Item 1
-INSERT INTO bought (user_id, item_id, quantity) VALUES (1, 2, 4); -- us1 bought Item 2
-INSERT INTO bought (user_id, item_id, quantity) VALUES (2, 3, 1); -- us3 bought Item 3
+INSERT INTO bought (user_id, item_id, quantity,purchase_date) VALUES (1, 1, 1,'2023-10-11 18:49:42'); -- us1 bought Item 1
+INSERT INTO bought (user_id, item_id, quantity,purchase_date) VALUES (1, 2, 4,'2023-10-11 18:49:42'); -- us1 bought Item 2
+INSERT INTO bought (user_id, item_id, quantity,purchase_date) VALUES (2, 3, 1,'2023-10-11 18:49:42'); -- us3 bought Item 3
 
 
 -- listedItems
