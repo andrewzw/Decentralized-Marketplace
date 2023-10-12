@@ -139,35 +139,6 @@ contract SmartContract {
         );
     }
 
-    function buyItem(uint256 _itemId) public payable {
-        require(items[_itemId].price > 0, "Item does not exist");
-        require(msg.value == items[_itemId].price, "Incorrect ETH value sent");
-
-        // Add transaction
-        transactions[transactionCount] = Transaction(
-            owner,
-            msg.sender,
-            items[_itemId].price,
-            _itemId
-        );
-        emit TransactionAdded(
-            transactionCount,
-            owner,
-            msg.sender,
-            items[_itemId].price,
-            _itemId
-        );
-        transactionCount++;
-
-        emit ItemPurchased(
-            _itemId,
-            msg.sender,
-            items[_itemId].price,
-            block.timestamp
-        );
-    }
-
-    // For buying multiple items
     function buyItems(
         uint256[] memory _itemIds,
         uint256[] memory _quantities
