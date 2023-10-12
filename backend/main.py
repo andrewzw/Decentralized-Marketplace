@@ -288,18 +288,23 @@ def get_userBalance():
     except mysql.connector.Error as err:
         return {"error": f"Error: {err}"}
 
+
 # Smart Contract ---------------------------------------------------------------
+deployed_contract_address = None
+chain_id = 1337
+w3 = Web3(Web3.HTTPProvider("HTTP://127.0.0.1:7545"))
+my_address = "0xb15430666ccac2C843478e84C032f488CA13b0e9"
+private_key = "0xe7cb5de471e6508f90355a39ec0ac58220da22c7be25d1fd79eeff34fbc16cb2"
 
 
 @app.get("/deployContract")
 async def funcTest1():
     # Configure Ganache
-    w3 = Web3(Web3.HTTPProvider("HTTP://127.0.0.1:7545"))
-    # Default is 1337 for Ganache
-    chain_id = 1337
-    # Found in account REQUIRED
-    my_address = "0x192865D77ED4B663a48A066Cae4480DCecFb3696"
-    private_key = "0xab464e8db134c6cc601bffd258ad1d852ad9d90463aedcb4b42652a51841bcbe"
+    global w3
+    global chain_id
+    global my_address
+    global private_key
+    global deployed_contract_address
 
     with open("./SmartContract.sol", "r") as file:
         smart_contract_file = file.read()
@@ -346,7 +351,6 @@ async def funcTest1():
             transaction, private_key=private_key)
         tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
         tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
-        global deployed_contract_address
         deployed_contract_address = tx_receipt.contractAddress
 
         logging.info(
@@ -394,19 +398,18 @@ async def buy_item(items: List[Item]):
     for item in items:
         for _ in range(item.quantity):
             # Configure Ganache
-            w3 = Web3(Web3.HTTPProvider("HTTP://127.0.0.1:7545"))
-            # Default is 1337 for Ganache
-            chain_id = 1337
-            # Found in account REQUIRED
-            my_address = "0x192865D77ED4B663a48A066Cae4480DCecFb3696"
-            private_key = "0xab464e8db134c6cc601bffd258ad1d852ad9d90463aedcb4b42652a51841bcbe"
+            global w3
+            global chain_id
+            global my_address
+            global private_key
+            global deployed_contract_address
 
             # Assuming you have the ABI and contract address stored
             with open("compiled_code.json", "r") as file:
                 compiled_sol = json.load(file)
             abi = compiled_sol["contracts"]["SmartContract.sol"]["SmartContract"]["abi"]
             # Contract address REQUIRED
-            contract_address = "0xCf052A2cC78854Fbd2D15B00B2d573FFCbD7B4e7"
+            contract_address = deployed_contract_address
             smart_contract = w3.eth.contract(address=contract_address, abi=abi)
             try:
                 # Build and send the transaction to buy an item
