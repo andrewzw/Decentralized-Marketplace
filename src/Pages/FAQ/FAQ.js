@@ -148,10 +148,6 @@ const FAQ = () => {
     }
   };
 
-  const clickme = () => {
-    setFilteredFaq(adaptedArray)
-  }
-
   return (
     <div>
       <Snackbar
@@ -188,7 +184,6 @@ const FAQ = () => {
               <Accordion
                 className="accordioning" //dropdown colour
                 TransitionProps={{ unmountOnExit: true }}
-                onClick={clickme}
               >
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon className="whitening" />} //icon colour
