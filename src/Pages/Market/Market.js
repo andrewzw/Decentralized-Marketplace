@@ -42,9 +42,8 @@ const Market = () => {
   const userId = localStorage.getItem("userId");
   const currentUser = user.find(u => u.user_id === parseInt(userId, 10));  // Find the current user based on the userId from localStorage
   const navigate = useNavigate(); //navigate within page
-
-  //Error handling
-  const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false);
+  const [open, setOpen] = useState(false); //Handle the opening and closing of the snackbar
+  const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false); //Error handling snackbar
   const [errorMessages, setErrorMessages] = useState([]);
   //Error Snackbar
   const handleErrorSnackbarClose = (event, reason) => {
@@ -141,8 +140,6 @@ const Market = () => {
 
   }, []);
 
-
-
   //toggle add/remove item in cart
   const handleItemClick = (item, action = "toggle") => {
     if (
@@ -170,9 +167,6 @@ const Market = () => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
-  //Handle the opening and closing of the snackbar
-  const [open, setOpen] = useState(false);
 
   //On click of buy button
   const handleClick = async () => {
@@ -554,7 +548,7 @@ const Market = () => {
                 <div className="section3-bottom">
                   <h4 style={{
                     color: "#38E038",
-                    backgroundColor: "rgba(255, 255, 255, 0.1)", // White with 50% transparency
+                    backgroundColor: "rgba(255, 255, 255, 0.1)",
                     border: "1px solid white",
                     borderRadius: "5px",
                     padding: "5px",
