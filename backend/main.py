@@ -72,13 +72,13 @@ app.add_middleware(
 )
 
 
-@app.get("/")
+@app.get("/")  # Testing fastapi
 async def funcTest1():
     return "Hello, this is fastAPI data"
 
 
 @app.get("/tabsData")
-async def funcTest():
+async def get_tabsData():
     jsonResult = [
         {"value": "All", "label": "All"},
         {"value": "Tech", "label": "Tech"},
@@ -436,7 +436,7 @@ async def buy_item(items: List[Item]):
     global private_key
     global deployed_contract_address
 
-    # Assuming you have the ABI and contract address stored
+    # ABI and contract address stored
     with open("compiled_code.json", "r") as file:
         compiled_sol = json.load(file)
     abi = compiled_sol["contracts"]["SmartContract.sol"]["SmartContract"]["abi"]
