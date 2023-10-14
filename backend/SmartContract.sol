@@ -194,26 +194,4 @@ contract SmartContract {
             );
         }
     }
-
-    function addTransaction(
-        address _toAddress,
-        address _fromAddress,
-        uint256 _price,
-        uint256 _item
-    ) public {
-        transactions[transactionCount] = Transaction(
-            _toAddress,
-            _fromAddress,
-            _price,
-            _item
-        );
-        emit TransactionAdded(
-            transactionCount,
-            _toAddress,
-            _fromAddress,
-            _price,
-            _item
-        );
-        transactionCount++;
-    }
 }
