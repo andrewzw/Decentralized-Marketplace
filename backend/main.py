@@ -624,23 +624,30 @@ async def get_items_for_user(user_id: int):
         cursor = connection.cursor()
 
         query = """
-        SELECT listedItems.* FROM listedItems 
+        SELECT listedItems.*, bought.quantity FROM listedItems 
         INNER JOIN bought ON listedItems.item_id = bought.item_id
         WHERE bought.user_id = %s
         """
 
         cursor.execute(query, (user_id,))
         result = cursor.fetchall()
+
         # convert result to list of dict
         items = [dict(zip(cursor.column_names, row)) for row in result]
+
+        # Repeat the items based on their quantity
+        repeated_items = []
+        for item in items:
+            quantity = item.pop("quantity")
+            repeated_items.extend([item] * quantity)
 
         cursor.close()
         connection.close()
 
-        if not items:
+        if not repeated_items:
             raise HTTPException(
                 status_code=404, detail="No items found for this user")
 
-        return items
+        return repeated_items
     except mysql.connector.Error as err:
         return {"error": f"Error:{err}"}
