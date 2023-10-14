@@ -419,36 +419,6 @@ async def funcTest1():
             status_code=500, detail="Smart Contract deployment failed: Blockchain operation error")
 
 
-@app.get("/getItemDetails/{item_id}")
-async def get_item_details(item_id: int):
-    w3 = Web3(Web3.HTTPProvider("HTTP://127.0.0.1:7545"))
-
-    # Assuming you have the ABI and contract address stored
-    with open("compiled_code.json", "r") as file:
-        compiled_sol = json.load(file)
-    abi = compiled_sol["contracts"]["SmartContract.sol"]["SmartContract"]["abi"]
-
-    # Contract address REQUIRED
-    global deployed_contract_address
-    smart_contract = w3.eth.contract(
-        address=deployed_contract_address, abi=abi)
-
-    # Call the smart contract to get item details
-    try:
-        item = smart_contract.functions.items(item_id).call()
-        item_details = {
-            "name": item[0],
-            "description": item[1],
-            "image": item[2],
-            "category": item[3],
-            "price": item[4],
-            "seller": item[5]
-        }
-        return item_details
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
-
 @app.post("/buyItems")
 async def buy_item(items: List[Item]):
     item_ids = [item.item_id for item in items]

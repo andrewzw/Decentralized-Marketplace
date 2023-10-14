@@ -97,16 +97,16 @@ const Market = () => {
       let allErrorMessages = [];
 
       const userError = await fetchApiData(
-        'http://127.0.0.1:8000/getUser/', //url
+        'http://127.0.0.1:8000/getUser/', //api url
         setUser, //setData
         'Sorry, we are encountering an error fetching user\'s info. ' //errorMessage
       );
       if (userError) allErrorMessages.push(userError)
 
       const featuredItemsError = await fetchApiData(
-        'http://127.0.0.1:8000/getFeaturedItems/', //url
-        setFeaturedItems, //setData
-        'Sorry, we are encountering an error fetching featured items. ' //errorMessage
+        'http://127.0.0.1:8000/getFeaturedItems/',
+        setFeaturedItems,
+        'Sorry, we are encountering an error fetching featured items. '
       );
       if (featuredItemsError) allErrorMessages.push(featuredItemsError);
 
