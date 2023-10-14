@@ -8,7 +8,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
  "error": "Error: Authentication plugin 'caching_sha2_password' is not supported" - caching sha2 password is not supported mysql
  Solutions: 
  1) Install mysql connector for python
- 2) Type : ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password' in MySQL terminal
+ 2) Type : `ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';` in MySQL terminal
 
 ## Step by Step tutorial to run project - assuming every dependency is installed correctly (Anaconda environment, fastAPI, etc.)
 1) Start MySQL
