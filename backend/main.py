@@ -48,10 +48,12 @@ class UpdateBalanceAssets(BaseModel):
     item_id: float
     quantity: int
 
+
 class Transaction(BaseModel):
     date: str
     description: str
     quantity: int
+
 
 app = FastAPI()
 db_config = {
@@ -84,42 +86,6 @@ async def funcTest():
         {"value": "Fashion", "label": "Fashion"}
     ]
     return jsonResult
-
-@app.get("/getTransactionHistory/{user_id}")
-def get_transaction_history(user_id: int):
-    try:
-        # Establish a database connection
-        connection = mysql.connector.connect(**db_config)
-
-        # Create a cursor to execute SQL queries
-        cursor = connection.cursor()
-
-        # Define the SQL query to retrieve data
-        query = """SELECT b.purchase_date AS date, 
-                          l.name AS description, 
-                          b.quantity 
-                   FROM bought AS b 
-                   JOIN listedItems AS l ON b.item_id = l.item_id 
-                   WHERE b.user_id = %s 
-                   ORDER BY b.purchase_date DESC"""
-
-        # Execute the SQL query with the provided user_id
-        cursor.execute(query, (user_id,))
-
-        # Fetch all the rows
-        result = cursor.fetchall()
-
-        # Convert the result to a list of dictionaries
-        transactions = [dict(zip(cursor.column_names, row)) for row in result]
-
-        # Close the cursor and the database connection
-        cursor.close()
-        connection.close()
-
-        return transactions
-
-    except mysql.connector.Error as err:
-        return {"error": f"Error: {err}"}
 
 
 @app.get("/getFeaturedItems")
@@ -382,8 +348,10 @@ def get_purchases_by_category(user_id: int):
 deployed_contract_address = None
 chain_id = 1337
 w3 = Web3(Web3.HTTPProvider("HTTP://127.0.0.1:7545"))
-my_address = "0xb1b12D4CC59fe6b65BFd9cBA99CB77bc69613348"
-private_key = "0x6916f3fd3e3643f04feefa9b0628d1adb82580a1b268dfa71125f97fec1a879c"
+
+# Required
+my_address = "0xE9B6f078C52E74bFc31417157DE2d8EEa20BdC16"
+private_key = "0xda7c529df141eec0f206436e80d8bd998526125c1828ec2e089d2f72e14c35e3"
 
 
 @app.get("/deployContract")
@@ -619,6 +587,43 @@ async def update_user_assets(request: UpdateBalanceAssets):
 
     except mysql.connector.Error as err:
         return {"status": "error", "message": f"Error: {err}"}
+
+
+@app.get("/getTransactionHistory/{user_id}")
+def get_transaction_history(user_id: int):
+    try:
+        # Establish a database connection
+        connection = mysql.connector.connect(**db_config)
+
+        # Create a cursor to execute SQL queries
+        cursor = connection.cursor()
+
+        # Define the SQL query to retrieve data
+        query = """SELECT b.purchase_date AS date, 
+                          l.name AS description, 
+                          b.quantity 
+                   FROM bought AS b 
+                   JOIN listedItems AS l ON b.item_id = l.item_id 
+                   WHERE b.user_id = %s 
+                   ORDER BY b.purchase_date DESC"""
+
+        # Execute the SQL query with the provided user_id
+        cursor.execute(query, (user_id,))
+
+        # Fetch all the rows
+        result = cursor.fetchall()
+
+        # Convert the result to a list of dictionaries
+        transactions = [dict(zip(cursor.column_names, row)) for row in result]
+
+        # Close the cursor and the database connection
+        cursor.close()
+        connection.close()
+
+        return transactions
+
+    except mysql.connector.Error as err:
+        return {"error": f"Error: {err}"}
 
 
 @app.post("/login")
