@@ -27,6 +27,8 @@ function Login() {
           localStorage.setItem("userId", response.data.user_id);
           console.log("Stored user_id:", response.data.user_id);
           localStorage.setItem("isLoggedIn", "true");
+          const deployContract = await axios.get("http://127.0.0.1:8000/deployContract")
+          console.log("Deployed contract:", deployContract.data);
           navigate("/Dashboard");
         } else {
           alert("Invalid credentials. Enter again.");
@@ -56,7 +58,7 @@ function Login() {
             className="login-input"
           />
           <input
-            type="text"
+            type="password"
             placeholder="Enter password..."
             value={password}
             onChange={(e) => setPassword(e.target.value)}
