@@ -350,8 +350,8 @@ chain_id = 1337
 w3 = Web3(Web3.HTTPProvider("HTTP://127.0.0.1:7545"))
 
 # Required
-my_address = "0xE9B6f078C52E74bFc31417157DE2d8EEa20BdC16"
-private_key = "0xda7c529df141eec0f206436e80d8bd998526125c1828ec2e089d2f72e14c35e3"
+my_address = "0xb1b12D4CC59fe6b65BFd9cBA99CB77bc69613348"
+private_key = "0x6916f3fd3e3643f04feefa9b0628d1adb82580a1b268dfa71125f97fec1a879c"
 
 
 @app.get("/deployContract")
