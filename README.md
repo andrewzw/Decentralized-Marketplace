@@ -17,6 +17,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 4) `conda activate myenv` in terminal
 5) Open terminal in `backend` folder and run `mysql -u root -p < safespace_script.sql` OR `/usr/local/mysql/bin/mysql -u root -p < safespace_script.sql` (for Mac)
 6) In `backend` folder, run ` uvicorn main:app --reload` to start fastAPI
+7) Deploy contract at `http://127.0.0.1:8000/deployContract`
 
 ### Connect to MySQL 
 1) open new terminal to connect to MySQL
